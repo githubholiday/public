@@ -1,8 +1,18 @@
 #/annogene/datayw/share/software/install/Python-3.3.2/bin/python3
 #二代芯片拆分时长统计&二代项目过滤时长统计
 '''
-1. 监控北京和义乌 二三代拆分和过滤正在进行的任务，并输出任务运行时长
+功能：
+    1. 监控北京和义乌 二三代拆分、过滤和重拆表中的任务，并输出任务运行时长
+拆分任务筛选：
+    1. 筛选任务状态为5（拆分中的）且split_end_time不为空的（为空的可能是直接交付bcl数据，人工刷新的情况）
+过滤任务筛选：
+    筛选任务状态不为FITER_FINISHED，且该项目+芯片在tb_filter_task中没有FILTER_FINISHED状态的
+重拆任务：
+    筛选tb_analysis_task 中状态不为4的所有任务
 
+使用：
+    python3 taskmonitor.py -t all/filter/split(可选三种参数，默认为all)
+    
 更新：
 2024-1-26 涂成芳
 1. 增加三代拆分和过滤的运行时长监控
