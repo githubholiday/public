@@ -138,7 +138,6 @@ class Job():
             delta_hours = delta_time( create_time )
             start_time_f = create_time.strftime(self.time_format)
             out_value = [str(id), fc_no, project_id, start_time_f, '{0:.2f}'.format(delta_hours), str(resplit_type), record ]
-            print(out_value)
             print("\t".join(out_value))
 
     def deal_filter_task( self, filter_task, generation ):

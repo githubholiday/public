@@ -64,13 +64,16 @@ class LIMS():
             col = ','.join( col_list )
         cmd = 'SELECT {0} from {1}'.format( col, table_name )
         if conditions:
-            if conditions[0][2] == "NULL":
+            if "NULL" in conditions[0][2] :
                 cmd = cmd + ' where {0} {1} {2}'.format( conditions[0][0], conditions[0][1], conditions[0][2] )
             else:
                 cmd = cmd + ' where {0} {1} "{2}"'.format( conditions[0][0], conditions[0][1], conditions[0][2] )
             if len( conditions ) > 1:
                 for n,r,v in conditions[1:]:
-                    cmd = cmd + ' and {0} {1} {2}'.format( n,r,v )
+                    if "NULL" in v:
+                        cmd = cmd + ' and {0} {1} {2}'.format( n,r,v )
+                    else:
+                        cmd = cmd + ' and {0} {1} "{2}"'.format( n,r,v )
         self.execute( cmd )
         return self.cursor.fetchall()
     
