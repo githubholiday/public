@@ -147,7 +147,7 @@ class Job():
        for tmp in filter_task:
            start_time = tmp[1]
            timestamp = time.localtime(start_time/1000)
-           delta_hours = delta_time( timestamp )
+           delta_hours = delta_time_period( start_time )
            start_time_f = timestamp.strftime(self.time_format)
            out_value = [generation, tmp[0], tmp[3], start_time_f, '{0:.2f}'.format(delta_hours) ]
            print("\t".join(out_value))
@@ -185,10 +185,22 @@ class Job():
             print("请输出  split, filter, all 中任意一个")
         
 def delta_time( given_time ):
+    '''
+    计算datetime的时间差
+    '''
     now_time = datetime.now()
     delta_seconds = (now_time - given_time).seconds
     delta_hours = delta_seconds/3600
     return delta_hours
+
+def delta_time_period( given_time ):
+    '''
+    计算毫秒时间戳的时间差，返回hours
+    '''
+    time_delta = int(time.time()*1000) - given_time
+    delta_hours = time_delta/3600000
+    return delta_hours
+
 
 def main():
     parser=argparse.ArgumentParser(description=__doc__,
