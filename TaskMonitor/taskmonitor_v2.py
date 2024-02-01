@@ -158,7 +158,7 @@ class Job():
         head = ["重拆id","芯片号","项目编号","创建时间","时长","重拆类型","信息"]
         print("\t".join(head))
         for tmp in resplit_task:
-            fc_no = tmp[0]
+            fc_no = tmp[0] if tmp[0]!='-' else "---------"
             start_time = tmp[1]
             create_time = tmp[2]
             project_id = tmp[3]
