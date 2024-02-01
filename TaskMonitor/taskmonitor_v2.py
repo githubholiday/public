@@ -95,7 +95,7 @@ class Job():
     def deal_filter_task( self, filter_task, generation ):
        
        #col_list = ["merge_project_code","create_time","place","fc_no","id","analysis_path"]
-       head = ["类型","项目编号        ","芯片号            ","开始过滤时间","过滤时长","过滤状态"]
+       head = ["类型","项目编号        ","芯片号        ","开始过滤时间","过滤时长","过滤状态","任务ID"]
        print("\t".join(head))
        for tmp in filter_task:
            start_time = tmp[1]
