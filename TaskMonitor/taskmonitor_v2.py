@@ -60,7 +60,6 @@ class Job():
         #select_condition2 = [("start_time","IS","NOT NULL"),("state","=", "3")]
         #select_content2 = self.my_lims.select( 'tb_analysis_task', col_list, select_condition2 )
         select_content = select_content1 #+ select_content2
-        print(select_content)
         if len( select_content ) == 0 :
             print("没有正在重新处理的任务")
         return select_content
@@ -91,7 +90,7 @@ class Job():
                     filter_list.append(select_t)
         return filter_list
 
-    def deal_spit_task(self, split_task_list ):
+    def deal_spit_task(self, split_task_list, generation ):
         '''
         二三代重拆任务的共同处理部分
         '''
@@ -105,7 +104,7 @@ class Job():
             if split_end_time : continue
             start_time = split_start_time.strftime(self.time_format)
             delta_hours = delta_time( split_start_time )
-            out_value = [ generations, fc_no, start_time, '{0:.2f}'.format(delta_hours) ]
+            out_value = [ generation, fc_no, start_time, '{0:.2f}'.format(delta_hours) ]
             print("\t".join(out_value))
 
     def deal_2th_split_task( self ):
@@ -113,14 +112,14 @@ class Job():
         处理二代重拆任务
         '''
         ngs_split_task = self.get_split_task(split_type='2th')
-        self.deal_spit_task(ngs_split_task)
+        self.deal_spit_task(ngs_split_task,generation='2th')
 
     def deal_3th_split_task( self ):
         '''
         处理三代重拆任务
         '''
         tgs_split_task = self.get_split_task(split_type='3th')
-        self.deal_spit_task(tgs_split_task)
+        self.deal_spit_task(tgs_split_task,generation='3th')
     
     def deal_resplit_task( self ):
         resplit_task = self.get_resplit_task()
