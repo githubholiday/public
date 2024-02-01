@@ -97,7 +97,9 @@ class Job():
         filter_table.set_cols_align(["l"]*7)
         filter_table.set_cols_valign(["m"]*7)
         head = ["类型","项目编号","芯片号","开始过滤时间","过滤时长","过滤状态","任务id"]
-        filter_table.add_rows([head])
+        #filter_table.add_rows([head])
+        row_list = []
+        row_list.append(head)
        #print("\t".join(head))
         for tmp in filter_task:
             start_time = tmp[1]
@@ -106,7 +108,8 @@ class Job():
             delta_hours = delta_time_period( start_time )
             start_time_f = time.strftime(self.time_format,timestamp)
             out_value = [generation, tmp[0], tmp[3], start_time_f, '{0:.2f}'.format(delta_hours),tmp[6],id ]
-            filter_table.add_rows([out_value])
+            row_list.append(out_value)
+        filter_table.add_rows(row_list)
         print(filter_table.draw())
            #print("\t".join(out_value))
 
