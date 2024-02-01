@@ -95,7 +95,7 @@ class Job():
     def deal_filter_task( self, filter_task, generation ):
        
        #col_list = ["merge_project_code","create_time","place","fc_no","id","analysis_path"]
-       head = ["类型","项目编号        ","芯片号        ","开始过滤时间","过滤时长","过滤状态","任务ID"]
+       head = ["类型","项目编号        ","芯片号        ","开始过滤时间    ","过滤时长","过滤状态","任务ID"]
        print("\t".join(head))
        for tmp in filter_task:
            start_time = tmp[1]
@@ -103,7 +103,7 @@ class Job():
            timestamp = time.localtime(start_time/1000)
            delta_hours = delta_time_period( start_time )
            start_time_f = time.strftime(self.time_format,timestamp)
-           out_value = [generation, tmp[0], tmp[3], start_time_f, '{0:.2f}'.format(delta_hours),tmp[6],id ]
+           out_value = [generation, tmp[0], tmp[3], start_time_f, '{0:.2f}'.format(delta_hours)+'h',tmp[6],id ]
            print("\t".join(out_value))
 
 
@@ -121,7 +121,7 @@ class Job():
             if split_end_time : continue
             start_time = split_start_time.strftime(self.time_format)
             delta_hours = delta_time( split_start_time )
-            out_value = [ generation+"    ", fc_no, start_time, '{0:.2f}'.format(delta_hours) ]
+            out_value = [ generation+"    ", fc_no, start_time, '{0:.2f}'.format(delta_hours)+'h' ]
             print("\t".join(out_value))
 
 
@@ -167,7 +167,7 @@ class Job():
             record = "" if tmp[7] == None else tmp[7].split('-')[0]
             delta_hours = delta_time( create_time )
             start_time_f = create_time.strftime(self.time_format)
-            out_value = [str(id), fc_no, project_id, start_time_f, '{0:.2f}'.format(delta_hours), str(resplit_type), record ]
+            out_value = [str(id), fc_no, project_id, start_time_f, '{0:.2f}'.format(delta_hours)+'h', str(resplit_type), record ]
             print("\t".join(out_value))
 
 
