@@ -92,22 +92,23 @@ class Job():
 
     def deal_filter_task( self, filter_task, generation ):
        
-       #col_list = ["merge_project_code","create_time","place","fc_no","id","analysis_path"]
-       filter_table = Texttable()
-       filter_table.set_cols_align(["l"]*7)
-       filter_table.set_cols_valign(["m"]*7)
-       head = ["类型","项目编号","芯片号","开始过滤时间","过滤时长","过滤状态","任务id"]
-       filter_table.add_rows([head])
+        #col_list = ["merge_project_code","create_time","place","fc_no","id","analysis_path"]
+        filter_table = Texttable()
+        filter_table.set_cols_align(["l"]*7)
+        filter_table.set_cols_valign(["m"]*7)
+        head = ["类型","项目编号","芯片号","开始过滤时间","过滤时长","过滤状态","任务id"]
+        filter_table.add_rows([head])
        #print("\t".join(head))
-       for tmp in filter_task:
-           start_time = tmp[1]
-           id = str(tmp[4])
-           timestamp = time.localtime(start_time/1000)
-           delta_hours = delta_time_period( start_time )
-           start_time_f = time.strftime(self.time_format,timestamp)
-           out_value = [generation, tmp[0], tmp[3], start_time_f, '{0:.2f}'.format(delta_hours),tmp[6],id ]
-           filter_table.add_rows([out_value])
-           print("\t".join(out_value))
+        for tmp in filter_task:
+            start_time = tmp[1]
+            id = str(tmp[4])
+            timestamp = time.localtime(start_time/1000)
+            delta_hours = delta_time_period( start_time )
+            start_time_f = time.strftime(self.time_format,timestamp)
+            out_value = [generation, tmp[0], tmp[3], start_time_f, '{0:.2f}'.format(delta_hours),tmp[6],id ]
+            filter_table.add_rows([out_value])
+        print(filter_table.draw())
+           #print("\t".join(out_value))
 
 
     def deal_spit_task(self, split_task_list, generation ):
