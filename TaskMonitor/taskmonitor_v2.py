@@ -135,7 +135,7 @@ class Job():
             id = tmp[5]
             resplit_type = tmp[6]
             record = tmp[7]
-            delta_hours = delta_time( start_time )
+            delta_hours = delta_time( create_time )
             start_time_f = start_time.strftime(self.time_format)
             out_value = [str(id), fc_no, project_id, start_time_f, '{0:.2f}'.format(delta_hours), str(resplit_type), record ]
             print("\t".join(out_value))
