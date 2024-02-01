@@ -94,9 +94,9 @@ class Job():
        
        #col_list = ["merge_project_code","create_time","place","fc_no","id","analysis_path"]
        filter_table = Texttable()
-       filter_table.set_cols_align(["l"]*6)
-       filter_table.set_cols_valign(["m"]*6)
-       head = ["类型","项目编号","芯片号","开始过滤时间","过滤时长","过滤状态"]
+       filter_table.set_cols_align(["l"]*7)
+       filter_table.set_cols_valign(["m"]*7)
+       head = ["类型","项目编号","芯片号","开始过滤时间","过滤时长","过滤状态","任务id"]
        filter_table.add_rows([head])
        #print("\t".join(head))
        for tmp in filter_task:
