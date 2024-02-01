@@ -56,6 +56,7 @@ class Job():
         获取重拆表里的任务，之前是只获取split,concession,delete，该版本没有限制，所有都筛选出来
         '''
         select_condition1 = [("state","!=", "4"),("id",">","19660")]
+        #设置id>19660是因为一些历史任务不想处理了
         col_list = ["fc_no","start_time","create_time","entity_id","location","id","type","record"]
         select_content1 = self.my_lims.select( 'tb_analysis_task', col_list, select_condition1 )
         #select_condition2 = [("start_time","IS","NOT NULL"),("state","=", "3")]
@@ -163,7 +164,7 @@ class Job():
             project_id = tmp[3]
             id = tmp[5] #int类型
             resplit_type = tmp[6]
-            record = "" if tmp[7] == None else tmp[7]
+            record = "" if tmp[7] == None else tmp[7].split('-')[0]
             delta_hours = delta_time( create_time )
             start_time_f = create_time.strftime(self.time_format)
             out_value = [str(id), fc_no, project_id, start_time_f, '{0:.2f}'.format(delta_hours), str(resplit_type), record ]
