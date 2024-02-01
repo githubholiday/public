@@ -95,7 +95,7 @@ class Job():
     def deal_filter_task( self, filter_task, generation ):
        
        #col_list = ["merge_project_code","create_time","place","fc_no","id","analysis_path"]
-       head = ["类型","项目编号","芯片号","开始过滤时间","过滤时长","过滤状态"]
+       head = ["类型","项目编号        ","芯片号            ","开始过滤时间","过滤时长","过滤状态"]
        print("\t".join(head))
        for tmp in filter_task:
            start_time = tmp[1]
@@ -155,7 +155,7 @@ class Job():
         print("\n##【二三代让步、重拆、结题等任务监控】")
         resplit_task = self.get_resplit_task()
         col_list = ["fc_no","start_time","entity_id","location","id","type","record"]
-        head = ["重拆id","芯片号    ","项目编号    ","创建时间            ","时长      ","重拆类型","信息"]
+        head = ["重拆id","芯片号    ","项目编号          ","创建时间            ","时长      ","重拆类型","信息"]
         print("\t".join(head))
         for tmp in resplit_task:
             fc_no = tmp[0] if tmp[0]!='-' else "---------"
