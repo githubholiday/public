@@ -134,10 +134,11 @@ class Job():
             project_id = tmp[3]
             id = tmp[5] #int类型
             resplit_type = tmp[6]
-            record = tmp[7] if tmp[7] == None else ""
+            record = "" if tmp[7] == None else tmp[7]
             delta_hours = delta_time( create_time )
             start_time_f = create_time.strftime(self.time_format)
             out_value = [str(id), fc_no, project_id, start_time_f, '{0:.2f}'.format(delta_hours), str(resplit_type), record ]
+            print(out_value)
             print("\t".join(out_value))
 
     def deal_filter_task( self, filter_task, generation ):
