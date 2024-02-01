@@ -55,7 +55,7 @@ class Job():
         '''
         获取重拆表里的任务，之前是只获取split,concession,delete，该版本没有限制，所有都筛选出来
         '''
-        select_condition1 = [("state","!=", "4"),("id",">","19690")]
+        select_condition1 = [("state","!=", "4"),("id",">","19660")]
         col_list = ["fc_no","start_time","create_time","entity_id","location","id","type","record"]
         select_content1 = self.my_lims.select( 'tb_analysis_task', col_list, select_condition1 )
         #select_condition2 = [("start_time","IS","NOT NULL"),("state","=", "3")]
