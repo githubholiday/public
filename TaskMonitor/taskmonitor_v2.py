@@ -148,7 +148,7 @@ class Job():
            start_time = tmp[1]
            timestamp = time.localtime(start_time/1000)
            delta_hours = delta_time_period( start_time )
-           start_time_f = timestamp.strftime(self.time_format)
+           start_time_f = time.strftime(self.time_format,timestamp)
            out_value = [generation, tmp[0], tmp[3], start_time_f, '{0:.2f}'.format(delta_hours) ]
            print("\t".join(out_value))
 
