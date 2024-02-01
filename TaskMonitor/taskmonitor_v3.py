@@ -29,8 +29,8 @@ from LimsSQL import LIMS
 import time
 
 bindir = os.path.dirname(os.path.abspath( __file__ ))
-sys.path.append('{0}/../lib'.format(bindir))
-sys.path.append('{0}/../texttable-1.7.0'.format(bindir))
+sys.path.append('{0}/lib'.format(bindir))
+sys.path.append('{0}/lib/texttable-1.7.0'.format(bindir))
 from texttable import Texttable
 
 class Job():
