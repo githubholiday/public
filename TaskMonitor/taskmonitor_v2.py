@@ -125,7 +125,7 @@ class Job():
     def deal_resplit_task( self ):
         resplit_task = self.get_resplit_task()
         col_list = ["fc_no","start_time","entity_id","location","id","type","record"]
-        head = ["重拆id","芯片号","项目编号","开始时间","时长","重拆类型","信息"]
+        head = ["重拆id","芯片号","项目编号","创建时间","时长","重拆类型","信息"]
         print("\n"+"\t".join(head))
         for tmp in resplit_task:
             fc_no = tmp[0]
@@ -136,7 +136,7 @@ class Job():
             resplit_type = tmp[6]
             record = tmp[7]
             delta_hours = delta_time( create_time )
-            start_time_f = start_time.strftime(self.time_format)
+            start_time_f = create_time.strftime(self.time_format)
             out_value = [str(id), fc_no, project_id, start_time_f, '{0:.2f}'.format(delta_hours), str(resplit_type), record ]
             print("\t".join(out_value))
 
