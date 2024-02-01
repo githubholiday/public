@@ -89,13 +89,29 @@ class Job():
                 if len(project_select) == 0 :
                     filter_list.append(select_t)
         return filter_list
+    
+
+    def deal_filter_task( self, filter_task, generation ):
+       
+       #col_list = ["merge_project_code","create_time","place","fc_no","id","analysis_path"]
+       head = ["类型","项目编号","芯片号","开始过滤时间","过滤时长","过滤状态"]
+       print("\t".join(head))
+       for tmp in filter_task:
+           start_time = tmp[1]
+           id = str(tmp[4])
+           timestamp = time.localtime(start_time/1000)
+           delta_hours = delta_time_period( start_time )
+           start_time_f = time.strftime(self.time_format,timestamp)
+           out_value = [generation, tmp[0], tmp[3], start_time_f, '{0:.2f}'.format(delta_hours),tmp[6],id ]
+           print("\t".join(out_value))
+
 
     def deal_spit_task(self, split_task_list, generation ):
         '''
         二三代重拆任务的共同处理部分
         '''
         head = ["芯片类型","芯片号","开始拆分时间","拆分时长"]
-        print("\n"+"\t".join(head))
+        print("\t".join(head))
         for tmp in split_task_list:
             fc_no = tmp[0]
             split_start_time = tmp[1]
@@ -107,25 +123,39 @@ class Job():
             out_value = [ generation+"    ", fc_no, start_time, '{0:.2f}'.format(delta_hours) ]
             print("\t".join(out_value))
 
+
     def deal_2th_split_task( self ):
         '''
-        处理二代重拆任务
+        处理二代拆分任务
         '''
         ngs_split_task = self.get_split_task(split_type='2th')
+        print('\n##二代拆分任务监控')
         self.deal_spit_task(ngs_split_task,generation='2th')
 
     def deal_3th_split_task( self ):
         '''
-        处理三代重拆任务
+        处理三代拆分任务
         '''
         tgs_split_task = self.get_split_task(split_type='3th')
+        print('\n##三代拆分任务监控')
         self.deal_spit_task(tgs_split_task,generation='3th')
+
+    def deal_2th_filter_task(self):
+        filter_task = self.get_filter_task('2th')
+        print('\n##二代过滤任务监控')
+        self.deal_filter_task( filter_task, '2th' )
+
+    def deal_3th_filter_task(self):
+        filter_task = self.get_filter_task('3th')
+        print('\n##三代过滤任务监控')
+        self.deal_filter_task( filter_task, '3th' )
     
     def deal_resplit_task( self ):
         resplit_task = self.get_resplit_task()
+        print("\n二三代、让步等处理任务监控")
         col_list = ["fc_no","start_time","entity_id","location","id","type","record"]
         head = ["重拆id","芯片号","项目编号","创建时间","时长","重拆类型","信息"]
-        print("\n"+"\t".join(head))
+        print("\t".join(head))
         for tmp in resplit_task:
             fc_no = tmp[0]
             start_time = tmp[1]
@@ -139,27 +169,6 @@ class Job():
             out_value = [str(id), fc_no, project_id, start_time_f, '{0:.2f}'.format(delta_hours), str(resplit_type), record ]
             print("\t".join(out_value))
 
-    def deal_filter_task( self, filter_task, generation ):
-       
-       #col_list = ["merge_project_code","create_time","place","fc_no","id","analysis_path"]
-       head = ["类型","项目编号","芯片号","开始过滤时间","过滤时长","过滤状态"]
-       print("\n"+"\t".join(head))
-       for tmp in filter_task:
-           start_time = tmp[1]
-           id = str(tmp[4])
-           timestamp = time.localtime(start_time/1000)
-           delta_hours = delta_time_period( start_time )
-           start_time_f = time.strftime(self.time_format,timestamp)
-           out_value = [generation, tmp[0], tmp[3], start_time_f, '{0:.2f}'.format(delta_hours),tmp[6],id ]
-           print("\t".join(out_value))
-
-    def deal_2th_filter_task(self):
-        filter_task = self.get_filter_task('2th')
-        self.deal_filter_task( filter_task, '2th' )
-
-    def deal_3th_filter_task(self):
-        filter_task = self.get_filter_task('3th')
-        self.deal_filter_task( filter_task, '3th' )
 
     def main_job(self, select_type = 'all') :
         '''
