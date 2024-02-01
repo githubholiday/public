@@ -132,7 +132,7 @@ class Job():
             start_time = tmp[1]
             create_time = tmp[2]
             project_id = tmp[3]
-            id = tmp[5]
+            id = tmp[5] #int类型
             resplit_type = tmp[6]
             record = tmp[7]
             delta_hours = delta_time( create_time )
