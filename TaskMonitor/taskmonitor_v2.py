@@ -26,6 +26,7 @@ import logging
 import argparse
 import sys
 from LimsSQL import LIMS
+import time
 
 bindir = os.path.dirname(os.path.abspath( __file__ ))
 sys.path.append('{0}/../lib'.format(bindir))
@@ -145,8 +146,9 @@ class Job():
        head = ["类型","项目编号","芯片号","开始过滤时间","过滤时长"]
        for tmp in filter_task:
            start_time = tmp[1]
-           delta_hours = delta_time( start_time )
-           start_time_f = start_time.strftime(self.time_format)
+           timestamp = time.localtime(start_time/1000)
+           delta_hours = delta_time( timestamp )
+           start_time_f = timestamp.strftime(self.time_format)
            out_value = [generation, tmp[0], tmp[3], start_time_f, '{0:.2f}'.format(delta_hours) ]
            print("\t".join(out_value))
 
