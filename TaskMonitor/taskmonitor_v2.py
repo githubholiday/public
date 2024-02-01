@@ -104,7 +104,7 @@ class Job():
             if split_end_time : continue
             start_time = split_start_time.strftime(self.time_format)
             delta_hours = delta_time( split_start_time )
-            out_value = [ generation, fc_no, start_time, '{0:.2f}'.format(delta_hours) ]
+            out_value = [ generation+"    ", fc_no, start_time, '{0:.2f}'.format(delta_hours) ]
             print("\t".join(out_value))
 
     def deal_2th_split_task( self ):
