@@ -73,7 +73,7 @@ class Job():
         if filter_type == '3th':
             generations = '3th'
         #cmd1 = "select merge_project_code, create_time, place, fc_no, id, analysis_path, generations,filter_status  from {0} where filter_status != 'FILTER_FINISHED' and generations = '2th' and id > 1770".format(self.table3)          #用create_time，即插入起开始计算时间，有些在排队的没有start_time
-        select_condition = [("filter_status","!=","FILTER_FINISHED"),("generations","=", generations)]
+        select_condition = [("filter_status","!=","FILTER_FINISHED"),("generations","=", generations),("id",">","1770")]
         col_list = ["merge_project_code","create_time","place","fc_no","id","analysis_path"]
         select_content = self.my_lims.select( 'tb_filter_task', col_list, select_condition )
         filter_list = []
@@ -84,8 +84,7 @@ class Job():
             for select_t in select_content:
                 merge_project_code = select_t[0]
                 fc_no = select_t[3]
-                filter_status = "FILTER_FINISHED"
-                select_condition = [("merge_project_code","=",merge_project_code),("fc_no","=", fc_no),("filter_status","=",filter_status)]
+                select_condition = [("merge_project_code","=",merge_project_code),("fc_no","=", fc_no),("filter_status","=","FILTER_FINISHED")]
                 project_select = self.my_lims.select( 'tb_filter_task', "*", select_condition )
                 if len(project_select) == 0 :
                     filter_list.append(select_t)
