@@ -155,7 +155,7 @@ class Job():
         print("\n##【二三代让步、重拆、结题等任务监控】")
         resplit_task = self.get_resplit_task()
         col_list = ["fc_no","start_time","entity_id","location","id","type","record"]
-        head = ["重拆id","芯片号    ","项目编号    ","创建时间        ","时长      ","重拆类型","信息"]
+        head = ["重拆id","芯片号    ","项目编号    ","创建时间            ","时长      ","重拆类型","信息"]
         print("\t".join(head))
         for tmp in resplit_task:
             fc_no = tmp[0] if tmp[0]!='-' else "---------"
