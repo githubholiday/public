@@ -128,31 +128,31 @@ class Job():
         '''
         处理二代拆分任务
         '''
-        ngs_split_task = self.get_split_task(split_type='2th')
         print('\n##二代拆分任务监控')
+        ngs_split_task = self.get_split_task(split_type='2th')
         self.deal_spit_task(ngs_split_task,generation='2th')
 
     def deal_3th_split_task( self ):
         '''
         处理三代拆分任务
         '''
-        tgs_split_task = self.get_split_task(split_type='3th')
         print('\n##三代拆分任务监控')
+        tgs_split_task = self.get_split_task(split_type='3th')
         self.deal_spit_task(tgs_split_task,generation='3th')
 
     def deal_2th_filter_task(self):
-        filter_task = self.get_filter_task('2th')
         print('\n##二代过滤任务监控')
+        filter_task = self.get_filter_task('2th')
         self.deal_filter_task( filter_task, '2th' )
 
     def deal_3th_filter_task(self):
-        filter_task = self.get_filter_task('3th')
         print('\n##三代过滤任务监控')
+        filter_task = self.get_filter_task('3th')
         self.deal_filter_task( filter_task, '3th' )
     
     def deal_resplit_task( self ):
-        resplit_task = self.get_resplit_task()
         print("\n二三代、让步等处理任务监控")
+        resplit_task = self.get_resplit_task()
         col_list = ["fc_no","start_time","entity_id","location","id","type","record"]
         head = ["重拆id","芯片号","项目编号","创建时间","时长","重拆类型","信息"]
         print("\t".join(head))
