@@ -74,7 +74,7 @@ class Job():
             generations = '3th'
         #cmd1 = "select merge_project_code, create_time, place, fc_no, id, analysis_path, generations,filter_status  from {0} where filter_status != 'FILTER_FINISHED' and generations = '2th' and id > 1770".format(self.table3)          #用create_time，即插入起开始计算时间，有些在排队的没有start_time
         select_condition = [("filter_status","!=","FILTER_FINISHED"),("generations","=", generations),("id",">","1770")]
-        col_list = ["merge_project_code","create_time","place","fc_no","id","analysis_path"]
+        col_list = ["merge_project_code","create_time","place","fc_no","id","analysis_path","filter_status"]
         select_content = self.my_lims.select( 'tb_filter_task', col_list, select_condition )
         filter_list = []
         if len(select_content) == 0 :
@@ -142,13 +142,14 @@ class Job():
     def deal_filter_task( self, filter_task, generation ):
        
        #col_list = ["merge_project_code","create_time","place","fc_no","id","analysis_path"]
-       head = ["类型","项目编号","芯片号","开始过滤时间","过滤时长"]
+       head = ["类型","项目编号","芯片号","开始过滤时间","过滤时长","过滤状态"]
+       print("\n"+"\t".join(head))
        for tmp in filter_task:
            start_time = tmp[1]
            timestamp = time.localtime(start_time/1000)
            delta_hours = delta_time_period( start_time )
            start_time_f = time.strftime(self.time_format,timestamp)
-           out_value = [generation, tmp[0], tmp[3], start_time_f, '{0:.2f}'.format(delta_hours) ]
+           out_value = [generation, tmp[0], tmp[3], start_time_f, '{0:.2f}'.format(delta_hours),tmp[6] ]
            print("\t".join(out_value))
 
     def deal_2th_filter_task(self):
