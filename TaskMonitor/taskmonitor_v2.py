@@ -54,12 +54,12 @@ class Job():
         '''
         获取重拆表里的任务，之前是只获取split,concession,delete，该版本没有限制，所有都筛选出来
         '''
-        select_condition1 = [("start_time","IS","NOT NULL"),("state","=", "2")]
+        select_condition1 = [("state","!=", "4")]
         col_list = ["fc_no","start_time","entity_id","location","id","type","record"]
         select_content1 = self.my_lims.select( 'tb_analysis_task', col_list, select_condition1 )
-        select_condition2 = [("start_time","IS","NOT NULL"),("state","=", "3")]
-        select_content2 = self.my_lims.select( 'tb_analysis_task', col_list, select_condition2 )
-        select_content = select_content1 + select_content2
+        #select_condition2 = [("start_time","IS","NOT NULL"),("state","=", "3")]
+        #select_content2 = self.my_lims.select( 'tb_analysis_task', col_list, select_condition2 )
+        select_content = select_content1 #+ select_content2
         if len( select_content ) == 0 :
             print("没有正在重新处理的任务")
         return select_content
