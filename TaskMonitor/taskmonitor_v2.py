@@ -146,10 +146,11 @@ class Job():
        print("\n"+"\t".join(head))
        for tmp in filter_task:
            start_time = tmp[1]
+           id = str(tmp[4])
            timestamp = time.localtime(start_time/1000)
            delta_hours = delta_time_period( start_time )
            start_time_f = time.strftime(self.time_format,timestamp)
-           out_value = [generation, tmp[0], tmp[3], start_time_f, '{0:.2f}'.format(delta_hours),tmp[6] ]
+           out_value = [generation, tmp[0], tmp[3], start_time_f, '{0:.2f}'.format(delta_hours),tmp[6],id ]
            print("\t".join(out_value))
 
     def deal_2th_filter_task(self):
