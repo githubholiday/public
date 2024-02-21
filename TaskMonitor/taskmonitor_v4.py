@@ -191,6 +191,23 @@ class Job():
                 fc_no = tmp[0]
                 running_date = tmp[1]
                 print('\t'.join(tmp))
+    
+    def get_data_release_task(self):
+        '''
+        获取waiting和running的数据交付数量
+        '''
+        running_condition = [("release_state","=","running")]
+        col_list = '*'
+        running_task = self.my_lims.select( 'tb_data_release', col_list, running_condition )
+
+        waiting_condition = [("release_state","=","waiting")]
+        col_list = '*'
+        waiting_task = self.my_lims.select( 'tb_data_release', col_list, waiting_condition )
+
+        print('\n##【数据交付任务概况，等待的超过30个需要排查】')
+        print("\t".join(["状态  ","数量"]))
+        print("等待交付\t{0}".format( len(waiting_task)))
+        print("正在交付\t{0}".format( len(running_task)))
 
 
     def main_job(self, select_type = 'all') :
@@ -216,6 +233,7 @@ class Job():
             self.deal_2th_filter_task()
             self.deal_3th_filter_task()
             self.get_undeal_fc()
+            self.get_data_release_task()
         else:
             print("请输出  split, filter, all 中任意一个")
         
