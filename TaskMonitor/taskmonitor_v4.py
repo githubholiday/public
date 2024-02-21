@@ -170,6 +170,7 @@ class Job():
             project_id = tmp[3]
             id = tmp[5] #int类型
             resplit_type = tmp[6]
+            if resplit_type == "concession_delivery":continue
             record = "" if tmp[7] == None else tmp[7].split('-')[0]
             delta_hours = delta_time( create_time )
             start_time_f = create_time.strftime(self.time_format)
