@@ -44,11 +44,16 @@ def main():
 
     parser.add_argument( '-i1', '--infile1', help='de gene file of cmp1', dest='infile1', required=True)
     parser.add_argument( '-i2', '--infile2', help='de gene file of cmp2', dest='infile2', required=True)
-    parser.add_argument( '-o', '--outfile', help='outfile of result', dest='outfile', required=True)
+    parser.add_argument( '-o', '--outdir', help='outdir of result', dest='outdir', required=True)
+    parser.add_argument( '-p', '--prefix', help='outdir of result', dest='prefix', required=True)
     args = parser.parse_args()
 
     de_gene_dict1 = get_gene_dic( args.infile1 )
     de_gene_dict2 = get_gene_dic( args.infile2 )
+    rescue_file = '{0}/{1}_rescue.txt'.format( args.outdir, args.prefix)
+    #在文件1中，但是不在文件2中
+    not_in_dict2_file = '{0}/{1}_not_in_2.txt'.format( args.outdir, args.prefix)
+    compare_gene(de_gene_dict1,de_gene_dict2, rescue_file,not_in_dict2_file)
 
 
 
