@@ -205,7 +205,7 @@ class Job():
         waiting_task = self.my_lims.select( 'tb_data_release', col_list, waiting_condition )
 
         print('\n##【数据交付任务概况，等待的超过30个需要排查】')
-        print("\t".join(["状态  ","数量"]))
+        print("\t".join(["状态    ","数量"]))
         print("等待交付\t{0}".format( len(waiting_task)))
         print("正在交付\t{0}".format( len(running_task)))
 
