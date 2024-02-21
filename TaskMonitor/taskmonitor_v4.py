@@ -184,7 +184,7 @@ class Job():
         select_condition = [("state","=","0"),("taskStatus","=", "0")]
         col_list = ["fc_no","running_date"]
         select_content = self.my_lims.select( 'tb_arrange_toquality', col_list, select_condition )
-        print("\n##【已上机但是未监控拆分的芯片】")
+        print("\n##【已上机但是未监控拆分的芯片,如果超过两天未处理，需要排查】")
         print("\t".join(["芯片号","上机时间"]))
         if len(select_content) > 0 :
             for tmp in select_content:
