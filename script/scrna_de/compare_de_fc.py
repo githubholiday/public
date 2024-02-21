@@ -7,15 +7,9 @@
 import argparse
 import sys # 获取命令行参数
 import os
-import os
-import time
-import sqlite3
 import re
-from datetime import datetime
-import argparse
-import sys
-from LimsSQL import LIMS
-import time
+
+
 
 bindir = os.path.dirname(os.path.abspath( __file__ ))
 sys.path.append('{0}/../lib'.format(bindir))
