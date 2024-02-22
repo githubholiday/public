@@ -20,7 +20,7 @@ def main():
     parser.add_argument( '-o', '--outfile', help='outfile', dest='outfile', required=True)
     parser.add_argument( '-p', '--prefix', help='outdir of result', dest='prefix', required=True)
     args = parser.parse_args()
-    with open(args.infile, 'r') as input, open( args.output, 'w') as output :
+    with open(args.infile, 'r') as input, open( args.outfile, 'w') as output :
         for line in input:
             if line.startswith(','):
                 output.write("GeneName\t{0}\n".format(args.prefix))
