@@ -54,8 +54,8 @@ class Job():
             generations = '1'
         col_list = ["fc_no","split_start_time","split_end_time","companyId","id","data_dir","generations"]
         select_condition1 = [("taskStatus","=","5"),("generations","=",generations)]
-        select_condition2 = [("taskStatus","=","1"),("generations","=",generations)]
         select_content1 = self.my_lims.select( 'tb_arrange_toquality', col_list, select_condition1 )
+        select_condition2 = [("taskStatus","=","1"),("generations","=",generations)]
         select_content2 = self.my_lims.select( 'tb_arrange_toquality', col_list, select_condition2)
         select_content = select_content1 # + select_content2
         print(select_content)
