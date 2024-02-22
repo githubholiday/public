@@ -29,6 +29,7 @@ def get_gene_dic( gene_file ):
 
 def compare_gene( dict1, dict2, recue_file, other_file ):
     with open( recue_file, 'w') as out1, open( other_file, 'w') as out2:
+        out1.write('GeneName')
         for gene_name in dict1:
             if gene_name not in dict2:
                 out2.write(gene_name+'\n')
