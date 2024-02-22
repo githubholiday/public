@@ -58,7 +58,7 @@ class Job():
         select_condition2 = [("taskStatus","=","1"),("generations","=",generations)]
         select_content2 = self.my_lims.select( 'tb_arrange_toquality', col_list, select_condition2)
         select_content = select_content1 # + select_content2
-        print(select_content)
+        #print(select_content)
         if len(select_content) == 0 :
             print("没有正在拆分的 {0} 任务".format( split_type ))
         return select_content
