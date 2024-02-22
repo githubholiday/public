@@ -32,7 +32,7 @@ def main():
     parser=argparse.ArgumentParser(description=__doc__,
             formatter_class=argparse.RawDescriptionHelpFormatter)
 
-    parser.add_argument( '-i', '--infile', help='de gene file of cmp1', dest='infile', required=True)
+    parser.add_argument( '-i', '--infile', help='de gene file of cmp1', dest='infile', required=True,nargs='+')
     parser.add_argument( '-o', '--outfile', help='outfile', dest='outfile', required=True)
     args = parser.parse_args()
     cluster_list = ['c0','c1','c2','c3','c4','c5','c6']
