@@ -27,7 +27,7 @@ def main():
                 continue
             tmp = line.rstrip().split(',')
             gene_name = tmp[0]
-            fc = tmp[1]
+            fc = tmp[2]
             output.write('\t'.join([gene_name, fc ])+'\n')
 
 
