@@ -53,8 +53,11 @@ class Job():
         if split_type == '3th':
             generations = '1'
         col_list = ["fc_no","split_start_time","split_end_time","companyId","id","data_dir","generations"]
-        select_condition = [("taskStatus","=","5"),("generations","=",generations)]
-        select_content = self.my_lims.select( 'tb_arrange_toquality', col_list, select_condition )
+        select_condition1 = [("taskStatus","=","5"),("generations","=",generations)]
+        select_condition2 = [("taskStatus","=","1"),("generations","=",generations)]
+        select_content1 = self.my_lims.select( 'tb_arrange_toquality', col_list, select_condition1 )
+        select_content2 = self.my_lims.select( 'tb_arrange_toquality', col_list, select_condition2)
+        select_content = select_content1 + select_content2
         if len(select_content) == 0 :
             print("没有正在拆分的 {0} 任务".format( split_type ))
         return select_content
