@@ -52,7 +52,7 @@ class Job():
         generations = '0'
         if split_type == '3th':
             generations = '1'
-        col_list = ["fc_no","split_start_time","split_end_time","companyId","id","data_dir","generations"]
+        col_list = ["fc_no","split_start_time","split_end_time","companyId","id","data_dir","generations",'running_date']
         select_condition1 = [("taskStatus","=","5"),("generations","=",generations)]
         select_content1 = self.my_lims.select( 'tb_arrange_toquality', col_list, select_condition1 )
         select_condition2 = [("taskStatus","=","1"),("generations","=",generations)]

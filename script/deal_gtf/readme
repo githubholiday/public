@@ -1,0 +1,12 @@
+get_info_8_gtf.py
+功能:从gtf文件中提取gene_name和gene_id的对应关系
+参数：
+-i:输入的gtf文件
+-o:输出gene_id和gene_nama对应关系列表
+
+replace_go8genename.py
+功能:指定文件的gene_name替换为gene_id
+参数：
+-r :对应关系表，第一列为gene_id,第二列为gene_name
+-g :基因name表，第一列为gene_id
+-o :输出文件
