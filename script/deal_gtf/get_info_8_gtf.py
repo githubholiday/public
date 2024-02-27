@@ -61,6 +61,7 @@ def main():
 	
 	with open(args.input, 'r') as infile, open(args.output, 'w') as outfile :
 		for line in infile:
+			if line.startswith('#') : continue
 			tmp = line.rstrip().split('\t')
 			content = tmp[8]
 			tt = content.split(';')
