@@ -74,7 +74,8 @@ def main():
 				if 'gene_name' in i :
 					gene_name = get_value( i,'gene_name' )
 			if gene_id and gene_name :
-				outfile.write(gene_id+'\t'+gene_name+'\n')
+				outfile.write(gene_name+'\t'+gene_id+'\n')
+				#outfile.write(gene_id+'\t'+gene_name+'\n')
 			else:
 				continue
 
