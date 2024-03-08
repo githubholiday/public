@@ -47,7 +47,7 @@ print_usage <- function(para=NULL){
 }
 #===========================================================
 if ( !is.null(opt$help) )	{ print_usage(para) }
-if ( is.null(opt$indir) )	{ cat("Please input the data file1 ...\n\n") ; print_usage(para)}
+if ( is.null(opt$infile) )	{ cat("Please input the data file1 ...\n\n") ; print_usage(para)}
 if ( is.null(opt$outdir) )	{ cat("Please give the outdir for analysis ...\n\n") ; print_usage(para) }
 if ( is.null(opt$organism) )	{ cat("Please give the organism(human/mouse) ...\n\n") ; print_usage(para) }
 if ( is.null(opt$type) )	{ cat("Please give the type of gene(SYMBOL/ENSEMBL/ENTREZID) ...\n\n") ; print_usage(para) }
