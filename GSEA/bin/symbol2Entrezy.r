@@ -40,7 +40,6 @@ print_usage <- function(para=NULL){
       --help		h	NULL		get this help
       --infile		i	character	input gene file [forced]
       --outdir		o	character	The	resurt of out dir for analysis [forced]
-      --prefix		pr	character	prefix of output [forced]
       --type		t	character	one of SYMBOL/ENSEMBL/ENTREZID [forced]
       --organismg	g	character	human or mouse
       \n")
@@ -49,28 +48,31 @@ print_usage <- function(para=NULL){
 #===========================================================
 if ( !is.null(opt$help) )	{ print_usage(para) }
 if ( is.null(opt$indir) )	{ cat("Please input the data file1 ...\n\n") ; print_usage(para)}
-if ( is.null(opt$outfile) )	{ cat("Please give the outdir for analysis ...\n\n") ; print_usage(para) }
+if ( is.null(opt$outdir) )	{ cat("Please give the outdir for analysis ...\n\n") ; print_usage(para) }
 if ( is.null(opt$organism) )	{ cat("Please give the organism(human/mouse) ...\n\n") ; print_usage(para) }
 if ( is.null(opt$type) )	{ cat("Please give the type of gene(SYMBOL/ENSEMBL/ENTREZID) ...\n\n") ; print_usage(para) }
 #===========================================================
-
+library(clusterProfiler)
+library(org.Hs.eg.db)
+library(org.Mm.eg.db)
+library(ReactomePA)
+library(msigdbr)
+library(DOSE)
+library(enrichplot)
+library(ggplot2)
+library(ggupset)
+library(cowplot)
 #===========================================================
-mkdirs <- function(outdir,fp) {
-  if(!file.exists(file.path(outdir,fp))) {
+mkdirs <- function(outdir) {
+  if(!file.exists(outdir)) {
     #mkdirs(dirname(fp))
-    dir.create(file.path(outdir,fp))}
-  else{print(paste(fp,"Dir already exists!",sep="     "))
-    unlink(file.path(outdir,fp), recursive=TRUE)
-    dir.create(file.path(outdir,fp))}
+    dir.create(outdir)}
+  else{print(paste(outdir,"Dir already exists!",sep="     "))
+    unlink(outdir, recursive=TRUE)
+    dir.create(utdir,fp)
+    }
 }
 
-if(opt$organism=='human'){
-    mapda<-org.Hs.eg.db
-}else{
-    mapda<-org.Mm.eg.db
-}
-
-de_genes(opt$infile,mapda,opt$type, opt$outfile )
 #===========================================================
 de_genes<-function(infile,species,type, outfile ){
     # infile 是基因列表文件，第一列为gene名称，需包含Log2FC列
@@ -92,6 +94,39 @@ de_genes<-function(infile,species,type, outfile ){
     write.table(geneList, outfile,quote=F,sep='\t',row.names=F)
     return(geneList)
 }
+
+#===========================================================
+#最多可支持"Homo sapiens,Mus musculus等11个物种，可通过msigdbr_show_species()查看。
+MSigDB_clusterProfiler<-function(geneList, spe){
+    m_t2g <- msigdbr(species = spe) %>% dplyr::select(gs_cat,gs_id,gs_name, entrez_gene)
+    term_genes<-m_t2g[,c('gs_id','entrez_gene')]
+    terms<-unique(m_t2g[,c('gs_cat','gs_id','gs_name')])
+    term_names<-terms[,c('gs_id','gs_name')]
+    y<-GSEA(geneList, TERM2GENE = term_genes, TERM2NAME = term_names,nPerm = 10000,pvalueCutoff =1,
+    minGSSize = 1, maxGSSize = 50000)
+    xy<-list( gse=y,Terms=terms)
+    return(xy)
+}
+##只有enrich函数才可以设置readable=T获得gene symbol名
+#这里统一用DOSE包的setReadable()
+setReadable_write<-function(y,outfile){
+    y<- setReadable(y, OrgDb = mapda,keyType = "ENTREZID")
+    write.table(y,file=outfile,sep="\t", quote=FALSE, row.names=FALSE)
+}
+
+#输入数据处理
+infile <- opt$infile
+outdir <- opt$outdir
+organism<-opt$organism
+type <- opt$type
+
+mapda<-switch(organism,
+    "human"=org.Hs.eg.db,
+    "mouse"=org.Mm.eg.db,
+    stop("Please input the correct organism(human/mouse)!\n"))
+
+outfile <- paste(outdir,"de_genes.txt",sep="/")
+de_genes(infile,mapda,type, outfile )
 
 #5-1.MSigDB数据库(分别做ORA和GSEA test)
 if ("MSigDB" %in% databaseList){
@@ -122,23 +157,4 @@ if ("MSigDB" %in% databaseList){
     write.table(y,file=paste(result_dir,"gse_result.xls",sep="_"),sep="\t", quote=FALSE, row.names=FALSE)
     saveRDS(xyMSigDB$gse, file=paste(result_dir,"gse_result.rds",sep="_"))
     print("Finish:MSigDB database with enricher(ORA) and GSEA test!")
-}
-
-#===========================================================
-#最多可支持"Homo sapiens,Mus musculus等11个物种，可通过msigdbr_show_species()查看。
-MSigDB_clusterProfiler<-function(geneList, spe){
-    m_t2g <- msigdbr(species = spe) %>% dplyr::select(gs_cat,gs_id,gs_name, entrez_gene)
-    term_genes<-m_t2g[,c('gs_id','entrez_gene')]
-    terms<-unique(m_t2g[,c('gs_cat','gs_id','gs_name')])
-    term_names<-terms[,c('gs_id','gs_name')]
-    y<-GSEA(geneList, TERM2GENE = term_genes, TERM2NAME = term_names,nPerm = 10000,pvalueCutoff =1,
-    minGSSize = 1, maxGSSize = 50000)
-    xy<-list( gse=y,Terms=terms)
-    return(xy)
-}
-##只有enrich函数才可以设置readable=T获得gene symbol名
-#这里统一用DOSE包的setReadable()
-setReadable_write<-function(y,outfile){
-    y<- setReadable(y, OrgDb = mapda,keyType = "ENTREZID")
-    write.table(y,file=outfile,sep="\t", quote=FALSE, row.names=FALSE)
 }
