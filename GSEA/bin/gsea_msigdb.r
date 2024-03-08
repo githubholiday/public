@@ -51,6 +51,7 @@ if ( is.null(opt$indir) )	{ cat("Please input the data file1 ...\n\n") ; print_u
 if ( is.null(opt$outdir) )	{ cat("Please give the outdir for analysis ...\n\n") ; print_usage(para) }
 if ( is.null(opt$organism) )	{ cat("Please give the organism(human/mouse) ...\n\n") ; print_usage(para) }
 if ( is.null(opt$type) )	{ cat("Please give the type of gene(SYMBOL/ENSEMBL/ENTREZID) ...\n\n") ; print_usage(para) }
+if ( is.null(opt$database))	{ opt$database <- 'GO,KEGG,reactome'} 
 #===========================================================
 library(clusterProfiler)
 library(org.Hs.eg.db)
@@ -128,6 +129,8 @@ mapda<-switch(organism,
 outfile <- paste(outdir,"de_genes.txt",sep="/")
 de_genes(infile,mapda,type, outfile )
 
+opt$database <- "MSigDB"
+databaseList <- strsplit(opt$database, ",")[[1]]
 #5-1.MSigDB数据库(分别做ORA和GSEA test)
 if ("MSigDB" %in% databaseList){
     print("Start:MSigDB analysis...")
