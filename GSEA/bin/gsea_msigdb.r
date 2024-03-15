@@ -26,7 +26,7 @@ print_usage <- function(para=NULL){
     prefix:输出结果前缀
 【使用示例】
     Usage example:
-    Rscript gsea_msigdb.r -i gene_list_file -pr prefix -o outdir -t SYMBOL -g human/mouse
+    Rscript gsea_msigdb.r -i gene_list_file --prefixr prefix -o outdir -t SYMBOL -g human/mouse
     Options:
     --help		h	NULL		get this help
     --infile		i	character	input gene file [forced]
@@ -51,50 +51,6 @@ library(ReactomePA)
 library(msigdbr)
 library(DOSE)
 library(ggupset)
-
-infile<-opt$infile
-outdir<-opt$outdir
-prefix<-opt$prefix
-type<-opt$type #数据类型
-organism<-opt$organism #物种，human或者mouse
-#创建输出目录
-mkdirs(opt$outdir)
-
-if(organism=='human'){
-    mapda<-org.Hs.eg.db
-    library(org.Hs.eg.db)
-}else{
-    mapda<-org.Mm.eg.db
-    library(org.Mm.eg.db)
-}
-
-#1.生成geneList(for GSEA)变量
-print("Start: Msigdb database with GSEA analysis")
-geneList<-de_genes(infile,mapda,type)
-mkdirs(outdir)
-    #只能做人和小鼠的，如果不是人的，默认就是小鼠的，实际上能做的类型很多，目前不兼容
-if(organism=='human'){
-    species<-'Homo sapiens'
-}else{
-    species<-'"Mus musculus'
-}
-
-xyMSigDB<-MSigDB_clusterProfiler( geneList, species, paste(outdir,"gse_result.rds", sep="_" ))
-#将gene id转化为gene_name
-y<- as.data.frame(setReadable(xyMSigDB$gse, OrgDb = mapda,keyType = "ENTREZID"))
-
-terms<-xyMSigDB$Terms[,c('gs_cat','gs_id')]
-colnames(terms)<-c('Category','ID')
-n2<-dim(y)[2]
-y<-merge(y, terms,by='ID')
-colN<-c('Category',colnames(y)[1:n2])
-y<-y[,colN]
-y<-y[order(y$p.adjust),]
-#为了保持sort排序保持一致，MSigDB在GSEA_plot里write，因存在大量p.adjust相同值的terms
-write.table(y,file=paste(outdir,"gsea_result.xls",sep="_"),sep="\t", quote=FALSE, row.names=FALSE)
-saveRDS(xyMSigDB$gse, file=paste(outdir,"gsea_result.rds",sep="_"))
-
-print("Finish: Msigdb database with GSEA analysis")
 
 #===========================================================
 #最多可支持"Homo sapiens,Mus musculus等11个物种，可通过msigdbr_show_species()查看。
@@ -151,3 +107,49 @@ de_genes<-function(indir,species,type){
     #genes<- list(gene=gene, geneList=geneList,bg=as.vector(geneinfo$ENTREZID))
     return(geneList)
 }
+
+########################### Main ###################################
+
+infile<-opt$infile
+outdir<-opt$outdir
+prefix<-opt$prefix
+type<-opt$type #数据类型
+organism<-opt$organism #物种，human或者mouse
+#创建输出目录
+mkdirs(opt$outdir)
+
+if(organism=='human'){
+    mapda<-org.Hs.eg.db
+    library(org.Hs.eg.db)
+}else{
+    mapda<-org.Mm.eg.db
+    library(org.Mm.eg.db)
+}
+
+#1.生成geneList(for GSEA)变量
+print("Start: Msigdb database with GSEA analysis")
+geneList<-de_genes(infile,mapda,type)
+mkdirs(outdir)
+    #只能做人和小鼠的，如果不是人的，默认就是小鼠的，实际上能做的类型很多，目前不兼容
+if(organism=='human'){
+    species<-'Homo sapiens'
+}else{
+    species<-'"Mus musculus'
+}
+
+xyMSigDB<-MSigDB_clusterProfiler( geneList, species, paste(outdir,"gse_result.rds", sep="_" ))
+#将gene id转化为gene_name
+y<- as.data.frame(setReadable(xyMSigDB$gse, OrgDb = mapda,keyType = "ENTREZID"))
+
+terms<-xyMSigDB$Terms[,c('gs_cat','gs_id')]
+colnames(terms)<-c('Category','ID')
+n2<-dim(y)[2]
+y<-merge(y, terms,by='ID')
+colN<-c('Category',colnames(y)[1:n2])
+y<-y[,colN]
+y<-y[order(y$p.adjust),]
+#为了保持sort排序保持一致，MSigDB在GSEA_plot里write，因存在大量p.adjust相同值的terms
+write.table(y,file=paste(outdir,"gsea_result.xls",sep="_"),sep="\t", quote=FALSE, row.names=FALSE)
+saveRDS(xyMSigDB$gse, file=paste(outdir,"gsea_result.rds",sep="_"))
+
+print("Finish: Msigdb database with GSEA analysis")
