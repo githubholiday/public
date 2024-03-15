@@ -105,7 +105,7 @@ prefix<-opt$prefix
 type<-opt$type #数据类型
 organism<-opt$organism #物种，human或者mouse
 #创建输出目录
-mkdirs(opt$outdir)
+mkdirs(outdir)
 
 if(organism=='human'){
     library(org.Hs.eg.db)
@@ -118,8 +118,8 @@ if(organism=='human'){
 #1.生成geneList(for GSEA)变量
 print("Start: Msigdb database with GSEA analysis")
 geneList<-de_genes(infile,mapda,type)
-mkdirs(outdir)
-    #只能做人和小鼠的，如果不是人的，默认就是小鼠的，实际上能做的类型很多，目前不兼容
+print(head(geneList))
+#只能做人和小鼠的，如果不是人的，默认就是小鼠的，实际上能做的类型很多，目前不兼容
 if(organism=='human'){
     species<-'Homo sapiens'
 }else{
