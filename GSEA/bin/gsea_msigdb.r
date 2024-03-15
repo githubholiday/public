@@ -1,7 +1,7 @@
 library('getopt')
 para<- matrix(c(
   'help',	'h',	0,	"logical",
-  'indir',	'i',	1,	"character",
+  'infile',	'i',	1,	"character",
   'prefix',	'pr',	1,	"character",
   'type',	't',	2,	"character",
   'organism',	'g',	2,	"character",
@@ -39,12 +39,11 @@ print_usage <- function(para=NULL){
 }
 #===========================================================
 if ( !is.null(opt$help) )	{ print_usage(para) }
-if ( is.null(opt$indir) )	{ cat("Please input the data file1 ...\n\n") ; print_usage(para)}
+if ( is.null(opt$infile) )	{ cat("Please input the data file1 ...\n\n") ; print_usage(para)}
 if ( is.null(opt$outdir) )	{ cat("Please give the outdir for analysis ...\n\n") ; print_usage(para) }
 if ( is.null(opt$prefix) )	{ cat("Please give the prefix for outputfiles ...\n\n") ; print_usage(para) }
 if ( is.null(opt$organism) )	{ cat("Please give the organism(human/mouse) ...\n\n") ; print_usage(para) }
 if ( is.null(opt$type) )	{ cat("Please give the type of gene(SYMBOL/ENSEMBL/ENTREZID) ...\n\n") ; print_usage(para) }
-if ( is.null(opt$pvalue))	{ opt$pvalue <- 0.05} 
 #===========================================================
 library(clusterProfiler)
 library(ReactomePA)
