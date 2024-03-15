@@ -53,14 +53,13 @@ library(ggupset)
 
 #===========================================================
 #最多可支持"Homo sapiens,Mus musculus等11个物种，可通过msigdbr_show_species()查看。
-MSigDB_clusterProfiler<-function(geneList, spe, rds_file){
+MSigDB_clusterProfiler<-function(geneList, spe){
     m_t2g <- msigdbr(species = spe) %>% dplyr::select(gs_cat,gs_id,gs_name, entrez_gene)
     term_genes<-m_t2g[,c('gs_id','entrez_gene')]
     terms<-unique(m_t2g[,c('gs_cat','gs_id','gs_name')])
     term_names<-terms[,c('gs_id','gs_name')]
     y<-GSEA(geneList, TERM2GENE = term_genes, TERM2NAME = term_names,nPerm = 10000,pvalueCutoff =1,
     minGSSize = 1, maxGSSize = 50000)
-    saveRDS(y, file = rds_file)
     xy<-list( gse=y,Terms=terms)
     return(xy)
 }
@@ -123,10 +122,10 @@ mkdirs(outdir)
 if(organism=='human'){
     species<-'Homo sapiens'
 }else{
-    species<-'"Mus musculus'
+    species<-'Mus musculus'
 }
 
-xyMSigDB<-MSigDB_clusterProfiler( geneList, species, paste(outdir,"gse_result.rds", sep="_" ))
+xyMSigDB<-MSigDB_clusterProfiler( geneList, species )
 #将gene id转化为gene_name
 y<- as.data.frame(setReadable(xyMSigDB$gse, OrgDb = mapda,keyType = "ENTREZID"))
 
