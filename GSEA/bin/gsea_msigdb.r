@@ -107,6 +107,7 @@ type<-opt$type #数据类型
 organism<-opt$organism #物种，human或者mouse
 #创建输出目录
 mkdirs(outdir)
+out_pre <- paste(outdir, prefix, sep='/')
 
 if(organism=='human'){
     library(org.Hs.eg.db)
@@ -140,7 +141,7 @@ colN<-c('Category',colnames(y)[1:n2])
 y<-y[,colN]
 y<-y[order(y$p.adjust),]
 #为了保持sort排序保持一致，MSigDB在GSEA_plot里write，因存在大量p.adjust相同值的terms
-write.table(y,file=paste(outdir,"gsea_result.xls",sep="_"),sep="\t", quote=FALSE, row.names=FALSE)
-saveRDS(xyMSigDB$gse, file=paste(outdir,"gsea_result.rds",sep="_"))
+write.table(y,file=paste(out_pre,"gsea_result.xls",sep="_"),sep="\t", quote=FALSE, row.names=FALSE)
+saveRDS(xyMSigDB$gse, file=paste(out_pre,"gsea_result.rds",sep="_"))
 
 print("Finish: Msigdb database with GSEA analysis")
