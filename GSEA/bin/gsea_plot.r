@@ -20,7 +20,7 @@ print_usage <- function(para=NULL) {
     --idfile,-i,[required]需要绘图的ID列表输入文件（可以包含表头，也可以不包含）
     --outdir,-o,[required]输出目录
     --prefix,-p,[required]输出文件前缀
-    --header,-header,[optional]是否包含标题,默认不包含
+    --header,-header,[optional]是否包含标题,默认不包含(False)
     --help,-h,[optional]帮助文档
 【使用示例】
     Rscript gsea_plot.r -r gsea.rds -i infile -o outdir -p test -header False
@@ -36,9 +36,10 @@ if ( is.null(opt$outdir) ){ cat("Please input the outdir of result\n\n") ; print
 if ( is.null(opt$prefix) ){ cat("Please input the prefix of result\n\n") ; print_usage(para)}
 if ( is.null(opt$header) ) { opt$header <- False }
 #对输出进行赋值处理
-infile <- para$infile
-outdir <- para$outdir
-prefix <- para$prefix
+rds_file <- opt$rds
+infile <- opt$infile
+outdir <- opt$outdir
+prefix <- opt$prefix
 
 library(enrichplot)
 library(ggplot2)
@@ -46,7 +47,7 @@ library(ggpp)
 
 
 ## 
-rds_data <- readRDS(rds_data)
+rds_data <- readRDS(rds_file)
 ids_data <- read.table( infile, header=opt$header, sep='\t')
 outpre <- paste( outdir, prefix, sep='/')
 GSEA_plot( rds_data, outpre, ids )
