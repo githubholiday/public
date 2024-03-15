@@ -82,6 +82,7 @@ prefix <- opt$prefix
 ## 
 rds_data <- readRDS(rds_file)
 ids_data <- read.table( infile, header=opt$header, sep='\t')
+print(ids_data)
 outpre <- paste( outdir, prefix, sep='/')
 GSEA_plot( rds_data, outpre, ids_data )
 
