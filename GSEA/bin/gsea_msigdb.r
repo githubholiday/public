@@ -92,6 +92,7 @@ de_genes<-function(indir,species,type){
     gene<-unique(as.vector(subset(geneset)$ENTREZID))
     print(paste('enrich gene number:',length(gene),sep=""))
     geneList <- geneset$Log2FC
+    geneList <- sort(geneList, decreasing = TRUE)
     return(geneList)
 }
 
