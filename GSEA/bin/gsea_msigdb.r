@@ -5,7 +5,7 @@ para<- matrix(c(
   'prefix',	'pr',	1,	"character",
   'type',	't',	2,	"character",
   'organism',	'g',	2,	"character",
-  'outdir',	'o',	1,	"character",
+  'outdir',	'o',	1,	"character"
 ),byrow=TRUE,ncol=4)
 #===========================================================
 # 仅针对人和小鼠的GO,KEGG,Reactome和MSigDB数据库，可以做enricher（传统富集方法，超几何分布，也就是Fisher exact test）和GSEA分析：
