@@ -109,11 +109,11 @@ organism<-opt$organism #物种，human或者mouse
 mkdirs(opt$outdir)
 
 if(organism=='human'){
-    mapda<-org.Hs.eg.db
     library(org.Hs.eg.db)
+    mapda<-org.Hs.eg.db
 }else{
-    mapda<-org.Mm.eg.db
     library(org.Mm.eg.db)
+    mapda<-org.Mm.eg.db
 }
 
 #1.生成geneList(for GSEA)变量
