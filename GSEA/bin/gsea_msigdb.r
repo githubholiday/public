@@ -92,6 +92,7 @@ de_genes<-function(indir,species,type){
     gene<-unique(as.vector(subset(geneset)$ENTREZID))
     print(paste('enrich gene number:',length(gene),sep=""))
     geneList <- geneset$Log2FC
+    names(geneList) <- as.character(d$ENTREZID)
     geneList <- sort(geneList, decreasing = TRUE)
     return(geneList)
 }
@@ -118,6 +119,7 @@ if(organism=='human'){
 #1.生成geneList(for GSEA)变量
 print("Start: Msigdb database with GSEA analysis")
 geneList<-de_genes(infile,mapda,type)
+
 print(head(geneList))
 #只能做人和小鼠的，如果不是人的，默认就是小鼠的，实际上能做的类型很多，目前不兼容
 if(organism=='human'){
