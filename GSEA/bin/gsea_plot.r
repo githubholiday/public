@@ -11,7 +11,7 @@ para<- matrix(c(
 
 opt <- getopt(para, debug=FALSE)
 print_usage <- function(para=NULL) {
-    cat(getopt(para, ueasge=TRUE))
+    cat(getopt(para, usage=TRUE))
     cat("
 【功能说明】
     对GSEA的结果进行经典图绘制,输入为一列ID即可。图中展示NES,pvalue, p.adjust三列信息
