@@ -36,21 +36,11 @@ if ( is.null(opt$outdir) ){ cat("Please input the outdir of result\n\n") ; print
 if ( is.null(opt$prefix) ){ cat("Please input the prefix of result\n\n") ; print_usage(para)}
 if ( is.null(opt$header) ) { opt$header <- False }
 #对输出进行赋值处理
-rds_file <- opt$rds
-infile <- opt$idfile
-outdir <- opt$outdir
-prefix <- opt$prefix
+
 
 library(enrichplot)
 library(ggplot2)
 library(ggpp)
-
-
-## 
-rds_data <- readRDS(rds_file)
-ids_data <- read.table( infile, header=opt$header, sep='\t')
-outpre <- paste( outdir, prefix, sep='/')
-GSEA_plot( rds_data, outpre, ids )
 
 GSEA_plot<-function(gsea_res,out_pre, ids ){
     library(ggpp)
@@ -83,4 +73,16 @@ GSEA_plot<-function(gsea_res,out_pre, ids ){
         dev.off()
         }
 }
+
+######Main#####
+rds_file <- opt$rds
+infile <- opt$idfile
+outdir <- opt$outdir
+prefix <- opt$prefix
+## 
+rds_data <- readRDS(rds_file)
+ids_data <- read.table( infile, header=opt$header, sep='\t')
+outpre <- paste( outdir, prefix, sep='/')
+GSEA_plot( rds_data, outpre, ids )
+
 
