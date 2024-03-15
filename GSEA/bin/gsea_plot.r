@@ -30,7 +30,8 @@ print_usage <- function(para=NULL) {
 
 #对输入进行检查
 if ( !is.null(opt$help) ){ print_usage(para) }
-if ( is.null(opt$infile) ){ cat("Please input the data file\n\n") ; print_usage(para)}
+if ( is.null(opt$idfile) ){ cat("Please input the rds file\n\n") ; print_usage(para)}
+if ( is.null(opt$idfile) ){ cat("Please input the id list file\n\n") ; print_usage(para)}
 if ( is.null(opt$outdir) ){ cat("Please input the outdir of result\n\n") ; print_usage(para)}
 if ( is.null(opt$prefix) ){ cat("Please input the prefix of result\n\n") ; print_usage(para)}
 
