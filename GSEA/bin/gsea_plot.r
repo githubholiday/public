@@ -34,7 +34,7 @@ if ( is.null(opt$idfile) ){ cat("Please input the rds file\n\n") ; print_usage(p
 if ( is.null(opt$idfile) ){ cat("Please input the id list file\n\n") ; print_usage(para)}
 if ( is.null(opt$outdir) ){ cat("Please input the outdir of result\n\n") ; print_usage(para)}
 if ( is.null(opt$prefix) ){ cat("Please input the prefix of result\n\n") ; print_usage(para)}
-
+if ( is.null(opt$header) ) { opt$header <- False }
 #对输出进行赋值处理
 infile <- para$infile
 outdir <- para$outdir
@@ -47,7 +47,7 @@ library(ggpp)
 
 ## 
 rds_data <- readRDS(rds_data)
-ids_data <- read.table( infile, header=T, sep='\t')
+ids_data <- read.table( infile, header=opt$header, sep='\t')
 outpre <- paste( outdir, prefix, sep='/')
 GSEA_plot( rds_data, outpre, ids )
 
