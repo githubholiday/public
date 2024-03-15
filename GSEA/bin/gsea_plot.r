@@ -37,7 +37,7 @@ if ( is.null(opt$prefix) ){ cat("Please input the prefix of result\n\n") ; print
 if ( is.null(opt$header) ) { opt$header <- False }
 #对输出进行赋值处理
 rds_file <- opt$rds
-infile <- opt$infile
+infile <- opt$idfile
 outdir <- opt$outdir
 prefix <- opt$prefix
 
