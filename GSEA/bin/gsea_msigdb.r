@@ -87,29 +87,19 @@ de_genes<-function(indir,species,type){
     #mapda<-org.Hs.eg.db
     #mapda<-org.Mm.eg.db
     data<-read.table(indir,header=T,sep='\t')
-    ######################
-    #构建新Log2FC, 避免lnf,-lnf值
-    #data$Log2FC<-log2((data[,2]+1)/(data[,3]+1))
     colnames(data)[1] <- type
     k=keys(species,keytype = type)
-    #SYMBOL/ENSEMBL/ENTREZID
     geneinfo <- bitr(k,fromType = type,toType = c("ENTREZID"),OrgDb = species)
     geneset<-merge(geneinfo,data,by=type)
-    #分别取差异基因构建geneList(GSEA)和gene(ORA)变量
     gene<-unique(as.vector(subset(geneset)$ENTREZID))
-    #gene<-unique(as.vector(subset(geneset,Significant=='yes')$ENTREZID))
-    print('enrich gene number:')
-    print(length(gene))
-    d<-geneset
-    geneList <- d$Log2FC
-    #names(geneList) <- as.character(d$ENTREZID)
-    #geneList <- sort(geneList, decreasing = TRUE)
-    #genes<- list(gene=gene, geneList=geneList,bg=as.vector(geneinfo$ENTREZID))
+    print(paste('enrich gene number:',length(gene),sep=""))
+    geneList <- geneset$Log2FC
     return(geneList)
 }
 
 ########################### Main ###################################
 
+print("分析开始")
 infile<-opt$infile
 outdir<-opt$outdir
 prefix<-opt$prefix
