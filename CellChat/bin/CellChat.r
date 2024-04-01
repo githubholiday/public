@@ -1,16 +1,14 @@
 library('getopt')
 para<- matrix(c(
-  'help',       'h',    0,      "logical",
-  'rds',      'i',    1,      "character",
-  'prefix',     'p',   1,      "character",
-  'db',       'd',    2,      "character",
-  'species',   's',    2,      "character",
-  'group',   'c',    2,      "character",
-  'cmp',   'c',    2,      "character",
-  'ident',   'c',    2,      "character",
-  'ident',   'e',    2,      "character",
-  'outdir',     'o',    1,      "character",
-  'multiprocess',     'm',    2,      "numeric"
+    'help',        'h',    0,      "logical",
+    'rds',         'i',    1,      "character",
+    'prefix',      'p',    1,      "character",
+    'db',          'd',    2,      "character",
+    'species',     's',    2,      "character",
+    'group',       'c',    2,      "character",
+    'ident',       'c',    2,      "character",
+    'outdir',      'o',    1,      "character",
+    'multiprocess','m',    2,      "numeric"
 ),byrow=TRUE,ncol=4)
 #===========================================================
 opt <- getopt(para,debug=FALSE)
@@ -33,26 +31,20 @@ print_usage <- function(para=NULL){
       --group,   c,      2,      character, The  meta.data for cmp [default Group]
       --ident,   id,      2,      character, The  meta.data for celltype [default celltype]	  
       --species,   s,      2,      character, human or mouse
-      --vertex,   v,      2,      character, order number for celltype groups 
-      --sources,   l,      2,      character,order number for ligand with celltypes
-      --targets,   r,      2,      character,order number for receptor with celltypes
       --multiprocess, m,      2,      integer, [default 10] 
       \n")
   q(status=1)
 }
 #===========================================================
-if ( !is.null(opt$help) )     { print_usage(para) }
-if ( is.null(opt$rds) )       { cat("Please give the rds file ...\n\n") ; print_usage(para)}
-if ( is.null(opt$outdir) )    { cat("Please give the outdir for analysis ...\n\n") ; print_usage(para) }
-if ( is.null(opt$prefix) )    { cat("Please give the prefix for outputfiles ...\n\n") ; print_usage(para) }
-if ( is.null(opt$db))         { opt$db <- 'Secreted Signaling' }
-if ( is.null(opt$group))      { opt$group <- 'Group' }
-if ( is.null(opt$ident))      { opt$ident <- 'celltype' }
-if ( is.null(opt$species))    { cat("Please give human or mouse ...\n\n") ; print_usage(para) }
-if ( is.null(opt$vertex))     { opt$sources <- '1,2,3,4,5' }
-if ( is.null(opt$sources))    { opt$sources <- '1,2,3,4,5' }
-if ( is.null(opt$targets))    { opt$targets <- '6,7,8,9,10' }
-if ( is.null(opt$multiprocess)){ opt$multiprocess <- 10 }
+if ( !is.null(opt$help) )      {print_usage(para) }
+if (  is.null(opt$rds) )       {cat("Please give the rds file \n") ; print_usage(para)}
+if (  is.null(opt$prefix) )    {cat("Please give the prefix for outputfiles\n") ;rint_usage(para) }
+if ( is.null(opt$db))          {opt$db <- 'Secreted Signaling' }
+if ( is.null(opt$species))     { pt$species <- 'Secreted Signaling' }
+if ( is.null(opt$group))       {opt$group <- 'Group' }
+if ( is.null(opt$ident))       {opt$ident <- 'celltype' }
+if (  is.null(opt$outdir) )    {cat("Please give the outdir for result\n") ; print_usage(para) }
+if ( is.null(opt$multiprocess)){opt$multiprocess <- 10 }
 
 #################----------------------------------------------------------
 #cellchat细胞通讯分析
