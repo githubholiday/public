@@ -263,7 +263,7 @@ mkdirs(result_dir)
 print('2.按照组分别创建CellChat对象...')
 #创建cellchat对象
 
-#for (i in (1:length(groups))){
+for (i in (1:length(groups))){
     group_name = "Control"#groups[i]
     print(paste("2.1 正在处理分组 ", group_name ))
     group_outdir = paste0(result_dir,group_name)
@@ -298,5 +298,5 @@ print('2.按照组分别创建CellChat对象...')
 
     Visual_cellchat_single(cellchat_1a,group_outdir,vertex.receiver=vertex.receiver,sources.use = sources.use,targets.use = targets.use)
 
-#}
+}
 
