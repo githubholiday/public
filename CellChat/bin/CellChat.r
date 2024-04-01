@@ -2,7 +2,6 @@ library('getopt')
 para<- matrix(c(
     "help"        ,"h",     0,    "logical",
     "rds"         ,"i",     2,    "character",
-    "prefix"      ,"p",     2,    "character",
     "db"          ,"d",     2,    "character",
     "species"     ,"s",     2,    "character",
     "group"       ,"c",     1,    "character",
@@ -14,31 +13,28 @@ para<- matrix(c(
 opt <- getopt(para,debug=FALSE)
 print_usage <- function(para=NULL){
     cat(getopt(para,usage=TRUE))
-    cat("仅针对人和小鼠的物种做细胞通讯分析,注意选择正确的物种
-      human(1939对229种pathwayL-R互作); mouse(2019对229种pathwayL-R互作)
-      Secreted Signaling,ECM-Receptor,Cell-Cell Contact
-      human:1199/421/319; mouse:1209/432/378
-
-      Usage example:
-      Rscript this.r --rds rdsfile --outdir $outdir --prefix ILC_Stromal --db 'Secreted Signaling' --group Group --ident celltype --species mouse --sources 1,2,3,4,5 --targets 6,7,8,9,10 --vertex 1,2,3,4,5 --multiprocess 10  
-      Options:
-      --help            h       NULL            get this help
-      --rds   i       character       rds file for 10xGenomics clusters [forced]
-      --outdir  o       character       The     resurt of out dir for analysis [forced]
-      --prefix, pre,     1,      character,
-
-      --db,   d,      2,      character, [default Secreted Signaling],select from Secreted Signaling,ECM-Receptor,Cell-Cell Contact
-      --group,   c,      2,      character, The  meta.data for cmp [default Group]
-      --ident,   id,      2,      character, The  meta.data for celltype [default celltype]	  
-      --species,   s,      2,      character, human or mouse
-      --multiprocess, m,      2,      integer, [default 10] 
+    cat("
+功能说明:仅针对人和小鼠的物种做细胞通讯分析,注意选择正确的物种
+    human(1939对229种pathwayL-R互作); mouse(2019对229种pathwayL-R互作)
+    Secreted Signaling,ECM-Receptor,Cell-Cell Contact
+    human:1199/421/319; mouse:1209/432/378
+参数说明:
+    --help:帮助文档
+    --rds:[必需]rds文件(单细胞转录组)
+    --db:[必需]default Secreted Signaling],Secreted Signaling,ECM-Receptor,Cell-Cell Contact,all
+    --species:[必需]物种信息[ human or mouse]
+    --group:[可选]metadata中的组信息的slot名,默认Group
+    --ident:[可选]metadata中细胞类型的slot名,默认celltype
+    --outdir:[必需]输出目录
+    --multiprocess:[可选]处理的线程数,默认10, [default 10] 
+使用示例：
+    Rscript this.r --rds rdsfile --outdir $outdir --db 'Secreted Signaling' --group Group --ident celltype --species mouse --multiprocess 10  
       \n")
   q(status=1)
 }
 #===========================================================
 if ( !is.null(opt$help) )      {print_usage(para) }
 if (  is.null(opt$rds) )       {cat("Please give the rds file \n") ; print_usage(para)}
-if (  is.null(opt$prefix) )    {cat("Please give the prefix for outputfiles\n") ;rint_usage(para) }
 if ( is.null(opt$db))          {opt$db <- 'Secreted Signaling' }
 if ( is.null(opt$species))     { pt$species <- 'Secreted Signaling' }
 if ( is.null(opt$group))       {opt$group <- 'Group' }
