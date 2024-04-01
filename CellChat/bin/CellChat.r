@@ -231,9 +231,6 @@ Visual_cellchat_single<-function(cellchat,outdir,vertex.receiver=seq(1:5),source
 	}
 }
 
-
-
-
 ############################################ Main ############################################
 outdir<-opt$outdir
 prefix<-opt$prefix
@@ -242,7 +239,6 @@ db<-opt$db
 species<-opt$species
 group<-opt$group
 celltype<-opt$ident
-#reverse<-opt$reverse
 
 sources.use<-as.numeric(unlist(strsplit(as.character(opt$sources),split = ",",fixed=T)))
 targets.use<-as.numeric(unlist(strsplit(as.character(opt$targets),split = ",",fixed=T)))
@@ -259,10 +255,6 @@ print("原始celltype数目:")
 table(rds$celltype)
 table(rds$Group)
 groups<-names(table(rds$Group))
-
-if (opt$reverse =='T'){groups<-rev(groups);print(paste0("对组之间的进行reverse: ",groups))}
-group1<-groups[1];group2<-groups[2]
-
 celltypes<-names(table(rds$celltype))
 #########对细胞类型排序
 rds$celltype<-factor(rds$celltype,levels=celltypes)
@@ -298,10 +290,9 @@ result_dir = paste0(outdir,'/1_CCI/')
 mkdirs(result_dir)
 print('2.按照组分别创建CellChat对象...')
 #创建cellchat对象
-rds1<-subset(rds,Group==group1)
-rds2<-subset(rds,Group==group2)
-for (i in (1:length(groups))){
-    group_name = groups[i]
+
+#for (i in (1:length(groups))){
+    group_name = "Control"#groups[i]
     print(paste("2.1 正在处理分组 ", group_name ))
     group_outdir = paste0(result_dir,group_name)
     mkdirs(group_outdir)
@@ -335,5 +326,5 @@ for (i in (1:length(groups))){
 
     Visual_cellchat_single(cellchat_1a,group_outdir,vertex.receiver=vertex.receiver,sources.use = sources.use,targets.use = targets.use)
 
-}
+#}
 
