@@ -6,6 +6,8 @@ para<- matrix(c(
   'db',       'd',    2,      "character",
   'species',   's',    2,      "character",
   'group',   'c',    2,      "character",
+  'cmp',   'c',    2,      "character",
+  'ident',   'c',    2,      "character",
   'ident',   'e',    2,      "character",
   'outdir',     'o',    1,      "character",
   'vertex',     'v',    1,      "character",
@@ -60,7 +62,7 @@ if ( is.null(opt$multiprocess)) { opt$multiprocess <- 10 }
 #日期:2022/3/31 作者：yaojiaying
 library(CellChat)
 library(ggplot2)
-library(patchwork)
+library(patchwork) #最强大的拼图包
 options(stringsAsFactors = FALSE)
 library(cowplot) ###多图绘制
 library(dplyr)
@@ -101,99 +103,51 @@ QC_cellchat<-function(rds,species,group.by='celltype',celltypes=names(table(rds$
 
 Infer_cellchat<-function(cellchat,CellChatDB.use,thresh=0.05,thresh.p = 1,thresh.pc=0.1,min.cells = 10){
 	#指定L-R database
-	# cellchat<-cellchat1a
-	# thresh.p = NULL;thresh.pc=NULL;min.cells = 10
-	# thresh.p = 1;thresh.pc=0;min.cells = 10
+    #预处理数据
 	cellchat@DB <- CellChatDB.use
 	cellchat <- subsetData(cellchat) # This step is necessary even if using the whole database
 	#https://rdrr.io/github/sqjin/CellChat/man/identifyOverExpressedGenes.html
 	#identifyOverExpressedGenes 不能设置成NULL,会没有var.features
 	cellchat <- identifyOverExpressedGenes(cellchat,thresh.p = thresh.p,thresh.pc = thresh.pc,thresh.fc = 0,only.pos =FALSE)
 	cellchat <- identifyOverExpressedInteractions(cellchat)
-	# project gene expression data onto PPI network (optional)
-	# cellchat <- projectData(cellchat, PPI)
-	#source, target and ligand-receptor pair,
+    #cellchat <- projectData(cellchat, PPI.human)将上一步结果保存到cellchat@LR$LRsig 中
+    #计算通信概率，并推断信号网络
 	cellchat <- computeCommunProb(cellchat)
 	# Filter out the cell-cell communication if there are only few number of cells in certain cell groups
 	cellchat <- filterCommunication(cellchat, min.cells = min.cells)
-	#df.net <- subsetCommunication(cellchat)
-	#thresh = 1的cutoff是指thresh>1,而不是>=1,thresh=p值
+    #计算信号通路水平上的细胞间通讯，存在net和netP中
 	cellchat <- computeCommunProbPathway(cellchat,thresh = thresh)
+    #聚合的细胞间通信网络
 	cellchat <- aggregateNet(cellchat,thresh = thresh)
+    #计算网络中心性评分
 	cellchat <- netAnalysis_computeCentrality(cellchat, slot.name = "netP") 
-	print(cellchat)
-	print(summary(cellchat))
-	print(table(cellchat@idents))
 	return(cellchat)
 }
 
-
-#存储所有的通路绘图结果 
-netVisual_pathway_plot<-function(cellchat,pathways.show,pathname,vertex.receiver=seq(1,5),sources.use = c(6:10),targets.use = c(1:5)){
-#Visualize communication network associated with both signaling pathway and individual L-R pairs
-	#netVisual的功能是可以同时绘制netVisual_aggregate和netVisual_individual
-	#"circle", "hierarchy", "chord"三种类型图绘制只能绘制某一种
-	groupSize <- as.numeric(table(cellchat@idents))
-	netVisual(cellchat, signaling = pathways.show, signaling.name=pathname,vertex.receiver = vertex.receiver, layout = c("circle"), out.format ='pdf')
-	netVisual(cellchat, signaling = pathways.show, signaling.name=pathname,vertex.receiver = vertex.receiver, layout = c("hierarchy"), out.format ='pdf')
-	#vertex.weight = NULL 表示会按照细胞占比数绘? 不会
-	# 绘制单个netVisual_individual会报错
-	#netVisual(cellchat, signaling = pathways.show, signaling.name=pathname,vertex.receiver = vertex.receiver, layout = c("chord"), out.format ='pdf',vertex.weight = NULL,small.gap = 0.1,big.gap = 1)
-	pdf(file =paste0(pathname,"_chord_aggregate.pdf"), width = 8, height =8)
-	netVisual_aggregate(cellchat, signaling = pathways.show, signaling.name=pathname,vertex.receiver = vertex.receiver, layout = c("chord"), out.format ='pdf',vertex.weight = groupSize,small.gap = 0.1,big.gap = 1)
-	dev.off()
-	pdf(file =paste0(pathname,"_chord_individual.pdf"), width = 20, height =20)
-	netVisual_individual(cellchat, signaling = pathways.show, signaling.name=pathname,vertex.receiver = vertex.receiver, layout = c("chord"), out.format ='pdf',vertex.weight = groupSize,small.gap = 0.1,big.gap = 1)
-	dev.off()
-	# Compute and visualize the contribution of each ligand-receptor pair to the overall signaling pathway
-	#contribution barplot图绘制
-	gg <- netAnalysis_contribution(cellchat, signaling = pathways.show)
-	ggsave(filename=paste0(pathname, "_L-R_contribution.pdf"), plot=gg, width = 3, height = 2, units = 'in', dpi = 300)
-	#Heatmap绘制,只能绘制单个
-	p1<-netVisual_heatmap(cellchat, signaling = pathways.show, color.heatmap = "Reds")
-	pdf(paste0(pathname,'_netVisual_heatmap.pdf'),w=5,h=5)
-	print(p1)
-	dev.off()
-	#Bubble plot 可以绘制多个绘制 #需要设定sources.use = c(6:10), targets.use = c(1:5)
-	p2<-netVisual_bubble(cellchat, sources.use = sources.use, targets.use = targets.use, remove.isolate = FALSE,signaling = pathways.show)
-	pdf(paste0(pathname,'_netVisual_bubble.pdf'),w=5,h=3)
-	print(p2)
-	dev.off()
-   ##使用小提琴/点图绘制信号基因表达分布
-	p1<-plotGeneExpression(cellchat, signaling = pathways.show,type='violin') #type = c("violin", "dot")
-	pdf(paste0(pathname,'_plotGeneExpression_vlnplot.pdf'),w=5,h=5)
-	print(p1)
-	dev.off()
-
-}
-
-
-
-
 Visual_cellchat_single<-function(cellchat,outdir,vertex.receiver=seq(1:5),sources.use = c(6:10),targets.use = c(1:5)){
-	print('2.2 细胞通讯网络推断结果整理绘图...')
+	print('2.2 细胞通讯网络推断结果整理绘制circles图..')
 	#整体绘图
 	groupSize <- as.numeric(table(cellchat@idents))
-	pdf('netVisual_circle_all.pdf',w=10,h=5)
+	pdf(paste(outdir,'/netVisual_circle_all.pdf'),w=10,h=5)
 	par(mfrow = c(1,2), xpd=TRUE)
-	p1<-netVisual_circle(cellchat@net$count, vertex.weight = groupSize, weight.scale = T, label.edge= F, title.name = "Number of interactions")
-	p2<-netVisual_circle(cellchat@net$weight, vertex.weight = groupSize, weight.scale = T, label.edge= F, title.name = "Interaction weights/strength")
-	print(p1);print(p2)
+	p1<-netVisual_circle(cellchat@net$count, vertex.weight = groupSize, weight.scale = T, label.edge= F, title.name = "Number of Interactions")
+	p2<-netVisual_circle(cellchat@net$weight, vertex.weight = groupSize, weight.scale = T, label.edge= F, title.name = "Interaction Weights/Strength")
+	print(p1)
+    print(p2)
 	dev.off()
 	#单独可视化小图，print()不能放在一张图上
 	mat <- cellchat@net$weight
 	n<-ceiling(length(groupSize)/5)
-	pdf('netVisual_circle_part.pdf',w=8,h=8)
+	pdf(paste(outdir,'netVisual_circle_part.pdf'),w=8,h=8)
 	#par(mfrow = c(n,5), xpd=TRUE)
 	par(mfrow = c(1,1), xpd=TRUE)
 	for (i in 1:nrow(mat)) {
-	  mat2 <- matrix(0, nrow = nrow(mat), ncol = ncol(mat), dimnames = dimnames(mat))
-	  mat2[i, ] <- mat[i, ]
-	  p3<-netVisual_circle(mat2, vertex.weight = groupSize, weight.scale = T, edge.weight.max = max(mat), title.name = rownames(mat)[i])
-	  print(p3) 
+	    mat2 <- matrix(0, nrow = nrow(mat), ncol = ncol(mat), dimnames = dimnames(mat))
+	    mat2[i, ] <- mat[i, ]
+	    p3<-netVisual_circle(mat2, vertex.weight = groupSize, weight.scale = T, edge.weight.max = max(mat), title.name = rownames(mat)[i])
+	    print(p3) 
 	}
 	dev.off()
-	#2.3 单个pathway绘图（"circle", "hierarchy", "chord",contribution,bubble图）
 	print('2.3 单个pathway绘图（circle,hierarchy,chord,contribution,bubble图）...')
 	mkdirs(paste0(outdir,'/pathways'))
 	setwd(paste0(outdir,'/pathways/'))
@@ -235,18 +189,26 @@ rds$celltype<-factor(rds$celltype,levels=celltypes)
 print('#1.选择数据库并且预处理表达矩阵...')
 #（注意选择正确的物种human(1939对229种pathwayL-R互作)/mouse(2019对229种pathwayL-R互作)）
  # use CellChatDB.mouse if running on mouse data
-if (species=='human'){CellChatDB <- CellChatDB.human;PPI<-PPI.human
-}else if (species=='mouse'){CellChatDB <- CellChatDB.mouse;PPI<-PPI.mouse
-}else{print("CellChat只能分析人和小鼠");quit()}
+if (species=='human'){
+    CellChatDB <- CellChatDB.human
+    PPI<-PPI.human
+}else if (species=='mouse'){
+    CellChatDB <- CellChatDB.mouse
+    PPI<-PPI.mouse
+}else{
+    print("CellChat只能分析人和小鼠");quit()
+}
 dplyr::glimpse(CellChatDB$interaction)
 
 DB<-c('Secreted Signaling','ECM-Receptor','Cell-Cell Contact')
 ###human:1199/421/319; mouse:1209/432/378
 if (db %in% DB){
-CellChatDB.use <- subsetDB(CellChatDB, search = db) # use Secreted Signaling
+    CellChatDB.use <- subsetDB(CellChatDB, search = db) # use Secreted Signaling
 } else if (db =='all'){
-CellChatDB.use<-CellChatDB
-} else{print("请选择正确的L-R互作种类：Secreted Signaling,ECM-Receptor,Cell-Cell Contact");quit()}
+    CellChatDB.use<-CellChatDB
+} else{
+    print("请选择正确的L-R互作种类：Secreted Signaling,ECM-Receptor,Cell-Cell Contact");quit()
+    }
 
 tmp_dir = paste0(outdir, '/tmp')
 mkdirs(tmp_dir)
@@ -269,7 +231,7 @@ for (i in (1:length(groups))){
     group_outdir = paste0(result_dir,group_name)
     mkdirs(group_outdir)
     rds1<-subset(rds,Group==group_name)
-    cellchat<-QC_cellchat(rds1,species,group.by='celltype',celltypes=names(table(rds1$celltype)))
+    cellchat <- QC_cellchat(rds1,species,group.by='celltype',celltypes=names(table(rds1$celltype)))
     #细胞通讯推断分析
     cellchat_1a <- Infer_cellchat(cellchat,CellChatDB.use,thresh=0.05,thresh.p = 1,thresh.pc=0.1,min.cells = 10)
     net1 <- subsetCommunication(cellchat_1a,slot.name = "net",thresh = 0.05)
@@ -288,7 +250,6 @@ for (i in (1:length(groups))){
     write.table(var.features,file=paste0(group_outdir,'_celltypes_varfeatures.xls'),quote=F,sep='\t',row.names=F)
 
     #Signaling role analysis on the aggregated cell-cell communication network from all signaling pathways
-    n <- length(cellchat_1a@netP$pathways)
     levels(cellchat_1a@idents)
     ht1 <- netAnalysis_signalingRole_heatmap(cellchat_1a, pattern = "outgoing")
     ht2 <- netAnalysis_signalingRole_heatmap(cellchat_1a, pattern = "incoming")
