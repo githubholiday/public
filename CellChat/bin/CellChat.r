@@ -1,11 +1,12 @@
 library('getopt')
 para<- matrix(c(
     "help"        ,"h",     0,    "logical",
-    "rds"         ,"i",     2,    "character",
+    "rds"         ,"r",     2,    "character",
     "db"          ,"d",     2,    "character",
     "species"     ,"s",     2,    "character",
     "group"       ,"g",     1,    "character",
-    "ident"       ,"c",     1,    "character",
+    "cmp"         ,"c",     1,    "character",
+    "ident"       ,"i",     1,    "character",
     "outdir"      ,"o",     2,    "character",
     "multiprocess","m",     1,    "numeric"),
     byrow=TRUE,ncol=4)
@@ -24,6 +25,7 @@ print_usage <- function(para=NULL){
     --db:[必需]default Secreted Signaling],Secreted Signaling,ECM-Receptor,Cell-Cell Contact,all
     --species:[必需]物种信息[ human or mouse]
     --group:[可选]metadata中的组信息的slot名,默认Group
+    --cmp:[可选]提供需要分析的组名,多组时使用/分割,默认分析所有组
     --ident:[可选]metadata中细胞类型的slot名,默认celltype
     --outdir:[必需]输出目录
     --multiprocess:[可选]处理的线程数,默认10, [default 10] 
@@ -108,7 +110,7 @@ Visual_cellchat_single<-function(cellchat,outdir){
 	print('2.2 细胞通讯网络推断结果整理绘制circles图..')
 	#整体绘图
 	groupSize <- as.numeric(table(cellchat@idents))
-	pdf(paste(outdir,'/netVisual_circle_all.pdf'),w=10,h=5)
+	pdf(paste(outdir,'/netVisual_circle_all.pdf',sep=""),w=10,h=5)
 	par(mfrow = c(1,2), xpd=TRUE)
 	p1<-netVisual_circle(cellchat@net$count, vertex.weight = groupSize, weight.scale = T, label.edge= F, title.name = "Number of Interactions")
 	p2<-netVisual_circle(cellchat@net$weight, vertex.weight = groupSize, weight.scale = T, label.edge= F, title.name = "Interaction Weights/Strength")
@@ -143,6 +145,7 @@ db<-opt$db
 species<-opt$species
 group<-opt$group
 celltype<-opt$ident
+cmp <- opt$cmp
 print(group)
 print(celltype)
 print("读取rds文件")
@@ -155,7 +158,14 @@ Idents(rds)<-'celltype'
 print("原始celltype数目:")
 table(rds$celltype)
 table(rds$Group)
-groups<-names(table(rds$Group))
+
+if(!is.null(cmp)){
+    cmp_list = strsplit(cmp, "/")
+    groups <- names(table(cmp_list))
+}else{
+    groups<-names(table(rds$Group))
+}
+
 celltypes<-names(table(rds$celltype))
 #########对细胞类型排序
 rds$celltype<-factor(rds$celltype,levels=celltypes)
@@ -201,9 +211,10 @@ print('2.按照组分别创建CellChat对象...')
 #创建cellchat对象
 
 for (i in (1:length(groups))){
-    group_name = "Control"#groups[i]
-    print(paste("2.1 正在处理分组 ", group_name ))
-    group_outdir = paste0(result_dir,group_name)
+    group_name = groups[i]
+    print(paste("########## 正在处理分组 ", group_name, " ###########" ))
+    group_outdir = paste0(result_dir,group_name,sep="")
+    out_pre = paste(group_outdir, "/",group_name,sep="")
     mkdirs(group_outdir)
     rds1<-subset(rds,Group==group_name)
     cellchat <- QC_cellchat(rds1,species,group.by='celltype',celltypes=names(table(rds1$celltype)))
@@ -217,18 +228,18 @@ for (i in (1:length(groups))){
     data<-unique(dataset[,c('pathway_name','annotation')])
     netP1$annotation<- plyr::mapvalues(x =netP1$pathway_name,from = as.vector(data$pathway_name),to = as.vector(data$annotation))
     #组1结果可视化
-    write.table(net1,file=paste0(group_outdir,'_net.xls'),quote=F,sep='\t',row.names=F)
-    write.table(netP1,file=paste0(group_outdir,'_netP.xls'),quote=F,sep='\t',row.names=F)
+    write.table(net1,file=paste0(out_pre,'_net.xls'),quote=F,sep='\t',row.names=F)
+    write.table(netP1,file=paste0(out_pre,'_netP.xls'),quote=F,sep='\t',row.names=F)
     #高度可变的基因list
     var.features<-data.frame(cellchat_1a@var.features$features.info)
     var.features$gene<-rownames(var.features)
-    write.table(var.features,file=paste0(group_outdir,'_celltypes_varfeatures.xls'),quote=F,sep='\t',row.names=F)
+    write.table(var.features,file=paste0(out_pre,'_celltypes_varfeatures.xls'),quote=F,sep='\t',row.names=F)
 
     #Signaling role analysis on the aggregated cell-cell communication network from all signaling pathways
     levels(cellchat_1a@idents)
     ht1 <- netAnalysis_signalingRole_heatmap(cellchat_1a, pattern = "outgoing")
     ht2 <- netAnalysis_signalingRole_heatmap(cellchat_1a, pattern = "incoming")
-    pdf(paste0(group_outdir,'_pathway_netP_heatmap.pdf'),w=10,h=10)
+    pdf(paste0(out_pre,'_pathway_netP_heatmap.pdf'),w=10,h=10)
     ht1 + ht2
     dev.off()
 
