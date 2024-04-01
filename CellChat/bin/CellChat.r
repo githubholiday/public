@@ -8,7 +8,7 @@ para<- matrix(c(
   'pvalue',     'a',    2,      "numeric",
   'db',       'd',    2,      "character",
   'species',   's',    2,      "character",
-  'cmp',   'c',    2,      "character",
+  'group',   'c',    2,      "character",
   'ident',   'e',    2,      "character",
   'outdir',     'o',    1,      "character",
   'vertex',     'v',    1,      "character",
@@ -46,7 +46,7 @@ print_usage <- function(para=NULL){
       --pvalue, p,      2,      integer,
       --prob, pro,      2,      integer,
       --db,   d,      2,      character, [default Secreted Signaling]
-      --cmp,   c,      2,      character, The  meta.data for cmp [default Group]
+      --group,   c,      2,      character, The  meta.data for cmp [default Group]
       --ident,   id,      2,      character, The  meta.data for celltype [default celltype]	  
       --species,   s,      2,      character, human or mouse
       --vertex,   v,      2,      character, order number for celltype groups 
