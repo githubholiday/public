@@ -308,10 +308,10 @@ for (i in (1:length(groups))){
     rds1<-subset(rds,Group==group_name)
     cellchat<-QC_cellchat(rds1,species,group.by='celltype',celltypes=names(table(rds1$celltype)))
     #细胞通讯推断分析
-    cellchat_1 <- Infer_cellchat(cellchat,CellChatDB.use,thresh=0.05,thresh.p = 1,thresh.pc=0.1,min.cells = 10)
-    net1 <- subsetCommunication(cellchat1a,slot.name = "net",thresh = 0.05)
-    netP1  <- subsetCommunication(cellchat1a,slot.name = "netP",thresh = 0.05)
-    saveRDS(cellchat1a,file=paste0(tmp_dir,group_name,'_cellchat1.rds'))
+    cellchat_1a <- Infer_cellchat(cellchat,CellChatDB.use,thresh=0.05,thresh.p = 1,thresh.pc=0.1,min.cells = 10)
+    net1 <- subsetCommunication(cellchat_1a,slot.name = "net",thresh = 0.05)
+    netP1  <- subsetCommunication(cellchat_1a,slot.name = "netP",thresh = 0.05)
+    saveRDS(cellchat_1a,file=paste0(tmp_dir,group_name,'_cellchat1.rds'))
 
     dataset<-CellChatDB.use$interaction
     data<-unique(dataset[,c('pathway_name','annotation')])
@@ -320,20 +320,20 @@ for (i in (1:length(groups))){
     write.table(net1,file=paste0(group_outdir,'_net.xls'),quote=F,sep='\t',row.names=F)
     write.table(netP1,file=paste0(group_outdir,'_netP.xls'),quote=F,sep='\t',row.names=F)
     #高度可变的基因list
-    var.features<-data.frame(cellchat1a@var.features$features.info)
+    var.features<-data.frame(cellchat_1a@var.features$features.info)
     var.features$gene<-rownames(var.features)
     write.table(var.features,file=paste0(group_outdir,'_celltypes_varfeatures.xls'),quote=F,sep='\t',row.names=F)
 
     #Signaling role analysis on the aggregated cell-cell communication network from all signaling pathways
-    n <- length(cellchat1a@netP$pathways)
-    levels(cellchat1a@idents)
-    ht1 <- netAnalysis_signalingRole_heatmap(cellchat1a, pattern = "outgoing")
-    ht2 <- netAnalysis_signalingRole_heatmap(cellchat1a, pattern = "incoming")
+    n <- length(cellchat_1a@netP$pathways)
+    levels(cellchat_1a@idents)
+    ht1 <- netAnalysis_signalingRole_heatmap(cellchat_1a, pattern = "outgoing")
+    ht2 <- netAnalysis_signalingRole_heatmap(cellchat_1a, pattern = "incoming")
     pdf(paste0(group_outdir,'_pathway_netP_heatmap.pdf'),w=10,h=10)
     ht1 + ht2
     dev.off()
 
-    Visual_cellchat_single(cellchat1a,group_outdir,vertex.receiver=vertex.receiver,sources.use = sources.use,targets.use = targets.use)
+    Visual_cellchat_single(cellchat_1a,group_outdir,vertex.receiver=vertex.receiver,sources.use = sources.use,targets.use = targets.use)
 
 }
 
