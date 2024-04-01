@@ -144,7 +144,7 @@ species<-opt$species
 group<-opt$group
 celltype<-opt$ident
 
-setwd(outdir)
+print("读取rds文件")
 rds<-readRDS(rdsfile)
 
 rds$Group<-rds@meta.data[,group]
