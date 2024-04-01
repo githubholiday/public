@@ -1,20 +1,20 @@
 library('getopt')
 para<- matrix(c(
-    'help',        'h',    0,      "logical",
-    'rds',         'i',    1,      "character",
-    'prefix',      'p',    1,      "character",
-    'db',          'd',    2,      "character",
-    'species',     's',    2,      "character",
-    'group',       'c',    2,      "character",
-    'ident',       'c',    2,      "character",
-    'outdir',      'o',    1,      "character",
-    'multiprocess','m',    2,      "numeric"
+    "help"        ,"h",     0,    "logical",
+    "rds"         ,"i",     2,    "character",
+    "prefix"      ,"p",     2,    "character",
+    "db"          ,"d",     2,    "character",
+    "species"     ,"s",     2,    "character",
+    "group"       ,"c",     1,    "character",
+    "ident"       ,"c",     1,    "character",
+    "outdir"      ,"o",     2,    "character",
+    "multiprocess","m",     1,    "numeric"
 ),byrow=TRUE,ncol=4)
 #===========================================================
 opt <- getopt(para,debug=FALSE)
 print_usage <- function(para=NULL){
-  cat(getopt(para,usage=TRUE))
-  cat("仅针对人和小鼠的物种做细胞通讯分析,注意选择正确的物种
+    cat(getopt(para,usage=TRUE))
+    cat("仅针对人和小鼠的物种做细胞通讯分析,注意选择正确的物种
       human(1939对229种pathwayL-R互作); mouse(2019对229种pathwayL-R互作)
       Secreted Signaling,ECM-Receptor,Cell-Cell Contact
       human:1199/421/319; mouse:1209/432/378
