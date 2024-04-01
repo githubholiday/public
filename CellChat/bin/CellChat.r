@@ -60,16 +60,13 @@ library(Seurat) #CombinePlots
 #https://rdrr.io/github/sqjin/CellChat/man/ #函数说明
 
 mkdirs <- function(outdir) {
-  if(!file.exists(outdir)) {
-    #mkdirs(dirname(fp))
-    dir.create(outdir)}
-  else{
-    print(paste(outdir,"Dir already exists!",sep="     "))
-    unlink(outdir, recursive=TRUE)
-    dir.create(outdir)}
+    if(!file.exists(outdir)) {
+        dir.create(outdir)}
+    else{
+        print(paste(outdir,"Dir already exists!",sep="     "))
+        unlink(outdir, recursive=TRUE)
+        dir.create(outdir)}
 }
-
-
 
 QC_cellchat<-function(rds,species,group.by='celltype',celltypes=names(table(rds$celltype))){
 	mydata<-list(data=rds@assays$RNA@data,meta=rds@meta.data)
@@ -87,8 +84,6 @@ QC_cellchat<-function(rds,species,group.by='celltype',celltypes=names(table(rds$
 	cellchat <- createCellChat(object = data.input, meta = meta, group.by = group.by) #指定细胞群分群label
 	return(cellchat)
 }
-
-
 
 Infer_cellchat<-function(cellchat,CellChatDB.use,thresh=0.05,thresh.p = 1,thresh.pc=0.1,min.cells = 10){
 	#指定L-R database
@@ -127,11 +122,9 @@ Visual_cellchat_single<-function(cellchat,outdir){
 	#单独可视化小图，print()不能放在一张图上
 	mat <- cellchat@net$weight
 	n<-ceiling(length(groupSize)/5)
-	pdf(paste(outdir,'netVisual_circle_part.pdf'),w=8,h=8)
-	#par(mfrow = c(n,5), xpd=TRUE)
-	par(mfrow = c(1,1), xpd=TRUE)
 	for (i in 1:nrow(mat)) {
 	    mat2 <- matrix(0, nrow = nrow(mat), ncol = ncol(mat), dimnames = dimnames(mat))
+        pdf(paste(outdir,"/",mat2,'circle.pdf'),w=8,h=8)
 	    mat2[i, ] <- mat[i, ]
 	    p3<-netVisual_circle(mat2, vertex.weight = groupSize, weight.scale = T, edge.weight.max = max(mat), title.name = rownames(mat)[i])
 	    print(p3) 
