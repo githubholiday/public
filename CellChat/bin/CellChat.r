@@ -1,11 +1,8 @@
 library('getopt')
 para<- matrix(c(
   'help',       'h',    0,      "logical",
-  'reverse',       'r',    2,      "character",
   'rds',      'i',    1,      "character",
   'prefix',     'p',   1,      "character",
-  'prob',     'b',    2,      "numeric",
-  'pvalue',     'a',    2,      "numeric",
   'db',       'd',    2,      "character",
   'species',   's',    2,      "character",
   'group',   'c',    2,      "character",
@@ -20,32 +17,20 @@ para<- matrix(c(
 opt <- getopt(para,debug=FALSE)
 print_usage <- function(para=NULL){
   cat(getopt(para,usage=TRUE))
-  cat("
-      /annoroad/data1/bioinfo/PMO/yaomengcheng/bk_Anaconda3/envs/monocle3/bin/Rscript
-      仅针对人和小鼠的物种做细胞通讯分析,注意选择正确的物种
+  cat("仅针对人和小鼠的物种做细胞通讯分析,注意选择正确的物种
       human(1939对229种pathwayL-R互作); mouse(2019对229种pathwayL-R互作)
       Secreted Signaling,ECM-Receptor,Cell-Cell Contact
       human:1199/421/319; mouse:1209/432/378
-      1_CCI 2_diff  data
-      ===========================================================================
-      prefix        输出文件前缀
-      ===========================================================================
-      species       物种名称,human or mouse
-      ===========================================================================
-      db            LR互作种类（以下三种选个一个），Secreted Signaling,ECM-Receptor,Cell-Cell Contact
-      ===========================================================================
-      outdir:outdir  of outputs,we will setwd(opt$outdir)
+
       Usage example:
-      Rscript this.r --rds rdsfile --outdir $outdir --prefix ILC_Stromal --db 'Secreted Signaling' --cmp Group --ident celltype --species mouse --sources 1,2,3,4,5 --targets 6,7,8,9,10 --vertex 1,2,3,4,5 --multiprocess 10 --reverse  F 
+      Rscript this.r --rds rdsfile --outdir $outdir --prefix ILC_Stromal --db 'Secreted Signaling' --group Group --ident celltype --species mouse --sources 1,2,3,4,5 --targets 6,7,8,9,10 --vertex 1,2,3,4,5 --multiprocess 10  
       Options:
       --help            h       NULL            get this help
-      --reverse            re       charater        T(factor:condition_vs_ctrl) or F(factor:(ctrl_vs_condition))  if or not reverse cmp order (group1:ctrl)
       --rds   i       character       rds file for 10xGenomics clusters [forced]
       --outdir  o       character       The     resurt of out dir for analysis [forced]
       --prefix, pre,     1,      character,
-      --pvalue, p,      2,      integer,
-      --prob, pro,      2,      integer,
-      --db,   d,      2,      character, [default Secreted Signaling]
+
+      --db,   d,      2,      character, [default Secreted Signaling],select from Secreted Signaling,ECM-Receptor,Cell-Cell Contact
       --group,   c,      2,      character, The  meta.data for cmp [default Group]
       --ident,   id,      2,      character, The  meta.data for celltype [default celltype]	  
       --species,   s,      2,      character, human or mouse
@@ -62,10 +47,8 @@ if ( !is.null(opt$help) )       { print_usage(para) }
 if ( is.null(opt$rds) )       { cat("Please give the rds file ...\n\n") ; print_usage(para)}
 if ( is.null(opt$outdir) )      { cat("Please give the outdir for analysis ...\n\n") ; print_usage(para) }
 if ( is.null(opt$prefix) )      { cat("Please give the prefix for outputfiles ...\n\n") ; print_usage(para) }
-if ( is.null(opt$pvalue))       { opt$pvalue <- 0.05} 
-if ( is.null(opt$prob))       { opt$prob <- 0}
 if ( is.null(opt$db)) { opt$db <- 'Secreted Signaling' }
-if ( is.null(opt$cmp)) { opt$cmp <- 'Group' }
+if ( is.null(opt$group)) { opt$group <- 'Group' }
 if ( is.null(opt$ident)) { opt$ident <- 'celltype' }
 if ( is.null(opt$species))     { cat("Please give human or mouse ...\n\n") ; print_usage(para) }
 if ( is.null(opt$vertex)) { opt$sources <- '1,2,3,4,5' }
@@ -222,13 +205,13 @@ Visual_cellchat_single<-function(cellchat,outdir,vertex.receiver=seq(1:5),source
 	levels(cellchat@idents)
 	# vertex.receiver = seq(1,5)
 	# sources.use = c(6:10);targets.use = c(1:5)
-	for (i in 1:length(pathways.show.all)) {
-	  pathname<-pathways.show.all[i]
-	  pathways.show<-pathways.show.all[i]
-	  print(paste0(i,":",pathways.show))
-	  netVisual_pathway_plot(cellchat,pathways.show,pathname,vertex.receiver=vertex.receiver,sources.use=sources.use,targets.use=targets.use)
+	#for (i in 1:length(pathways.show.all)) {
+	  #pathname<-pathways.show.all[i]
+	  #pathways.show<-pathways.show.all[i]
+	  #print(paste0(i,":",pathways.show))
+	  #netVisual_pathway_plot(cellchat,pathways.show,pathname,vertex.receiver=vertex.receiver,sources.use=sources.use,targets.use=targets.use)
 	  #cellchat,pathways.show,pathname,vertex.receiver=seq(1,5),sources.use = c(6:10),targets.use = c(1:5)
-	}
+	#}
 }
 
 ############################################ Main ############################################
