@@ -10,9 +10,6 @@ para<- matrix(c(
   'ident',   'c',    2,      "character",
   'ident',   'e',    2,      "character",
   'outdir',     'o',    1,      "character",
-  'vertex',     'v',    1,      "character",
-  'sources',     'l',    1,      "character",
-  'targets',     't',    1,      "character",
   'multiprocess',     'm',    2,      "numeric"
 ),byrow=TRUE,ncol=4)
 #===========================================================
@@ -44,18 +41,18 @@ print_usage <- function(para=NULL){
   q(status=1)
 }
 #===========================================================
-if ( !is.null(opt$help) )       { print_usage(para) }
+if ( !is.null(opt$help) )     { print_usage(para) }
 if ( is.null(opt$rds) )       { cat("Please give the rds file ...\n\n") ; print_usage(para)}
-if ( is.null(opt$outdir) )      { cat("Please give the outdir for analysis ...\n\n") ; print_usage(para) }
-if ( is.null(opt$prefix) )      { cat("Please give the prefix for outputfiles ...\n\n") ; print_usage(para) }
-if ( is.null(opt$db)) { opt$db <- 'Secreted Signaling' }
-if ( is.null(opt$group)) { opt$group <- 'Group' }
-if ( is.null(opt$ident)) { opt$ident <- 'celltype' }
-if ( is.null(opt$species))     { cat("Please give human or mouse ...\n\n") ; print_usage(para) }
-if ( is.null(opt$vertex)) { opt$sources <- '1,2,3,4,5' }
-if ( is.null(opt$sources)) { opt$sources <- '1,2,3,4,5' }
-if ( is.null(opt$targets)) { opt$targets <- '6,7,8,9,10' }
-if ( is.null(opt$multiprocess)) { opt$multiprocess <- 10 }
+if ( is.null(opt$outdir) )    { cat("Please give the outdir for analysis ...\n\n") ; print_usage(para) }
+if ( is.null(opt$prefix) )    { cat("Please give the prefix for outputfiles ...\n\n") ; print_usage(para) }
+if ( is.null(opt$db))         { opt$db <- 'Secreted Signaling' }
+if ( is.null(opt$group))      { opt$group <- 'Group' }
+if ( is.null(opt$ident))      { opt$ident <- 'celltype' }
+if ( is.null(opt$species))    { cat("Please give human or mouse ...\n\n") ; print_usage(para) }
+if ( is.null(opt$vertex))     { opt$sources <- '1,2,3,4,5' }
+if ( is.null(opt$sources))    { opt$sources <- '1,2,3,4,5' }
+if ( is.null(opt$targets))    { opt$targets <- '6,7,8,9,10' }
+if ( is.null(opt$multiprocess)){ opt$multiprocess <- 10 }
 
 #################----------------------------------------------------------
 #cellchat细胞通讯分析
@@ -165,10 +162,6 @@ db<-opt$db
 species<-opt$species
 group<-opt$group
 celltype<-opt$ident
-
-sources.use<-as.numeric(unlist(strsplit(as.character(opt$sources),split = ",",fixed=T)))
-targets.use<-as.numeric(unlist(strsplit(as.character(opt$targets),split = ",",fixed=T)))
-vertex.receiver<-as.numeric(unlist(strsplit(as.character(opt$vertex),split = ",",fixed=T)))
 
 setwd(outdir)
 rds<-readRDS(rdsfile)
