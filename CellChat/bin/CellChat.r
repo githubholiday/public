@@ -124,7 +124,7 @@ Infer_cellchat<-function(cellchat,CellChatDB.use,thresh=0.05,thresh.p = 1,thresh
 	return(cellchat)
 }
 
-Visual_cellchat_single<-function(cellchat,outdir,vertex.receiver=seq(1:5),sources.use = c(6:10),targets.use = c(1:5)){
+Visual_cellchat_single<-function(cellchat,outdir){
 	print('2.2 细胞通讯网络推断结果整理绘制circles图..')
 	#整体绘图
 	groupSize <- as.numeric(table(cellchat@idents))
@@ -257,7 +257,7 @@ for (i in (1:length(groups))){
     ht1 + ht2
     dev.off()
 
-    Visual_cellchat_single(cellchat_1a,group_outdir,vertex.receiver=vertex.receiver,sources.use = sources.use,targets.use = targets.use)
+    Visual_cellchat_single(cellchat_1a,group_outdir)
 
 }
 
