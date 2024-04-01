@@ -43,7 +43,6 @@ print_usage <- function(para=NULL){
 }
 #===========================================================
 if ( !is.null(opt$help) )       { print_usage(para) }
-#if ( !is.null(opt$reverse) )       { print_usage(para) }
 if ( is.null(opt$rds) )       { cat("Please give the rds file ...\n\n") ; print_usage(para)}
 if ( is.null(opt$outdir) )      { cat("Please give the outdir for analysis ...\n\n") ; print_usage(para) }
 if ( is.null(opt$prefix) )      { cat("Please give the prefix for outputfiles ...\n\n") ; print_usage(para) }
@@ -55,7 +54,6 @@ if ( is.null(opt$vertex)) { opt$sources <- '1,2,3,4,5' }
 if ( is.null(opt$sources)) { opt$sources <- '1,2,3,4,5' }
 if ( is.null(opt$targets)) { opt$targets <- '6,7,8,9,10' }
 if ( is.null(opt$multiprocess)) { opt$multiprocess <- 10 }
-if ( is.null(opt$reverse)) { opt$reverse <- 'F' }
 
 #################----------------------------------------------------------
 #cellchat细胞通讯分析
@@ -203,15 +201,6 @@ Visual_cellchat_single<-function(cellchat,outdir,vertex.receiver=seq(1:5),source
 	pathways.show.all <- cellchat@netP$pathways
 	# check the order of cell identity to set suitable vertex.receiver
 	levels(cellchat@idents)
-	# vertex.receiver = seq(1,5)
-	# sources.use = c(6:10);targets.use = c(1:5)
-	#for (i in 1:length(pathways.show.all)) {
-	  #pathname<-pathways.show.all[i]
-	  #pathways.show<-pathways.show.all[i]
-	  #print(paste0(i,":",pathways.show))
-	  #netVisual_pathway_plot(cellchat,pathways.show,pathname,vertex.receiver=vertex.receiver,sources.use=sources.use,targets.use=targets.use)
-	  #cellchat,pathways.show,pathname,vertex.receiver=seq(1,5),sources.use = c(6:10),targets.use = c(1:5)
-	#}
 }
 
 ############################################ Main ############################################
