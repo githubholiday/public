@@ -4,11 +4,11 @@ para<- matrix(c(
     "rds"         ,"i",     2,    "character",
     "db"          ,"d",     2,    "character",
     "species"     ,"s",     2,    "character",
-    "group"       ,"c",     1,    "character",
+    "group"       ,"g",     1,    "character",
     "ident"       ,"c",     1,    "character",
     "outdir"      ,"o",     2,    "character",
-    "multiprocess","m",     1,    "numeric"
-),byrow=TRUE,ncol=4)
+    "multiprocess","m",     1,    "numeric"),
+    byrow=TRUE,ncol=4)
 #===========================================================
 opt <- getopt(para,debug=FALSE)
 print_usage <- function(para=NULL){
