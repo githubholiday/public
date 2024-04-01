@@ -143,7 +143,8 @@ db<-opt$db
 species<-opt$species
 group<-opt$group
 celltype<-opt$ident
-
+print(group)
+print(celltype)
 print("读取rds文件")
 rds<-readRDS(rdsfile)
 
