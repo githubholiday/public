@@ -300,7 +300,7 @@ print('2.按照组分别创建CellChat对象...')
 #创建cellchat对象
 rds1<-subset(rds,Group==group1)
 rds2<-subset(rds,Group==group2)
-for i in (1:length(groups)){
+for (i in (1:length(groups))){
     group_name = groups[i]
     print(paste("2.1 正在处理分组 ", group_name ))
     group_outdir = paste0(result_dir,group_name)
