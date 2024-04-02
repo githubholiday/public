@@ -119,13 +119,12 @@ Visual_cellchat_single<-function(cellchat,outdir){
 	dev.off()
 	#单独可视化小图，print()不能放在一张图上
 	mat <- cellchat@net$weight
-    print(mat)
 	n<-ceiling(length(groupSize)/5)
+    mat_rownames = rownames(mat)
 	for (i in 1:nrow(mat)) {
 	    mat2 <- matrix(0, nrow = nrow(mat), ncol = ncol(mat), dimnames = dimnames(mat))
-        pdf(paste(outdir,"/",mat[i,],'circle.pdf',sep=""),w=8,h=8)
+        pdf(paste(outdir,"/",mat_rownames[i],'circle.pdf',sep=""),w=8,h=8)
 	    mat2[i, ] <- mat[i, ]
-        print(mat[i,])
 	    p3<-netVisual_circle(mat2, vertex.weight = groupSize, weight.scale = T, edge.weight.max = max(mat), title.name = rownames(mat)[i])
 	    print(p3) 
 	}
