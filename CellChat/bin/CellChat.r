@@ -236,7 +236,7 @@ for (i in (1:length(groups))){
     cellchat_1a <- Infer_cellchat(cellchat,CellChatDB.use,thresh=0.05,thresh.p = 1,thresh.pc=0.1,min.cells = 10)
     net1 <- subsetCommunication(cellchat_1a,slot.name = "net",thresh = 0.05)
     netP1  <- subsetCommunication(cellchat_1a,slot.name = "netP",thresh = 0.05)
-    saveRDS(cellchat_1a,file=paste0(tmp_dir,group_name,'_cellchat1.rds'))
+    saveRDS(cellchat_1a,file=paste0(result_dir,group_name,'_cellchat1.rds'))
 
     dataset<-CellChatDB.use$interaction
     data<-unique(dataset[,c('pathway_name','annotation')])
