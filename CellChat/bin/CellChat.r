@@ -137,6 +137,48 @@ Infer_cellchat<-function(cellchat,CellChatDB.use,thresh=0.05,thresh.p = 1,thresh
 	return(cellchat)
 }
 
+netVisual_pathway_plot<-function(cellchat,pathways.show,pathname,vertex.receiver=seq(1,5),sources.use = c(6:10),targets.use = c(1:5)){
+#Visualize communication network associated with both signaling pathway and individual L-R pairs
+	#netVisual的功能是可以同时绘制netVisual_aggregate和netVisual_individual
+	#"circle", "hierarchy", "chord"三种类型图绘制只能绘制某一种
+	groupSize <- as.numeric(table(cellchat@idents))
+	netVisual(cellchat, signaling = pathways.show, signaling.name=pathname,vertex.receiver = vertex.receiver, layout = c("circle"), out.format ='pdf')
+	netVisual(cellchat, signaling = pathways.show, signaling.name=pathname,vertex.receiver = vertex.receiver, layout = c("hierarchy"), out.format ='pdf')
+	#vertex.weight = NULL 表示会按照细胞占比数绘? 不会
+	# 绘制单个netVisual_individual会报错
+	#netVisual(cellchat, signaling = pathways.show, signaling.name=pathname,vertex.receiver = vertex.receiver, layout = c("chord"), out.format ='pdf',vertex.weight = NULL,small.gap = 0.1,big.gap = 1)
+	pdf(file =paste0(pathname,"_chord_aggregate.pdf"), width = 8, height =8)
+	netVisual_aggregate(cellchat, signaling = pathways.show, signaling.name=pathname,vertex.receiver = vertex.receiver, layout = c("chord"), out.format ='pdf',vertex.weight = groupSize,small.gap = 0.1,big.gap = 1)
+	dev.off()
+	pdf(file =paste0(pathname,"_chord_individual.pdf"), width = 20, height =20)
+	netVisual_individual(cellchat, signaling = pathways.show, signaling.name=pathname,vertex.receiver = vertex.receiver, layout = c("chord"), out.format ='pdf',vertex.weight = groupSize,small.gap = 0.1,big.gap = 1)
+	dev.off()
+	# Compute and visualize the contribution of each ligand-receptor pair to the overall signaling pathway
+	#contribution barplot图绘制
+	gg <- netAnalysis_contribution(cellchat, signaling = pathways.show)
+	ggsave(filename=paste0(pathname, "_L-R_contribution.pdf"), plot=gg, width = 3, height = 2, units = 'in', dpi = 300)
+	#Heatmap绘制,只能绘制单个
+	p1<-netVisual_heatmap(cellchat, signaling = pathways.show, color.heatmap = "Reds")
+	pdf(paste0(pathname,'_netVisual_heatmap.pdf'),w=5,h=5)
+	print(p1)
+	dev.off()
+	#Bubble plot 可以绘制多个绘制 #需要设定sources.use = c(6:10), targets.use = c(1:5)
+	p2<-netVisual_bubble(cellchat, sources.use = sources.use, targets.use = targets.use, remove.isolate = FALSE,signaling = pathways.show)
+	pdf(paste0(pathname,'_netVisual_bubble.pdf'),w=5,h=3)
+	print(p2)
+	dev.off()
+   ##使用小提琴/点图绘制信号基因表达分布
+	p1<-plotGeneExpression(cellchat, signaling = pathways.show,type='violin') #type = c("violin", "dot")
+	pdf(paste0(pathname,'_plotGeneExpression_vlnplot.pdf'),w=5,h=5)
+	print(p1)
+	dev.off()
+	#CDH,CDH2_CDH2 会有共同的基因,dotplot图会报错
+	# p2<-plotGeneExpression(cellchat, signaling = pathways.show,type='dot') #type = c("violin", "dot")
+	# pdf(paste0(pathname,'_plotGeneExpression_dotplot.pdf'),w=5,h=5)
+	# print(p2)
+	# dev.off()
+}
+
 Visual_cellchat_single<-function(cellchat,outdir){
 	print('2.2 细胞通讯网络推断结果整理绘制circles图..')
 	#整体绘图
@@ -167,14 +209,14 @@ Visual_cellchat_single<-function(cellchat,outdir){
 	# Access all the signaling pathways showing significant communications
 	pathways.show.all <- cellchat@netP$pathways
 	# check the order of cell identity to set suitable vertex.receiver
-	levels(cellchat@idents)
-    for (i in 1:length(pathways.show.all)) {
-        pathname<-pathways.show.all[i]
-        pathways.show<-pathways.show.all[i]
-        print(paste0(i,":",pathways.show))
-        netVisual_pathway_plot(cellchat,pathways.show,pathname,vertex.receiver=vertex.receiver,sources.use=sources.use,targets.use=targets.use)
+	#levels(cellchat@idents)
+    #for (i in 1:length(pathways.show.all)) {
+        #pathname<-pathways.show.all[i]
+        #pathways.show<-pathways.show.all[i]
+        #print(paste0(i,":",pathways.show))
+        #netVisual_pathway_plot(cellchat,pathways.show,pathname,vertex.receiver=vertex.receiver,sources.use=sources.use,targets.use=targets.use)
         #cellchat,pathways.show,pathname,vertex.receiver=seq(1,5),sources.use = c(6:10),targets.use = c(1:5)
-	}
+	#}
 }
 
 ############################################ Main ############################################
