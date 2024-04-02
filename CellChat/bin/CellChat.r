@@ -66,6 +66,37 @@ mkdirs <- function(outdir) {
         dir.create(outdir)}
 }
 
+DB_Select <- function( species, db='Secreted Signaling', outdir ){
+    if (species=='human'){
+        CellChatDB <- CellChatDB.human
+        PPI<-PPI.human
+    }else if (species=='mouse'){
+        CellChatDB <- CellChatDB.mouse
+        PPI<-PPI.mouse
+    }else{
+        print("CellChat只能分析人和小鼠，程序退出")
+        quit()
+    }
+    dplyr::glimpse(CellChatDB$interaction)
+
+    DBList<-c('Secreted Signaling','ECM-Receptor','Cell-Cell Contact')
+###human:1199/421/319; mouse:1209/432/378
+    if (db %in% DBList){
+        CellChatDB.use <- subsetDB(CellChatDB, search = db) # use Secreted Signaling
+    } else if (db =='all'){
+        CellChatDB.use<-CellChatDB
+    } else{
+        print("请选择正确的L-R互作种类：Secreted Signaling,ECM-Receptor,Cell-Cell Contact");quit()
+    }
+
+    tmp_dir = paste0(outdir, '/tmp',sep="")
+    mkdirs(tmp_dir)
+    write.table(CellChatDB.use$interaction,file=paste0(outdir,'/tmp/CellChatDB.use_interaction.xls'),quote=F,sep='\t',row.names=F)
+    write.table(CellChatDB.human$interaction,file=paste0(outdir,'/tmp/CellChatDB.human_interaction.xls'),quote=F,sep='\t',row.names=F)
+    write.table(CellChatDB.mouse$interaction,file=paste0(outdir,'/tmp/CellChatDB.mouse_interaction.xls'),quote=F,sep='\t',row.names=F)
+    return(CellChatDB.use)
+}
+
 QC_cellchat<-function(rds,species,group.by='celltype',celltypes=names(table(rds$celltype))){
 	mydata<-list(data=rds@assays$RNA@data,meta=rds@meta.data)
 	mydata$meta$celltype<-as.vector(mydata$meta$celltype)
@@ -137,6 +168,13 @@ Visual_cellchat_single<-function(cellchat,outdir){
 	pathways.show.all <- cellchat@netP$pathways
 	# check the order of cell identity to set suitable vertex.receiver
 	levels(cellchat@idents)
+    for (i in 1:length(pathways.show.all)) {
+        pathname<-pathways.show.all[i]
+        pathways.show<-pathways.show.all[i]
+        print(paste0(i,":",pathways.show))
+        netVisual_pathway_plot(cellchat,pathways.show,pathname,vertex.receiver=vertex.receiver,sources.use=sources.use,targets.use=targets.use)
+        #cellchat,pathways.show,pathname,vertex.receiver=seq(1,5),sources.use = c(6:10),targets.use = c(1:5)
+	}
 }
 
 ############################################ Main ############################################
@@ -148,8 +186,7 @@ species<-opt$species
 group<-opt$group
 celltype<-opt$ident
 cmp <- opt$cmp
-print(group)
-print(celltype)
+
 print("读取rds文件")
 rds<-readRDS(rdsfile)
 
@@ -174,41 +211,16 @@ rds$celltype<-factor(rds$celltype,levels=celltypes)
 
 #1 选择数据库并且预处理表达矩阵
 print('#1.选择数据库并且预处理表达矩阵...')
-#（注意选择正确的物种human(1939对229种pathwayL-R互作)/mouse(2019对229种pathwayL-R互作)）
- # use CellChatDB.mouse if running on mouse data
-if (species=='human'){
-    CellChatDB <- CellChatDB.human
-    PPI<-PPI.human
-}else if (species=='mouse'){
-    CellChatDB <- CellChatDB.mouse
-    PPI<-PPI.mouse
-}else{
-    print("CellChat只能分析人和小鼠");quit()
-}
-dplyr::glimpse(CellChatDB$interaction)
 
-DB<-c('Secreted Signaling','ECM-Receptor','Cell-Cell Contact')
-###human:1199/421/319; mouse:1209/432/378
-if (db %in% DB){
-    CellChatDB.use <- subsetDB(CellChatDB, search = db) # use Secreted Signaling
-} else if (db =='all'){
-    CellChatDB.use<-CellChatDB
-} else{
-    print("请选择正确的L-R互作种类：Secreted Signaling,ECM-Receptor,Cell-Cell Contact");quit()
-    }
+result_dir = outdir
+mkdirs(result_dir)
 
-tmp_dir = paste0(outdir, '/tmp')
-mkdirs(tmp_dir)
-write.table(CellChatDB.use$interaction,file=paste0(outdir,'/tmp/CellChatDB.use_interaction.xls'),quote=F,sep='\t',row.names=F)
-write.table(CellChatDB.human$interaction,file=paste0(outdir,'/tmp/CellChatDB.human_interaction.xls'),quote=F,sep='\t',row.names=F)
-write.table(CellChatDB.mouse$interaction,file=paste0(outdir,'/tmp/CellChatDB.mouse_interaction.xls'),quote=F,sep='\t',row.names=F)
+CellChatDB.use <- DB_Select(species,db,result_dir)
 
 #================================================================================================
 #2 按照组分别创建CellChat对象并进行细胞通讯推断分析
 future::plan("multisession", workers = as.numeric(opt$multiprocess)) # do parallel
 
-result_dir = outdir
-mkdirs(result_dir)
 print('2.按照组分别创建CellChat对象...')
 #创建cellchat对象
 
