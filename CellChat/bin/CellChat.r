@@ -127,8 +127,9 @@ Visual_cellchat_single<-function(cellchat,outdir){
 	    mat2[i, ] <- mat[i, ]
 	    p3<-netVisual_circle(mat2, vertex.weight = groupSize, weight.scale = T, edge.weight.max = max(mat), title.name = rownames(mat)[i])
 	    print(p3) 
+        dev.off()
 	}
-	dev.off()
+
 	print('2.3 单个pathway绘图（circle,hierarchy,chord,contribution,bubble图）...')
 	mkdirs(paste0(outdir,'/pathways'))
 	setwd(paste0(outdir,'/pathways/'))
