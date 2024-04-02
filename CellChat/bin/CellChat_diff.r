@@ -137,6 +137,48 @@ Infer_cellchat<-function(cellchat,CellChatDB.use,thresh=0.05,thresh.p = 1,thresh
 	return(cellchat)
 }
 
+netVisual_pathway_plot<-function(cellchat,pathways.show,pathname,vertex.receiver=seq(1,5),sources.use = c(6:10),targets.use = c(1:5)){
+#Visualize communication network associated with both signaling pathway and individual L-R pairs
+	#netVisual的功能是可以同时绘制netVisual_aggregate和netVisual_individual
+	#"circle", "hierarchy", "chord"三种类型图绘制只能绘制某一种
+	groupSize <- as.numeric(table(cellchat@idents))
+	netVisual(cellchat, signaling = pathways.show, signaling.name=pathname,vertex.receiver = vertex.receiver, layout = c("circle"), out.format ='pdf')
+	netVisual(cellchat, signaling = pathways.show, signaling.name=pathname,vertex.receiver = vertex.receiver, layout = c("hierarchy"), out.format ='pdf')
+	#vertex.weight = NULL 表示会按照细胞占比数绘? 不会
+	# 绘制单个netVisual_individual会报错
+	#netVisual(cellchat, signaling = pathways.show, signaling.name=pathname,vertex.receiver = vertex.receiver, layout = c("chord"), out.format ='pdf',vertex.weight = NULL,small.gap = 0.1,big.gap = 1)
+	pdf(file =paste0(pathname,"_chord_aggregate.pdf"), width = 8, height =8)
+	netVisual_aggregate(cellchat, signaling = pathways.show, signaling.name=pathname,vertex.receiver = vertex.receiver, layout = c("chord"), out.format ='pdf',vertex.weight = groupSize,small.gap = 0.1,big.gap = 1)
+	dev.off()
+	pdf(file =paste0(pathname,"_chord_individual.pdf"), width = 20, height =20)
+	netVisual_individual(cellchat, signaling = pathways.show, signaling.name=pathname,vertex.receiver = vertex.receiver, layout = c("chord"), out.format ='pdf',vertex.weight = groupSize,small.gap = 0.1,big.gap = 1)
+	dev.off()
+	# Compute and visualize the contribution of each ligand-receptor pair to the overall signaling pathway
+	#contribution barplot图绘制
+	gg <- netAnalysis_contribution(cellchat, signaling = pathways.show)
+	ggsave(filename=paste0(pathname, "_L-R_contribution.pdf"), plot=gg, width = 3, height = 2, units = 'in', dpi = 300)
+	#Heatmap绘制,只能绘制单个
+	p1<-netVisual_heatmap(cellchat, signaling = pathways.show, color.heatmap = "Reds")
+	pdf(paste0(pathname,'_netVisual_heatmap.pdf'),w=5,h=5)
+	print(p1)
+	dev.off()
+	#Bubble plot 可以绘制多个绘制 #需要设定sources.use = c(6:10), targets.use = c(1:5)
+	p2<-netVisual_bubble(cellchat, sources.use = sources.use, targets.use = targets.use, remove.isolate = FALSE,signaling = pathways.show)
+	pdf(paste0(pathname,'_netVisual_bubble.pdf'),w=5,h=3)
+	print(p2)
+	dev.off()
+   ##使用小提琴/点图绘制信号基因表达分布
+	p1<-plotGeneExpression(cellchat, signaling = pathways.show,type='violin') #type = c("violin", "dot")
+	pdf(paste0(pathname,'_plotGeneExpression_vlnplot.pdf'),w=5,h=5)
+	print(p1)
+	dev.off()
+	#CDH,CDH2_CDH2 会有共同的基因,dotplot图会报错
+	# p2<-plotGeneExpression(cellchat, signaling = pathways.show,type='dot') #type = c("violin", "dot")
+	# pdf(paste0(pathname,'_plotGeneExpression_dotplot.pdf'),w=5,h=5)
+	# print(p2)
+	# dev.off()
+}
+
 Visual_cellchat_single<-function(cellchat,outdir){
 	print('2.2 细胞通讯网络推断结果整理绘制circles图..')
 	#整体绘图
@@ -168,6 +210,14 @@ Visual_cellchat_single<-function(cellchat,outdir){
 	pathways.show.all <- cellchat@netP$pathways
 	# check the order of cell identity to set suitable vertex.receiver
 	levels(cellchat@idents)
+    #levels(cellchat@idents)
+    #for (i in 1:length(pathways.show.all)) {
+        #pathname<-pathways.show.all[i]
+        #pathways.show<-pathways.show.all[i]
+        #print(paste0(i,":",pathways.show))
+        #netVisual_pathway_plot(cellchat,pathways.show,pathname,vertex.receiver=vertex.receiver,sources.use=sources.use,targets.use=targets.use)
+        #cellchat,pathways.show,pathname,vertex.receiver=seq(1,5),sources.use = c(6:10),targets.use = c(1:5)
+	#}
 }
 
 ############################################ Main ############################################
@@ -217,9 +267,11 @@ cmp1 = groups[0]
 cmp2 = groups[1]
 cmp_pre = paste(cmp1, cmp2, sep="_")
 result_dir = paste(outdir, "/", cmp_pre, sep="")
+result_pre = paste(result_dir, "/", cmp_pre, sep="")
 mkdirs(result_dir)
 rds1 <- subset(rds,Group==cmp1)
 rds2 <- subset(rds,Group==cmp2)
+#各个样本进行cellchat
 cellchat1 <- QC_cellchat(rds1,species,group.by='celltype',celltypes=names(table(rds1$celltype)))
 cellchat_1a <- Infer_cellchat(cellchat1,CellChatDB.use,thresh=0.05,thresh.p = 1,thresh.pc=0.1,min.cells = 10)
 
@@ -231,34 +283,31 @@ names(object.list)<-c(cmp1,cmp2)
 cellchat <- mergeCellChat(object.list, add.names = c(cmp1,cmp2))
 
 
-pos.dataset<-group2;features.name<-'diff'
+pos.dataset<-group2
+features.name<-'diff'
 #组之间每个celltype做差异基因分析
 cellchat <- identifyOverExpressedGenes(cellchat, group.dataset = "datasets", pos.dataset = pos.dataset, features.name = features.name, only.pos = FALSE, thresh.pc = 0.1, thresh.fc = 0.25, thresh.p = 0.05)
 net <- netMappingDEG(cellchat,features.name = features.name,thresh = 0.05)
 dim(net);table(net$datasets)
 str(cellchat@var.features)
 
-# net.up <- subsetCommunication(cellchat, net = net, datasets = group2,ligand.logFC = 0.2, receptor.logFC = NULL)
-# net.down <- subsetCommunication(cellchat, net = net, datasets = group1,ligand.logFC = -0.1, receptor.logFC = -0.1)
-# upregulated,downregulated
 net.up <- subsetCommunication(cellchat, net = net, datasets = group2)
 net.down <- subsetCommunication(cellchat, net = net, datasets = group1)
 gene.up <- extractGeneSubsetFromPair(net.up, cellchat)
 gene.down <- extractGeneSubsetFromPair(net.down, cellchat)
-write.table(net,file=paste0(prefix,'_net_diff.xls'),quote=F,sep='\t',row.names=F)
-write.table(t(net[1,]),file='example_net_diff.xls',quote=F,sep='\t',row.names=T,col.names=F)
+write.table(net,file=paste0(result_pre,'_net_diff.xls'),quote=F,sep='\t',row.names=F)
+write.table(t(net[1,]),file=paste0(result_pre,'example_net_diff.xls'),quote=F,sep='\t',row.names=T,col.names=F)
 
-#/annoroad/data1/bioinfo/PROJECT/big_Commercial/Cooperation/B_TET/B_TET-066/supplement/yaomengcheng/AN202106070003/Analysis/Analysis/5.celltalk/ILC_Stromal/diffgenes
 #高度可变的基因list
 var.features<-data.frame(cellchat@var.features$diff.info)
 var.features$gene<-rownames(var.features)
-write.table(var.features,file=paste0(group2,'_vs_',group1,'_celltypes_diffgenes.xls'),quote=F,sep='\t',row.names=F)
+write.table(var.features,file=paste0(result_pre,'_celltypes_diffgenes.xls'),quote=F,sep='\t',row.names=F)
 
 
 #存储对象
-saveRDS(cellchat, file = paste0(outdir,'/tmp/',prefix,"_cellchat_merge.rds"))
+saveRDS(cellchat, file = paste0(result_pre,"_cellchat_merge.rds"))
 #cellchat<-readRDS('ctrl_13Gy_cellchat_compare.rds')
-saveRDS(object.list, file = paste0(outdir,'/tmp/',prefix,"_cellchat_object.list.rds"))
+saveRDS(object.list, file = paste0(result_pre,"_cellchat_object.list.rds"))
 
 
 # 绘制interaction数目
@@ -268,12 +317,12 @@ library(scales)  ###颜色获取设置
 color.use<-c('red','blue') #group2,group1
 gg1 <- compareInteractions(cellchat, show.legend = F, group = c(2,1),measure = 'count',color.use=color.use)
 gg2 <- compareInteractions(cellchat, show.legend = F, group = c(2,1), measure = "weight",color.use=color.use)
-ggsave(filename=paste0(prefix,'_compareInteractions.pdf'),plot=gg1 + gg2, width = 5, height = 4, units = 'in', dpi = 300)
+ggsave(filename=paste0(result_pre,'_compareInteractions.pdf'),plot=gg1 + gg2, width = 5, height = 4, units = 'in', dpi = 300)
 
 
 # 红色表示在第二个组增的，蓝色表示在第一个组增加的
 # ggsave和p_list一页都满足不了
-pdf(paste0(prefix,'_netVisual_diffInteraction.pdf'),w=10,h=5)
+pdf(paste0(result_pre,'_netVisual_diffInteraction.pdf'),w=10,h=5)
 #Colors for indicating whether the signaling is increased ('color.edge[1]') or decreased ('color.edge[2]')
 color.edge<-c('red','blue') #默认  color.edge = c("#b2182b", "#2166ac"),
 netVisual_diffInteraction(cellchat, weight.scale = T, measure = "count", color.edge = color.edge)
@@ -284,13 +333,13 @@ dev.off()
 #color.heatmap A vector of two colors corresponding to max/min values, or a color name in brewer.pal only when the data in the heatmap do not contain negative values
 gg1 <- netVisual_heatmap(cellchat, measure = "count",color.heatmap=c('blue','red')) #min/max values 函数说明写反了
 gg2 <- netVisual_heatmap(cellchat, measure = "weight",color.heatmap=c('blue','red'))
-pdf(paste0(prefix,'_netVisual_heatmap.pdf'),w=10,h=5)
+pdf(paste0(result_pre,'_netVisual_heatmap.pdf'),w=10,h=5)
 gg1+gg2
 dev.off()
 
 
 # 单个interaction绘制
-pdf(paste0(prefix,'_netVisual_circle.pdf'),w=10,h=5)
+pdf(paste0(result_pre,'_netVisual_circle.pdf'),w=10,h=5)
 weight.max <- getMaxWeight(object.list, attribute = c("idents","count"))
 par(mfrow = c(1,2), xpd=TRUE)
 for (i in 1:length(object.list)) {
@@ -302,32 +351,19 @@ dev.off()
 #4 定义保守和特异的pathway
 gg1 <- rankNet(cellchat, mode = "comparison", stacked = T, do.stat = TRUE,color.use=c('blue','red')) ##group1,group2
 gg2 <- rankNet(cellchat, mode = "comparison", stacked = F, do.stat = TRUE,color.use=c('blue','red'))
-pdf(paste0(prefix,'_comparison_rankNet.pdf'),w=10,h=5)
+pdf(paste0(result_pre,'_comparison_rankNet.pdf'),w=10,h=5)
 gg1 + gg2
 dev.off()
 
 #5 识别上调和下调的LR pair
-pdf(paste0(prefix,'_comparison_netVisual_bubble.pdf'),w=10,h=6)
+pdf(paste0(result_pre,'_comparison_netVisual_bubble.pdf'),w=10,h=6)
 netVisual_bubble(cellchat, sources.use = sources.use,  targets.use =  targets.use,  comparison = c(1, 2), angle.x = 45,color.text=c('blue','red'))
 dev.off()
 
-pdf(paste0(prefix,'_comparison_netVisual_bubble_DE.pdf'),w=10,h=6)
+pdf(paste0(result_pre,'_comparison_netVisual_bubble_DE.pdf'),w=10,h=6)
 netVisual_bubble(cellchat, sources.use = sources.use,  targets.use =  targets.use, max.dataset = 1, comparison = c(1, 2), angle.x = 45,color.text=c('blue','red'))
 netVisual_bubble(cellchat, sources.use = sources.use,  targets.use =  targets.use, max.dataset = 2, comparison = c(1, 2), angle.x = 45,color.text=c('blue','red'))
 dev.off()
-#https://rdrr.io/github/sqjin/CellChat/man/netVisual_bubble.html
-#为什么绘制不出来呢？ NA值
-# LRpair<-subset(cellchat@DB$interaction,pathway_name %in% c('TGFb','IL16','IFN−II','IL2'))
-# pdf(paste0(prefix,'_comparison_netVisual_bubble1.pdf'),w=10,h=6)
-# netVisual_bubble(cellchat, sources.use = c(6:10), targets.use = c(1:5),  comparison = c(1, 2), angle.x = 45,color.text=c('blue','red'),pairLR.use=LRpair,thresh = 1)
-# dev.off()
-
-# Chord diagram
-# pathways.show <- c("CXCL","CCL") 
-# par(mfrow = c(1,2), xpd=TRUE)
-# for (i in 1:length(object.list)) {
-  # netVisual_aggregate(object.list[[i]], signaling = pathways.show, layout = "chord", signaling.name = paste(pathways.show, names(object.list)[i]))
-# }
 
 #可视化bubble
 pairLR.use.up = net.up[, "interaction_name", drop = F]
@@ -347,29 +383,6 @@ netVisual_chord_gene(object.list[[2]], sources.use = sources.use,  targets.use =
 #> Note: The first link end is drawn out of sector 'MIF'.
 netVisual_chord_gene(object.list[[1]], sources.use = sources.use,  targets.use =  targets.use, slot.name = 'net', net = net.down, lab.cex = 0.8, small.gap = 3.5, title.name = paste0("Down-regulated signaling in ", names(object.list)[2]))
 dev.off()
-
-
-####单个pathway可视化绘制可视化基因小提琴图
-# mkdirs(paste0(outdir,'/2_diff/'),'pathways')
-# setwd(paste0(outdir,'/2_diff/pathways/'))
-# cellchat@meta$datasets = factor(cellchat@meta$datasets, levels = c(group1,group2)) # set factor level
-###Access all the signaling pathways showing significant communications
-# pathways.show.all <- unique(c(cellchat@netP[[1]]$pathways,cellchat@netP[[2]]$pathways))
-####check the order of cell identity to set suitable vertex.receiver
-####vertex.receiver = seq(1,5)
-####sources.use = c(6:10);targets.use = c(1:5)
-# print('3 单个pathway绘图,diff（circle,hierarchy,chord,contribution,bubble图）...')
-# for (i in 1:length(pathways.show.all)) {
-	# pathname<-pathways.show.all[i]
-	# pathways.show<-pathways.show.all[i]
-	# print(paste0(i,":",pathways.show))	#netVisual_pathway_plot(cellchat,pathways.show,pathname,vertex.receiver=vertex.receiver,sources.use=sources.use,targets.use=targets.use)
-	####cellchat,pathways.show,pathname,vertex.receiver=seq(1,5),sources.use = c(6:10),targets.use = c(1:5)
-	# pdf(paste0(pathname,'_plotGeneExpression.pdf'),w=10,h=8)
-	#如何show legend? +theme(legend.position='right')
-	# p<-plotGeneExpression(cellchat, signaling = pathways.show.all[i], split.by = "datasets", colors.ggplot = T)
-	# print(p)
-	# dev.off()
-# }
 
 print('Finish all analysis...')
 
