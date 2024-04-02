@@ -207,7 +207,7 @@ write.table(CellChatDB.mouse$interaction,file=paste0(outdir,'/tmp/CellChatDB.mou
 #2 按照组分别创建CellChat对象并进行细胞通讯推断分析
 future::plan("multisession", workers = as.numeric(opt$multiprocess)) # do parallel
 
-result_dir = paste0(outdir,'/1_CCI/')
+result_dir = outdir
 mkdirs(result_dir)
 print('2.按照组分别创建CellChat对象...')
 #创建cellchat对象
