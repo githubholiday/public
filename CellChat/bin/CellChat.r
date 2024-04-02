@@ -122,7 +122,7 @@ Visual_cellchat_single<-function(cellchat,outdir){
 	n<-ceiling(length(groupSize)/5)
 	for (i in 1:nrow(mat)) {
 	    mat2 <- matrix(0, nrow = nrow(mat), ncol = ncol(mat), dimnames = dimnames(mat))
-        pdf(paste(outdir,"/",mat2,'circle.pdf'),w=8,h=8)
+        pdf(paste(outdir,"/",mat2,'circle.pdf'.sep=""),w=8,h=8)
 	    mat2[i, ] <- mat[i, ]
 	    p3<-netVisual_circle(mat2, vertex.weight = groupSize, weight.scale = T, edge.weight.max = max(mat), title.name = rownames(mat)[i])
 	    print(p3) 
