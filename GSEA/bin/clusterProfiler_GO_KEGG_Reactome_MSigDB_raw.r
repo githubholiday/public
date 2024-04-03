@@ -65,19 +65,27 @@ if ( is.null(opt$prefix) )	{ cat("Please give the prefix for outputfiles ...\n\n
 if ( is.null(opt$organism) )	{ cat("Please give the organism(human/mouse) ...\n\n") ; print_usage(para) }
 if ( is.null(opt$type) )	{ cat("Please give the type of gene(SYMBOL/ENSEMBL/ENTREZID) ...\n\n") ; print_usage(para) }
 if ( is.null(opt$pvalue))	{ opt$pvalue <- 0.05} 
+#if ( is.null(opt$type))	{ opt$type <- 'SYMBOL' }
+#if ( is.null(opt$organism))	{ opt$organism <- 'human' }
 if ( is.null(opt$database))	{ opt$database <- 'GO,KEGG,reactome'} 
 #===========================================================
 library(clusterProfiler)
 library(org.Hs.eg.db)
 library(org.Mm.eg.db)
 library(ReactomePA)
-library(msigdbr)
+library(msigdbr)#MSigDB
 library(DOSE)
+#library(dplyr)#高效数据处理函数
 library(enrichplot)
+#library(gridExtra)
 library(ggplot2)
-library(ggupset)
-library(cowplot)
-library(KEGGREST)
+library(ggupset)#upsetplot(edo)
+#library(KEGGREST)#KEGGREST or reactome.db packages,KEGG.db不再用
+#library(reactome.db)
+#library(KEGG.db)
+#library(meshes)
+#library(AnnotationHub)#构建物种自己的库
+#/annoroad/data1/bioinfo/PMO/yaomengcheng/Anaconda3/bin/R
 #===========================================================
 mkdirs <- function(outdir,fp) {
   if(!file.exists(file.path(outdir,fp))) {
@@ -99,14 +107,14 @@ de_genes<-function(indir,species,type){
   geneinfo <- bitr(k,fromType = type,toType = c("ENTREZID"),OrgDb = species)
   geneset<-merge(geneinfo,data,by=type)
   #分别取差异基因构建geneList(GSEA)和gene(ORA)变量
-  gene<-unique(as.vector(subset(geneset)$ENTREZID))
-  #gene<-unique(as.vector(subset(geneset,Significant=='yes')$ENTREZID))
+  gene<-unique(as.vector(subset(geneset,Significant=='yes')$ENTREZID))
   print('enrich gene number:')
   print(length(gene))
   d<-geneset
   geneList <- d$Log2FC
   names(geneList) <- as.character(d$ENTREZID)
   geneList <- sort(geneList, decreasing = TRUE)
+  #genes<- list(gene=gene, geneList=geneList)
   genes<- list(gene=gene, geneList=geneList,bg=as.vector(geneinfo$ENTREZID))
   return(genes)
 }
@@ -174,22 +182,25 @@ return(xy)
 }
 #===========================================================
 #最多可支持"Homo sapiens,Mus musculus等11个物种，可通过msigdbr_show_species()查看。
-MSigDB_clusterProfiler<-function( geneList,species ){
-    m_t2g <- msigdbr(species = species) %>% dplyr::select(gs_cat,gs_id,gs_name, entrez_gene)
-    term_genes<-m_t2g[,c('gs_id','entrez_gene')]
-    terms<-unique(m_t2g[,c('gs_cat','gs_id','gs_name')])
-    term_names<-terms[,c('gs_id','gs_name')]
-    y<-GSEA(geneList, TERM2GENE = term_genes, TERM2NAME = term_names,nPerm = 10000,pvalueCutoff =1,
-    minGSSize = 1, maxGSSize = 50000)
-    return(y)
+MSigDB_clusterProfiler<-function(gene,geneList,prefix,spe){
+  m_t2g <- msigdbr(species = spe) %>% dplyr::select(gs_cat,gs_id,gs_name, entrez_gene)
+  term_genes<-m_t2g[,c('gs_id','entrez_gene')]
+  terms<-unique(m_t2g[,c('gs_cat','gs_id','gs_name')])
+  term_names<-terms[,c('gs_id','gs_name')]
+  x<-enricher(gene, TERM2GENE = term_genes, TERM2NAME = term_names,pvalueCutoff =1,minGSSize = 1,
+              maxGSSize = 50000,qvalueCutoff=1)
+  y<-GSEA(geneList, TERM2GENE = term_genes, TERM2NAME = term_names,nPerm = 10000,pvalueCutoff =1,
+          minGSSize = 1, maxGSSize = 50000)
+  xy<-list(enrich=x, gse=y,Terms=terms)
+  return(xy)
 }
 ##只有enrich函数才可以设置readable=T获得gene symbol名
 #这里统一用DOSE包的setReadable()
 setReadable_write<-function(x,y,sign){
-    x<- setReadable(x, OrgDb =mapda,keyType = "ENTREZID")
-    y<- setReadable(y, OrgDb = mapda,keyType = "ENTREZID")
-    write.table(x,file=paste(prefix,sign,"enrich_result.xls",sep="_"),sep="\t", quote=FALSE, row.names=FALSE)
-    write.table(y,file=paste(prefix,sign,"gse_result.xls",sep="_"),sep="\t", quote=FALSE, row.names=FALSE)
+  x<- setReadable(x, OrgDb =mapda,keyType = "ENTREZID")
+  y<- setReadable(y, OrgDb = mapda,keyType = "ENTREZID")
+  write.table(x,file=paste(prefix,sign,"enrich_result.xls",sep="_"),sep="\t", quote=FALSE, row.names=FALSE)
+  write.table(y,file=paste(prefix,sign,"gse_result.xls",sep="_"),sep="\t", quote=FALSE, row.names=FALSE)
 }
 
 #===========================================================
@@ -201,9 +212,7 @@ ORA_plot<-function(x,database){
   p1<-barplot(x, showCategory=10)
   p2<-dotplot(x, showCategory=10,orderBy = "p.adjust")
   #富集到的GO terms之间的基因重叠关系进行展示
-  #20240229
-  emap_x <- pairwise_termsim(x)
-  p3<-emapplot(emap_x,showCategory=10)
+  p3<-emapplot(x,showCategory=10)
   #p4<-cnetplot(x,ategorySize="pvalue", foldChange=geneList)
   #p4<-cnetplot(x, showCategory = 10)
   p5<-upsetplot(x,showCategory=10)
@@ -215,35 +224,47 @@ ORA_plot<-function(x,database){
 #GSEA plot
 #展示富集前10的条目
 GSEA_plot<-function(y0,sign,database){
-    library(ggpp)
-    ids = c("M12056","M1519","M16362","M16843","M189","M19517","M39603","M27250")
-    gsea_res <- y0
-    for (k in (1:length(ids))){
-
-        geneSetID = ids[k]
-        filename<-paste(geneSetID,'GSEA_score.pdf',sep='_')
-        pdf(filename, w=12, h=8)
-        
-        pd <- gsea_res[geneSetID, c( "NES","pvalue", "p.adjust")]
-        rownames(pd) <- NULL
-        for (i in seq_len(ncol(pd))){pd[, i] <- format(pd[, i], digits = 4)}
-        pd_t <- data.frame(t(pd))
-        data<-cbind("Type" = rownames(pd_t),pd_t)
-        colnames(data) <- c("Type","Value")
-        pd <- data
-        p <- gseaplot2(gsea_res, geneSetID = geneSetID)
-
-        p[[1]] <- p[[1]]+
-            annotate("table", x = 12000, y = 0.4, label = pd,
-            size=3,table.theme = ttheme_gtminimal
-            )+
-            theme(plot.title = element_text(size = 5),
-                legend.position = "top",
-                legend.direction = "vertical"
-            )
-        print(p)
-        dev.off()
-        }
+  y<-y0
+  graph <- paste(prefix,database,'gseplot.pdf',sep='_')
+  pdf(graph, w=16, h=8)
+  ID<-y$ID[1]
+  main<-paste("enrichmentScore = ", signif(y[ID,]$enrichmentScore, digits = 2), sep = "")
+  p1<-gseaplot2(y, geneSetID =ID,pvalue_table=T,title= main)
+  p2<-ridgeplot(y,showCategory=10)
+  p3<-emapplot(y,showCategory=10)
+  p4<-upsetplot(y,showCategory=10)
+  p<-plot_grid(p1,p2,p3,p4,ncol=2,labels=c("A","B","C","D"))
+  print(p)
+  dev.off()
+  #提取p.adjust<0.05结果并对其画GSEA图
+  cut<-pvalue
+  #因y中有列变量pvalue,(p.adjust< pvalue会造成错误结果)，因此必须把pvalue替换成cut
+  y<-as.data.frame(y)
+  #y<-y[order(y$p.adjust),]
+  #if(database=='MSigDB'){#write.table(y,file=paste(prefix,'_',sign,'_',"gse_result.xls",sep=""),sep="\t", quote=FALSE, row.names=FALSE)}
+  res <- subset(y,p.adjust< cut)
+  #如果显著的超过50个，只画前50个terms
+  if (nrow(res) >50){
+  if (database=='MSigDB'){res<-res0}else{res <- head(as.data.frame(y),50)}}
+  if (nrow(res) <2){
+    print ("GSEA富集的基因为0，请注意查看，将直接退出。\n")
+    return
+    #q()
+  }
+  if (nrow(res) >=2){
+  print(rownames(res))
+  mkdirs(outdir,paste(sign,"GSEA_plot",sep='/'))
+  setwd(paste(outdir,sign,"GSEA_plot",sep='/'))
+  for (k in (1:dim(res)[1])){
+    i = rownames(res)[k]
+    filename<-paste(i,'GSEA_score.pdf',sep='_')
+    pdf(filename, w=12, h=8)
+    main<-paste("enrichmentScore = ", signif(y[i,]$enrichmentScore, digits = 2), sep = "")
+    p<-gseaplot2(y0, geneSetID =i,pvalue_table=T,title=main)
+    # p<-gseaplot(y, geneSetID =i,title=paste(res$ID[k],"pvalue=",res$p.adjust[k]),sep=',')
+    print(p)
+    dev.off()}
+  }
 }
 
 #===========================================================
@@ -257,17 +278,10 @@ outdir<-opt$outdir
 #outdir<-paste(opt$outdir,'result',sep='/')
 #1.生成gene(for ORA),geneList(for GSEA)变量
 print("genes build with gene(ORA(enricher)) and geneList(GSEA)...")
-if(organism=='human'){
-    mapda<-org.Hs.eg.db
-}else{
-    mapda<-org.Mm.eg.db
-}
+if(organism=='human'){mapda<-org.Hs.eg.db}else{mapda<-org.Mm.eg.db}
 genes<-de_genes(indir,mapda,type)
 gene<-genes$gene;geneList<-genes$geneList
 bg_genes<-genes$bg
-
-
-
 #===========================================================
 #2-1.KEGG数据库(分别做ORA和GSEA test),注意internal=T(内部数据)，F(online)
 #http://www.genome.jp/kegg/catalog/org_list.html，KEGG物种默认名网站
@@ -290,30 +304,27 @@ print("Finish:KEGG database with enricher(ORA) and GSEA test!")
 
 #===========================================================
 if ("GO" %in% databaseList){
-    print("GO analysis...")
-    #3-1.GO 数据库(分别做ORA和GSEA test)
-    if(organism=='human'){
-        species<-org.Hs.eg.db
-    }else{
-        species<-org.Mm.eg.db}
-    mkdirs(outdir,"GO")
-    #3-2.ORA和GSEA结果画图
-    onts<-c("BP","CC","MF")
-    for(k in (1:length(onts))){
-    setwd(paste(outdir,"GO",sep='/'))
-    ont<-onts[k]
-    mkdirs(paste(outdir,"GO",sep='/'),ont)
-    setwd(paste(outdir,"GO",ont,sep='/'))
-    #xyGO<-GO_clusterProfiler1(gene,geneList,prefix,species,ont) #all level
-    #没有用更快的GO_clusterProfiler2是因为有时候只给50个基因，这样背景基因也是50个(已改bug)
-    xyGO<-GO_clusterProfiler2(gene,geneList,prefix,species,ont,3,bg_genes) #level3
-    setReadable_write(xyGO$enrich,xyGO$gse,paste("GO",ont,sep="-"))
-    #xyGO<-GO_clusterProfiler3(gene,geneList,prefix,species,ont,3,bg_genes)
-    #setReadable_write(xyGO$enrich,xyGO$gse,paste("GO",ont,'level3',sep="-"))
-    ORA_plot(xyGO$enrich,ont)
-    GSEA_plot(xyGO$gse,paste("GO",ont,sep='/'),ont)
-    }
-    print("Finish:GO database with enricher(ORA) and GSEA test!")
+print("GO analysis...")
+#3-1.GO 数据库(分别做ORA和GSEA test)
+if(organism=='human'){species<-org.Hs.eg.db}else{species<-org.Mm.eg.db}
+mkdirs(outdir,"GO")
+#3-2.ORA和GSEA结果画图
+onts<-c("BP","CC","MF")
+for(k in (1:length(onts))){
+  setwd(paste(outdir,"GO",sep='/'))
+  ont<-onts[k]
+  mkdirs(paste(outdir,"GO",sep='/'),ont)
+  setwd(paste(outdir,"GO",ont,sep='/'))
+  #xyGO<-GO_clusterProfiler1(gene,geneList,prefix,species,ont) #all level
+  #没有用更快的GO_clusterProfiler2是因为有时候只给50个基因，这样背景基因也是50个(已改bug)
+  xyGO<-GO_clusterProfiler2(gene,geneList,prefix,species,ont,3,bg_genes) #level3
+  setReadable_write(xyGO$enrich,xyGO$gse,paste("GO",ont,sep="-"))
+  #xyGO<-GO_clusterProfiler3(gene,geneList,prefix,species,ont,3,bg_genes)
+  #setReadable_write(xyGO$enrich,xyGO$gse,paste("GO",ont,'level3',sep="-"))
+  ORA_plot(xyGO$enrich,ont)
+  GSEA_plot(xyGO$gse,paste("GO",ont,sep='/'),ont)
+}
+print("Finish:GO database with enricher(ORA) and GSEA test!")
 }
 
 #===========================================================
@@ -335,63 +346,36 @@ print("Finish:Reactome database with enricher(ORA) and GSEA test!")
 #===========================================================
 #5-1.MSigDB数据库(分别做ORA和GSEA test)
 if ("MSigDB" %in% databaseList){
-    print("MSigDB analysis...")
-    sign = "MSigDB"
-    result_dir = paste(outdir,sign,sep="/")
-    mkdirs(result_dir)
-    setwd(result_dir)
-    #只能做人和小鼠的，如果不是人的，默认就是小鼠的，实际上能做的类型很多，目前不兼容
-    if(organism=='human'){
-        species<-'Homo sapiens'
-    }else{
-        species<-'"Mus musculus'
-        }
-    
-    xyMSigDB<-MSigDB_clusterProfiler(geneList, species)
-    y<- as.data.frame(setReadable(xyMSigDB$gse, OrgDb = mapda,keyType = "ENTREZID"))
+print("MSigDB analysis...")
+mkdirs(outdir,"MSigDB")
+setwd(paste(outdir,"MSigDB",sep='/'))
+if(organism=='human'){species<-'Homo sapiens'}else{species<-'"Mus musculus'}
+xyMSigDB<-MSigDB_clusterProfiler(gene,geneList,prefix,species)
+#setReadable_write(xyMSigDB$enrich,xyMSigDB$gse,"MSigDB")
+x<- as.data.frame(setReadable(xyMSigDB$enrich, OrgDb =mapda,keyType = "ENTREZID"))
+y<- as.data.frame(setReadable(xyMSigDB$gse, OrgDb = mapda,keyType = "ENTREZID"))
 
-    terms<-xyMSigDB$Terms[,c('gs_cat','gs_id')]
-    colnames(terms)<-c('Category','ID')
-    n1<-dim(x)[2]
-    x<-merge(x, terms,by='ID')
-    colN<-c('Category',colnames(x)[1:n1])
-    x<-x[,colN]
-    ##################################
-    n2<-dim(y)[2]
-    y<-merge(y, terms,by='ID')
-    colN<-c('Category',colnames(y)[1:n2])
-    y<-y[,colN]
-    y<-y[order(y$p.adjust),]
-    write.table(x,file=paste(prefix,sign,"enrich_result.xls",sep="_"),sep="\t", quote=FALSE, row.names=FALSE)
-    #为了保持sort排序保持一致，MSigDB在GSEA_plot里write，因存在大量p.adjust相同值的terms
-    write.table(y,file=paste(prefix,sign,"gse_result.xls",sep="_"),sep="\t", quote=FALSE, row.names=FALSE)
-    saveRDS(y, file=paste(prefix,sign,"gse_result.rds",sep="_"))
-    res0<-head(y,50)
-    rownames(res0)<-as.vector(res0$ID)
-    #5-2.ORA和GSEA结果画图
-    setwd(paste(outdir,"MSigDB",sep='/'))
-    #ORA_plot(xyMSigDB$enrich,"MSigDB")
-    GSEA_plot(xyMSigDB$gse,"MSigDB","MSigDB")
-    print("Finish:MSigDB database with enricher(ORA) and GSEA test!")
+terms<-xyMSigDB$Terms[,c('gs_cat','gs_id')]
+colnames(terms)<-c('Category','ID')
+sign<-'MSigDB'
+n1<-dim(x)[2]
+x<-merge(x, terms,by='ID')
+colN<-c('Category',colnames(x)[1:n1])
+x<-x[,colN]
+##################################
+n2<-dim(y)[2]
+y<-merge(y, terms,by='ID')
+colN<-c('Category',colnames(y)[1:n2])
+y<-y[,colN]
+y<-y[order(y$p.adjust),]
+write.table(x,file=paste(prefix,sign,"enrich_result.xls",sep="_"),sep="\t", quote=FALSE, row.names=FALSE)
+#为了保持sort排序保持一致，MSigDB在GSEA_plot里write，因存在大量p.adjust相同值的terms
+write.table(y,file=paste(prefix,sign,"gse_result.xls",sep="_"),sep="\t", quote=FALSE, row.names=FALSE)
+res0<-head(y,50)
+rownames(res0)<-as.vector(res0$ID)
+#5-2.ORA和GSEA结果画图
+setwd(paste(outdir,"MSigDB",sep='/'))
+ORA_plot(xyMSigDB$enrich,"MSigDB")
+GSEA_plot(xyMSigDB$gse,"MSigDB","MSigDB")
+print("Finish:MSigDB database with enricher(ORA) and GSEA test!")
 }
-
-#===========================================================
-#最多可支持"Homo sapiens,Mus musculus等11个物种，可通过msigdbr_show_species()查看。
-MSigDB_clusterProfiler<-function(geneList, spe){
-    m_t2g <- msigdbr(species = spe) %>% dplyr::select(gs_cat,gs_id,gs_name, entrez_gene)
-    term_genes<-m_t2g[,c('gs_id','entrez_gene')]
-    terms<-unique(m_t2g[,c('gs_cat','gs_id','gs_name')])
-    term_names<-terms[,c('gs_id','gs_name')]
-    y<-GSEA(geneList, TERM2GENE = term_genes, TERM2NAME = term_names,nPerm = 10000,pvalueCutoff =1,
-    minGSSize = 1, maxGSSize = 50000)
-    xy<-list( gse=y,Terms=terms)
-    return(xy)
-}
-##只有enrich函数才可以设置readable=T获得gene symbol名
-#这里统一用DOSE包的setReadable()
-setReadable_write<-function(y,outfile){
-    y<- setReadable(y, OrgDb = mapda,keyType = "ENTREZID")
-    write.table(y,file=outfile,sep="\t", quote=FALSE, row.names=FALSE)
-}
-
-#===========================================================

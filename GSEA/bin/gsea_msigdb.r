@@ -84,6 +84,7 @@ de_genes<-function(indir,species,type){
     #人和小鼠转化使用的物种信息
     #mapda<-org.Hs.eg.db
     #mapda<-org.Mm.eg.db
+    #type <- SYMBOL/ENSEMBL/ENTREZID
     data<-read.table(indir,header=T,sep='\t')
     colnames(data)[1] <- type
     k=keys(species,keytype = type)
