@@ -31,6 +31,7 @@ print_usage <- function(para=NULL){
     --multiprocess:[可选]处理的线程数,默认10, [default 10] 
 使用示例：
     Rscript this.r --rds rdsfile --outdir $outdir --db 'Secreted Signaling' --group Group --ident celltype --species mouse --multiprocess 10  
+    singularity exec --bind /work/share/acuhtwkcu9/:/work/share/acuhtwkcu9 /work/share/acuhtwkcu9/tuchengfang/05_tool/scRNA/CellChat/docker/scrna_cellchat_v0.1.sif Rscript /work/share/acuhtwkcu9/tuchengfang/05_tool/public/CellChat/bin/CellChat.r --rds /work/share/acuhtwkcu9/tuchengfang/04_Project/Customized/20240329_cellchat/pbmc.rds --db all --species mouse --group orig.ident --cmp Treat --ident celltype --outdir /work/share/acuhtwkcu9/tuchengfang/04_Project/Customized/20240329_cellchat/test
       \n")
   q(status=1)
 }
@@ -269,11 +270,12 @@ print('2.按照组分别创建CellChat对象...')
 for (i in (1:length(groups))){
     group_name = groups[i]
     print(paste("########## 正在处理分组 ", group_name, " ###########" ))
-    group_outdir = paste0(result_dir,group_name,sep="")
+    group_outdir = paste0(result_dir,"/",group_name,sep="")
     out_pre = paste(group_outdir, "/",group_name,sep="")
     mkdirs(group_outdir)
     rds1<-subset(rds,Group==group_name)
-    cellchat <- QC_cellchat(rds1,species,group.by='celltype',celltypes=names(table(rds1$celltype)))
+    #创建cellchat对象
+    cellchat <- createCellChat(object = rds1@assays$RNA@data, meta = rds1@meta.data, group.by = 'celltype')
     #细胞通讯推断分析
     cellchat_1a <- Infer_cellchat(cellchat,CellChatDB.use,thresh=0.05,thresh.p = 1,thresh.pc=0.1,min.cells = 10)
     net1 <- subsetCommunication(cellchat_1a,slot.name = "net",thresh = 0.05)

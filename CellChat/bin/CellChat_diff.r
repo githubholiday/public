@@ -312,8 +312,6 @@ saveRDS(object.list, file = paste0(result_pre,"_cellchat_object.list.rds"))
 
 # 绘制interaction数目
 library(scales)  ###颜色获取设置
-#color.use<-hue_pal()(2)
-#color.use<-c('blue','red')
 color.use<-c('red','blue') #group2,group1
 gg1 <- compareInteractions(cellchat, show.legend = F, group = c(2,1),measure = 'count',color.use=color.use)
 gg2 <- compareInteractions(cellchat, show.legend = F, group = c(2,1), measure = "weight",color.use=color.use)
