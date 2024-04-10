@@ -89,11 +89,11 @@ DB_Select <- function( species, db='Secreted Signaling', outdir ){
         print("请选择正确的L-R互作种类：Secreted Signaling,ECM-Receptor,Cell-Cell Contact");quit()
     }
 
-    tmp_dir = paste0(outdir, '/tmp',sep="")
-    mkdirs(tmp_dir)
-    write.table(CellChatDB.use$interaction,file=paste0(outdir,'/tmp/CellChatDB.use_interaction.xls'),quote=F,sep='\t',row.names=F)
-    write.table(CellChatDB.human$interaction,file=paste0(outdir,'/tmp/CellChatDB.human_interaction.xls'),quote=F,sep='\t',row.names=F)
-    write.table(CellChatDB.mouse$interaction,file=paste0(outdir,'/tmp/CellChatDB.mouse_interaction.xls'),quote=F,sep='\t',row.names=F)
+    #tmp_dir = paste0(outdir, '/tmp',sep="")
+    mkdirs(outdir)
+    write.table(CellChatDB.use$interaction,file=paste0(outdir,'/CellChatDB.use_interaction.xls'),quote=F,sep='\t',row.names=F)
+    write.table(CellChatDB.human$interaction,file=paste0(outdir,'/CellChatDB.human_interaction.xls'),quote=F,sep='\t',row.names=F)
+    write.table(CellChatDB.mouse$interaction,file=paste0(outdir,'/CellChatDB.mouse_interaction.xls'),quote=F,sep='\t',row.names=F)
     return(CellChatDB.use)
 }
 
@@ -272,6 +272,7 @@ mkdirs(result_dir)
 rds1 <- subset(rds,Group==cmp1)
 rds2 <- subset(rds,Group==cmp2)
 #各个样本进行cellchat
+print("单样本创建cellchat对象")
 cellchat1 <- QC_cellchat(rds1,species,group.by='celltype',celltypes=names(table(rds1$celltype)))
 cellchat_1a <- Infer_cellchat(cellchat1,CellChatDB.use,thresh=0.05,thresh.p = 1,thresh.pc=0.1,min.cells = 10)
 
