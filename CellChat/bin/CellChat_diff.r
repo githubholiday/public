@@ -8,6 +8,8 @@ para<- matrix(c(
     "cmp"         ,"c",     1,    "character",
     "ident"       ,"i",     1,    "character",
     "outdir"      ,"o",     2,    "character",
+    'sources',     'l',    1,      "character",
+    'targets',     't',    1,      "character",
     "multiprocess","m",     1,    "numeric"),
     byrow=TRUE,ncol=4)
 #===========================================================
@@ -29,6 +31,8 @@ print_usage <- function(para=NULL){
     --ident:[可选]metadata中细胞类型的slot名,默认celltype
     --outdir:[必需]输出目录
     --multiprocess:[可选]处理的线程数,默认10, [default 10] 
+    --sources:[必需]画图时的ligand细胞类型
+    --targets:[必需]画图时的receptor细胞类型
 使用示例：
     Rscript this.r --rds rdsfile --outdir $outdir --db 'Secreted Signaling' --group Group --ident celltype --species mouse --multiprocess 10  
       \n")
@@ -44,6 +48,8 @@ if ( is.null(opt$group))       {opt$group <- 'Group' }
 if ( is.null(opt$ident))       {opt$ident <- 'celltype' }
 if (  is.null(opt$outdir) )    {cat("Please give the outdir for result\n") ; print_usage(para) }
 if ( is.null(opt$multiprocess)){opt$multiprocess <- 10 }
+if ( is.null(opt$sources))      {cat("Please give the source \n") ; print_usage(para) }
+if ( is.null(opt$targets))      {cat("Please give the target \n") ; print_usage(para) }
 
 #################----------------------------------------------------------
 #cellchat细胞通讯分析
@@ -229,6 +235,9 @@ species<-opt$species
 group<-opt$group
 celltype<-opt$ident
 cmp <- opt$cmp
+sources.use <- opt$sources
+targets.use <- opt$targets
+
 result_dir = outdir
 print(paste("使用的数据库为 ",db, sep="" ))
 
