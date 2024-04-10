@@ -230,6 +230,7 @@ group<-opt$group
 celltype<-opt$ident
 cmp <- opt$cmp
 result_dir = outdir
+print(paste("使用的数据库为 ",db, sep="" ))
 
 print("读取rds文件")
 rds<-readRDS(rdsfile)
