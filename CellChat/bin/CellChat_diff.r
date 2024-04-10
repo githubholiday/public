@@ -255,7 +255,7 @@ celltypes<-names(table(rds$celltype))
 rds$celltype<-factor(rds$celltype,levels=celltypes)
 
 #1 选择数据库并且预处理表达矩阵
-CellChatDB.us <- DB_Select( species=species, db=db, result_dir )
+CellChatDB.use <- DB_Select( species=species, db=db, result_dir )
 #================================================================================================
 #2 按照组分别创建CellChat对象并进行细胞通讯推断分析
 future::plan("multisession", workers = as.numeric(opt$multiprocess)) # do parallel
