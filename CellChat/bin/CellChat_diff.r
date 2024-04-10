@@ -264,8 +264,8 @@ future::plan("multisession", workers = as.numeric(opt$multiprocess)) # do parall
 mkdirs(result_dir)
 print('2.按照组分别创建CellChat对象...')
 #创建cellchat对象,将多个数据集合并到一起
-cmp1 = groups[0]
-cmp2 = groups[1]
+cmp1 = groups[1]
+cmp2 = groups[2]
 print(paste("分析的比较组合为 ", cmp1, "*", cmp2 ))
 cmp_pre = paste(cmp1, cmp2, sep="_")
 result_dir = paste(outdir, "/", cmp_pre, sep="")
