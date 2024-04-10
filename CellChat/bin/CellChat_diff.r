@@ -286,7 +286,7 @@ names(object.list)<-c(cmp1,cmp2)
 cellchat <- mergeCellChat(object.list, add.names = c(cmp1,cmp2))
 
 
-pos.dataset<-group2
+pos.dataset<-cmp2
 features.name<-'diff'
 #组之间每个celltype做差异基因分析
 cellchat <- identifyOverExpressedGenes(cellchat, group.dataset = "datasets", pos.dataset = pos.dataset, features.name = features.name, only.pos = FALSE, thresh.pc = 0.1, thresh.fc = 0.25, thresh.p = 0.05)
@@ -294,8 +294,8 @@ net <- netMappingDEG(cellchat,features.name = features.name,thresh = 0.05)
 dim(net);table(net$datasets)
 str(cellchat@var.features)
 
-net.up <- subsetCommunication(cellchat, net = net, datasets = group2)
-net.down <- subsetCommunication(cellchat, net = net, datasets = group1)
+net.up <- subsetCommunication(cellchat, net = net, datasets = cmp2)
+net.down <- subsetCommunication(cellchat, net = net, datasets = cmp1)
 gene.up <- extractGeneSubsetFromPair(net.up, cellchat)
 gene.down <- extractGeneSubsetFromPair(net.down, cellchat)
 write.table(net,file=paste0(result_pre,'_net_diff.xls'),quote=F,sep='\t',row.names=F)
