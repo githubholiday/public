@@ -38,7 +38,7 @@ print_usage <- function(para=NULL){
 if ( !is.null(opt$help) )      {print_usage(para) }
 if (  is.null(opt$rds) )       {cat("Please give the rds file \n") ; print_usage(para)}
 if ( is.null(opt$db))          {opt$db <- 'Secreted Signaling' }
-if ( is.null(opt$cmp))          {opt$db <- 'cmp info' }
+if ( is.null(opt$cmp))         {cat("Please give the cmp info \n") ; print_usage(para) }
 if ( is.null(opt$species))     { pt$species <- 'Secreted Signaling' }
 if ( is.null(opt$group))       {opt$group <- 'Group' }
 if ( is.null(opt$ident))       {opt$ident <- 'celltype' }
