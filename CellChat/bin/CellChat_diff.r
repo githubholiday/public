@@ -25,7 +25,7 @@ print_usage <- function(para=NULL){
     --db:[必需]default Secreted Signaling],Secreted Signaling,ECM-Receptor,Cell-Cell Contact,all
     --species:[必需]物种信息[ human or mouse]
     --group:[可选]metadata中的组信息的slot名,默认Group
-    --cmp:[可选]提供需要分析的组名,多组时使用/分割,默认分析所有组
+    --cmp:[必需]提供需要分析的组名,多组时使用/分割,默认分析所有组
     --ident:[可选]metadata中细胞类型的slot名,默认celltype
     --outdir:[必需]输出目录
     --multiprocess:[可选]处理的线程数,默认10, [default 10] 
@@ -38,6 +38,7 @@ print_usage <- function(para=NULL){
 if ( !is.null(opt$help) )      {print_usage(para) }
 if (  is.null(opt$rds) )       {cat("Please give the rds file \n") ; print_usage(para)}
 if ( is.null(opt$db))          {opt$db <- 'Secreted Signaling' }
+if ( is.null(opt$cmp))          {opt$db <- 'cmp info' }
 if ( is.null(opt$species))     { pt$species <- 'Secreted Signaling' }
 if ( is.null(opt$group))       {opt$group <- 'Group' }
 if ( is.null(opt$ident))       {opt$ident <- 'celltype' }
@@ -90,7 +91,6 @@ DB_Select <- function( species, db='Secreted Signaling', outdir ){
     }
 
     #tmp_dir = paste0(outdir, '/tmp',sep="")
-    mkdirs(outdir)
     write.table(CellChatDB.use$interaction,file=paste0(outdir,'/CellChatDB.use_interaction.xls'),quote=F,sep='\t',row.names=F)
     write.table(CellChatDB.human$interaction,file=paste0(outdir,'/CellChatDB.human_interaction.xls'),quote=F,sep='\t',row.names=F)
     write.table(CellChatDB.mouse$interaction,file=paste0(outdir,'/CellChatDB.mouse_interaction.xls'),quote=F,sep='\t',row.names=F)
