@@ -97,7 +97,7 @@ DB_Select <- function( species, db='Secreted Signaling', outdir ){
     return(CellChatDB.use)
 }
 
-QC_cellchat<-function(rds,species,group.by='celltype',celltypes=names(table(rds$celltype))){
+QC_cellchat_raw<-function(rds,species,group.by='celltype',celltypes=names(table(rds$celltype))){
 	mydata<-list(data=rds@assays$RNA@data,meta=rds@meta.data)
 	mydata$meta$celltype<-as.vector(mydata$meta$celltype)
 	data.input = mydata$data # normalized data matrix
@@ -110,7 +110,7 @@ QC_cellchat<-function(rds,species,group.by='celltype',celltypes=names(table(rds$
 	table(meta$celltype)
 	##对细胞类型排序
 	meta$celltype<-factor(meta$celltype,levels=celltypes)
-	cellchat <- createCellChat(object = data.input, meta = meta, group.by = group.by) #指定细胞群分群label
+	cellchat <- createCellChat(object = rds@assays$RNA@data, meta = rds@meta.data, group.by = group.by) #指定细胞群分群label
 	return(cellchat)
 }
 
@@ -275,13 +275,13 @@ rds1 <- subset(rds,Group==cmp1)
 rds2 <- subset(rds,Group==cmp2)
 #各个样本进行cellchat
 print("单样本创建cellchat对象")
-cellchat1 <- QC_cellchat(rds1,species,group.by='celltype',celltypes=names(table(rds1$celltype)))
+cellchat1 <- cellchat <- createCellChat(object = rds1@assays$RNA@data, meta = rds1@meta.data, group.by = 'celltype')  
 cellchat_1a <- Infer_cellchat(cellchat1,CellChatDB.use,thresh=0.05,thresh.p = 1,thresh.pc=0.1,min.cells = 10)
 
-cellchat2 <- QC_cellchat(rds2,species,group.by='celltype',celltypes=names(table(rds1$celltype)))
+cellchat2 <- cellchat <- createCellChat(object = rds2@assays$RNA@data, meta = rds2@meta.data, group.by = 'celltype') 
 cellchat_2a <- Infer_cellchat(cellchat2,CellChatDB.use,thresh=0.05,thresh.p = 1,thresh.pc=0.1,min.cells = 10)
 
-object.list <- list(cellchat1 = cellchat1a, cellchat2 = cellchat2a)
+object.list <- list(cellchat1 = cellchat_1a, cellchat2 = cellchat_2a)
 names(object.list)<-c(cmp1,cmp2)
 cellchat <- mergeCellChat(object.list, add.names = c(cmp1,cmp2))
 
