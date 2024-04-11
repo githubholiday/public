@@ -239,6 +239,7 @@ sources.use <- opt$sources
 targets.use <- opt$targets
 
 result_dir = outdir
+mkdirs(result_dir)
 print(paste("使用的数据库为 ",db, sep="" ))
 
 print("读取rds文件")
@@ -269,8 +270,6 @@ CellChatDB.use <- DB_Select( species=species, db=db, result_dir )
 #2 按照组分别创建CellChat对象并进行细胞通讯推断分析
 future::plan("multisession", workers = as.numeric(opt$multiprocess)) # do parallel
 
-
-mkdirs(result_dir)
 print('2.按照组分别创建CellChat对象...')
 #创建cellchat对象,将多个数据集合并到一起
 cmp1 = groups[1]
