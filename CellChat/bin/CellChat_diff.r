@@ -375,15 +375,15 @@ dev.off()
 #dev.off()
 
 #可视化bubble
-pairLR.use.up = net.up[, "interaction_name", drop = F]
-gg1 <- netVisual_bubble(cellchat, pairLR.use = pairLR.use.up, sources.use = sources.use, targets.use = targets.use, comparison = c(1, 2),  angle.x = 90, remove.isolate = T,title.name = paste0("Up-regulated signaling in ", names(object.list)[2]),color.text=c('blue','red'))
+#pairLR.use.up = net.up[, "interaction_name", drop = F]
+#gg1 <- netVisual_bubble(cellchat, pairLR.use = pairLR.use.up, sources.use = sources.use, targets.use = targets.use, comparison = c(1, 2),  angle.x = 90, remove.isolate = T,title.name = paste0("Up-regulated signaling in ", names(object.list)[2]),color.text=c('blue','red'))
 #> Comparing communications on a merged object
-pairLR.use.down = net.down[, "interaction_name", drop = F]
-gg2 <- netVisual_bubble(cellchat, pairLR.use = pairLR.use.down, sources.use = sources.use,  targets.use =  targets.use, comparison = c(1, 2),  angle.x = 90, remove.isolate = T,title.name = paste0("Down-regulated signaling in ", names(object.list)[2]),color.text=c('blue','red'))
+#pairLR.use.down = net.down[, "interaction_name", drop = F]
+#gg2 <- netVisual_bubble(cellchat, pairLR.use = pairLR.use.down, sources.use = sources.use,  targets.use =  targets.use, comparison = c(1, 2),  angle.x = 90, remove.isolate = T,title.name = paste0("Down-regulated signaling in ", names(object.list)[2]),color.text=c('blue','red'))
 #> Comparing communications on a merged object
-pdf('Diff_LRpair_bubble.pdf',w=20,h=5)
-gg1 + gg2
-dev.off()
+#pdf('Diff_LRpair_bubble.pdf',w=20,h=5)
+#gg1 + gg2
+#dev.off()
 
 #可视化Chord diagram
 pdf('Diff_LRpair_Chord.pdf',w=20,h=10)
