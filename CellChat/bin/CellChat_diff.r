@@ -284,10 +284,10 @@ rds1 <- subset(rds,Group==cmp1)
 rds2 <- subset(rds,Group==cmp2)
 #各个样本进行cellchat
 print("单样本创建cellchat对象")
-cellchat1 <- cellchat <- createCellChat(object = rds1@assays$RNA@data, meta = rds1@meta.data, group.by = 'celltype')  
+cellchat1 <- createCellChat(object = rds1@assays$RNA@data, meta = rds1@meta.data, group.by = 'celltype')  
 cellchat_1a <- Infer_cellchat(cellchat1,CellChatDB.use,thresh=0.05,thresh.p = 1,thresh.pc=0.1,min.cells = 10)
 
-cellchat2 <- cellchat <- createCellChat(object = rds2@assays$RNA@data, meta = rds2@meta.data, group.by = 'celltype') 
+cellchat2 <-  createCellChat(object = rds2@assays$RNA@data, meta = rds2@meta.data, group.by = 'celltype') 
 cellchat_2a <- Infer_cellchat(cellchat2,CellChatDB.use,thresh=0.05,thresh.p = 1,thresh.pc=0.1,min.cells = 10)
 
 object.list <- list(cellchat1 = cellchat_1a, cellchat2 = cellchat_2a)
@@ -365,15 +365,15 @@ pdf(paste0(result_pre,'_comparison_rankNet.pdf'),w=10,h=5)
 gg1 + gg2
 dev.off()
 
-#5 识别上调和下调的LR pair
-pdf(paste0(result_pre,'_comparison_netVisual_bubble.pdf'),w=10,h=6)
-netVisual_bubble(cellchat, sources.use = sources.use,  targets.use =  targets.use,  comparison = c(1, 2), angle.x = 45,color.text=c('blue','red'))
-dev.off()
+#5 识别上调和下调的LR pair  == 总是报错-2024-4-11注释
+#pdf(paste0(result_pre,'_comparison_netVisual_bubble.pdf'),w=10,h=6)
+#netVisual_bubble(cellchat, sources.use = sources.use,  targets.use =  targets.use,  comparison = c(1, 2), angle.x = 45,color.text=c('blue','red'))
+#dev.off()
 
-pdf(paste0(result_pre,'_comparison_netVisual_bubble_DE.pdf'),w=10,h=6)
-netVisual_bubble(cellchat, sources.use = sources.use,  targets.use =  targets.use, max.dataset = 1, comparison = c(1, 2), angle.x = 45,color.text=c('blue','red'))
-netVisual_bubble(cellchat, sources.use = sources.use,  targets.use =  targets.use, max.dataset = 2, comparison = c(1, 2), angle.x = 45,color.text=c('blue','red'))
-dev.off()
+#pdf(paste0(result_pre,'_comparison_netVisual_bubble_DE.pdf'),w=10,h=6)
+#netVisual_bubble(cellchat, sources.use = sources.use,  targets.use =  targets.use, max.dataset = 1, comparison = c(1, 2), angle.x = 45,color.text=c('blue','red'))
+#netVisual_bubble(cellchat, sources.use = sources.use,  targets.use =  targets.use, max.dataset = 2, comparison = c(1, 2), angle.x = 45,color.text=c('blue','red'))
+#dev.off()
 
 #可视化bubble
 pairLR.use.up = net.up[, "interaction_name", drop = F]
