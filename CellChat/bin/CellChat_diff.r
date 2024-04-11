@@ -31,10 +31,10 @@ print_usage <- function(para=NULL){
     --ident:[可选]metadata中细胞类型的slot名,默认celltype
     --outdir:[必需]输出目录
     --multiprocess:[可选]处理的线程数,默认10, [default 10] 
-    --sources:[必需]画图时的ligand细胞类型
-    --targets:[必需]画图时的receptor细胞类型
+    --sources:[必需]画图时的ligand细胞类型顺序
+    --targets:[必需]画图时的receptor细胞类型顺序
 使用示例：
-    Rscript this.r --rds rdsfile --outdir $outdir --db 'Secreted Signaling' --group Group --ident celltype --species mouse --multiprocess 10  
+    Rscript this.r --rds rdsfile --outdir $outdir --db 'Secreted Signaling' --group Group --ident celltype --species mouse --multiprocess 10  --cmp A/B --sources 1,2,3 --targets 4,5,6
       \n")
   q(status=1)
 }

@@ -1,0 +1,22 @@
+FROM komais/centos_miniconda:v0.0.1
+
+#维护者信息
+LABEL author="leiguo"
+USER root
+
+
+RUN	pip install umap-learn --default-timeout=500 -i https://pypi.tuna.tsinghua.edu.cn/simple && \
+	conda install -y -c conda-forge imagemagick && \
+	conda install -y -c conda-forge r-seurat r-argparse r-devtools r-getopt && \
+	conda install -y -c conda-forge r-ggpubr && \
+	conda install -y -c bioconda bioconductor-biocneighbors
+
+
+RUN	Rscript -e 'devtools::install_github("jokergoo/ComplexHeatmap")' && \
+	Rscript -e 'devtools::install_github("renozao/NMF@devel")' && \
+	Rscript -e 'devtools::install_github("immunogenomics/presto")' && \
+	Rscript -e 'devtools::install_github("sqjin/CellChat")' && \
+	Rscript -e 'devtools::install_github("arc85/celltalker")'
+
+
+USER test_user
