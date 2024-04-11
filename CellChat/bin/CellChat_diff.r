@@ -386,12 +386,12 @@ dev.off()
 #dev.off()
 
 #可视化Chord diagram
-pdf('Diff_LRpair_Chord.pdf',w=20,h=10)
-par(mfrow = c(1,2), xpd=TRUE)
-netVisual_chord_gene(object.list[[2]], sources.use = sources.use,  targets.use =  targets.use, slot.name = 'net', net = net.up, lab.cex = 0.8, small.gap = 3.5, title.name = paste0("Up-regulated signaling in ", names(object.list)[2]))
+#pdf('Diff_LRpair_Chord.pdf',w=20,h=10)
+#par(mfrow = c(1,2), xpd=TRUE)
+#netVisual_chord_gene(object.list[[2]], sources.use = sources.use,  targets.use =  targets.use, slot.name = 'net', net = net.up, lab.cex = 0.8, small.gap = 3.5, title.name = paste0("Up-regulated signaling in ", names(object.list)[2]))
 #> Note: The first link end is drawn out of sector 'MIF'.
-netVisual_chord_gene(object.list[[1]], sources.use = sources.use,  targets.use =  targets.use, slot.name = 'net', net = net.down, lab.cex = 0.8, small.gap = 3.5, title.name = paste0("Down-regulated signaling in ", names(object.list)[2]))
-dev.off()
+#netVisual_chord_gene(object.list[[1]], sources.use = sources.use,  targets.use =  targets.use, slot.name = 'net', net = net.down, lab.cex = 0.8, small.gap = 3.5, title.name = paste0("Down-regulated signaling in ", names(object.list)[2]))
+#dev.off()
 
 print('Finish all analysis...')
 
