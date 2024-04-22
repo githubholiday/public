@@ -76,6 +76,7 @@ def main():
 	for filter_result_dir in filter_result_dir_list:
 		email_feedback_txt = '{0}/email/email_feedback.txt'.format( filter_result_dir )
 		data_finish = read_email_feedback_txt(email_feedback_txt)
+		print(email_feedback_txt)
 		if data_finish == True:
 			output.write( filter_result_dir + '\n' )
 			file_create_time = time.strftime("%Y-%m-%d %H:%M", time.localtime(os.path.getctime(email_feedback_txt)))
