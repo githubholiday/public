@@ -66,7 +66,7 @@ def main():
 	parser=argparse.ArgumentParser(description=__doc__,
 			formatter_class=argparse.RawDescriptionHelpFormatter,
 			epilog='author:\t{0}\nmail:\t{1}'.format(__author__,__mail__))
-	parser.add_argument('-i','--indir',help='input file',dest='input',required=True)
+	parser.add_argument('-i','--indir',help='input file',dest='indir',required=True)
 	parser.add_argument('-o','--outfile',help='input file',dest='outfile',required=True)
 	args=parser.parse_args()
 	
