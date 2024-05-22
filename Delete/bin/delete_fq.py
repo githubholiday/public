@@ -48,6 +48,7 @@ bindir = os.path.abspath(os.path.dirname(__file__))
 sys.path.append( '{0}/../lib'.format( bindir ))
 import DOMysql
 from lib.logger import Log
+import robot
 
 my_log = Log( 'delete_fq.log' )
 
@@ -387,6 +388,14 @@ def main():
     project_record = select_record.main() #{project_id:{"delivery_start_time":"2024-05-17 09:43:56", "id":[1,2,3]}}
     delete_handle = DeleteFQ( project_record, config_dict, lims_db, local_sql, args.test )
     fail_list = delete_handle.main()
+    #删除失败的机器人发消息到群里
+    #当前的机器人是 数据删除讨论群 里的机器人
+    robot_url = "https://qyapi.weixin.qq.com/cgi-bin/webhook/send?key=ffa61817-1dbe-4d94-981b-b3572abfe470"
+    title = "删除目录失败的id"
+    label = "id"
+    content = [[i] for i in fail_list]
+    robot.Robots(title=title,label_list=label,content_list=content, url=robot_url)
+
 
 if __name__ == '__main__':
     main()
