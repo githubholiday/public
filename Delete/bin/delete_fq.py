@@ -1,25 +1,27 @@
 #-*- encoding:utf-8 -*-
 '''
 【功能】
-根据删除数据库中的信息获取符合条件的项目数据（过滤路径和拆分路径），并进行删除
+根据删除数据库中的信息获取符合条件的项目数据（过滤路径（Analysis和CHIP）和拆分路径），并进行删除
 
 1. 筛选符合条件的项目列表
 交付是否完成=是
 是否删除=否
 
 2. 计算1中所有项目列表的交付完成时间与当前时间的差值delta
-1)如果是分析项目，>30天,存入待删除字典,项目号:启动交付时间
-2)如果是非分析项目,>7天,存入待删除字典,项目号:启动交付时间
-=>获取待删除项目字典，启动交付时间为最新一次的未删除记录的启动交付时间
+如果是超期删除的项目，则按照非分析项目的判断条件执行
+1)如果是分析项目，>30天(analysis_delete_delta),存入待删除字典,
+2)如果是非分析项目,>7天(配置文件中的filter_delete_delta),存入待删除字典
+=>获取待删除字典 good_records_dict[project_id] = {"delivery_start_time":delivery_start_time, "ID":[1,2,3,4]} 
+=>并且启动交付时间获取的最近的一次，启动交付时间为最新一次的未删除记录的启动交付时间
 
 3. 
-1）通过2中的待删除列表，从tb_filter_task列表中，获取到该项目的过滤路径
-2）glob目录下的所有目录，包括Analysis_1和Filter_Result，如果有除此之外的也删除
-3）获取每个目录的创建时间，如果创建时间<=启动交付时间，则获取其对应的芯片号，并从tb_filter_task中获取对应的拆分数据路径，获取该项目需要删除的路径列表
-4）如果test模式，则print出删除的目录；如果是非test模式，直接os.system('rm -rf 目录')--循环三次（参数）进行删除
-5）其中任意一个路径删除失败，该项目为删除失败，并输出到outdir/delete_failed_年-月-日.txt文件中，【可以人工核验删除，按照删除成功更新数据库信息--暂时不处理,将ID也输出】
-5）删除成功后,更新删除数据库中该项目的删除状态local_delete_bool=1,delete_time=当前时间(年-月-日) --- 如果有多条记录，多条记录均更新
-
+1）通过2中的待删除列表，从tb_filter_task列表中，获取到该项目的过滤路径 （tb_filter_task.filter_path/../）
+2）glob过滤路径下的所有目录，包括Analysis_1和Filter_Result，只筛选Analysis*开头的目录，用于下一步分析
+3）获取每个目录的创建时间，如果启动交付时间-创建时间>0即创建在前，启动交付在后(函数：get_delete_list），则获取其对应的芯片号，并从tb_filter_task中获取对应的拆分数据路径和Filter_Result/CHIP/CHIP_FC路径，存入到待删除列表中
+4)如果待删除列表为空，则不执行删除操作 *** 需要关注为什么会有不删除的操作
+4）执行删除：如果test模式，则print出删除的目录；如果是非test模式，直接os.system('rm -rf 目录')--循环三次（参数）进行删除
+5）其中任意一个路径删除失败，该项目为删除失败，并输出到outdir/delete_failed_年-月-日.txt文件中，【可以人工核验删除，按照删除成功更新数据库信息--暂时不处理,将ID也输出】====希望加上机器人提醒
+5）删除成功后,根据good_records_dict中的id_list更新删除数据库中该项目的删除状态local_delete_bool=1,delete_time=当前时间(年-月-日) --- 如果有多条记录，多条记录均更新
 
 4. 获取数据库中交付异常的项目 === 单独写一个脚本，不在该脚本中增加
 筛选 交付是否完成=否，是否删除=否 的项目列表
@@ -29,9 +31,11 @@
 -c,--pipe_config:配置文件，使用到配置文件中的信息有 数据库信息,删除时间中的filter_delete_time
 
 【注意事项】
-1. 删除项目时，如果同一个项目有多条未删除记录，则以最新的记录为准
+1. 删除项目时，如果同一个项目有多条未删除记录，则以最新的启动交付时间为准
 2. 同一个项目，任意一个目录删除失败，则为失败，数据库的删除状态不更新
 3. 如果真有删除失败的，可能会导致拆分处的数据没有删除，而且发现不了，暂时搁置，但是
+4. 过滤项目重过滤的时候，将Analysis目录删除重新创建
+5. .e文件中会输出删除失败的命令，以及没有删除列表的项目编号
 '''
 
 import argparse
@@ -46,34 +50,6 @@ import DOMysql
 from lib.logger import Log
 
 my_log = Log( 'delete_fq.log' )
-'''
-#数据库使用方法说明
-#连接
-sql_connect = DOMysql.SQL( config文件 )
-
-#插入方法
-insert_col = ["delete_type","delivery_account"]
-insert_value = ["0","ali"]
-sql_connect.insert( 表名,insert_col, insert_value)
-
-#查询
-sql_connect.select( 表名, 查询字段, 查询条件 )
-
-col_list = '*' #查询字段，默认为所有,可指定为 ["project","id"]
-condition = [ ("project_id", "PM-01"), ("analysis_bool","1") ]
-sql_connect.select( 表名, col_list=col_list, conditions=condition )
-
-#更新
-sql_connect.update( 表名, 更新内容， 更新条件 )
-
-value_list: [(colname1,value1), (colname2,value2), ... ]
-conditions: [ (colname1,value1), (colname2,value2), ... ]
-sql_connect.update( 表名, value_list, conditions )
-
-
-## 配置文件读取
-config_dict = DOMysql.read_config( 配置文件 ) 
-'''
 
 __author__='chengfangtu'
 __mail__= 'chengfangtu@genome.cn'
@@ -111,7 +87,8 @@ class TimeFormat():
             创建时间，str类型，格式为2024-05-13
         '''
         create_stamptime = os.path.getmtime(dir_path) #时间戳 163467344
-        create_formatime = time.strftime(self.date_format ,create_stamptime) #格式化为时间 2024-04-14
+        create_localtime= time.localtime(create_stamptime/1000)
+        create_formatime = time.strftime(self.date_format ,create_localtime) #格式化为时间 2024-04-14
 
 class SelectItem():
     def __init__(self, local_sql, config_dict, date_format = '%Y-%m-%d %Y-%m-%d'):
@@ -134,7 +111,7 @@ class SelectItem():
         all_records = self.get_all_records()
         good_records_dict = {}
         for tmp in all_records:
-            project_id, delivery_start_time, id  = self.get_good_record(self.fiter_delete_delta,self.analysis_delete_delta)
+            project_id, delivery_start_time, id  = self.get_good_record(self.fiter_delete_delta, self.analysis_delete_delta)
             if project_id == "": continue
             if project_id not in good_records_dict:
                 good_records_dict[project_id] = {"delivery_start_time":delivery_start_time, "ID":[]}
@@ -168,8 +145,10 @@ class SelectItem():
         '''
         功能：根据提供的纪录，判断是否满足删除要求
         过程：
-            如果是分析项目，则按照分析项目的删除时间判断，满足条件，则返回项目编号，启动交付时间和待删除数据库中的id
-            如果是非分析项目，则按照非分析项目的删除时间判断，满足条件，则返回项目编号，启动交付时间和待删除数据库中的id
+            如果删除类型是超期删除，则统一按照过滤项目的删除时间判断（因为如果是分析项目，超过21天的时候提醒插入到删除库后，按照30天判断，则会在51天的时候删除，讨论后认为不合理）
+            如果删除类型是交付删除：
+                如果是分析项目，则按照分析项目的删除时间判断，满足条件，则返回项目编号，启动交付时间和待删除数据库中的id
+                如果是非分析项目，则按照非分析项目的删除时间判断，满足条件，则返回项目编号，启动交付时间和待删除数据库中的id
         返回值:
             project_id, delivery_start_time, id (分别为子项目编号，启动交付时间和待删除数据库中的id)
         '''
@@ -177,12 +156,15 @@ class SelectItem():
         self.project_id = tmp[1]
         self.delivery_start_time = tmp[2] #启动交付时间
         self.analysis_bool = tmp[4] #是否为分析项目 0-否，1-是
+        self.delete_type = tmp[5]
         self.delivery_end_time = tmp[9] 
         self.local_delete_bool = tmp[10] #本地是否删除
         time_handle = TimeFormat(self.delivery_end_time, now_time )
         now_time = time_handle.get_now_time(self.date_format)
         self.delta_days = time_handle.get_delta_days()
-        
+        #如果是超期删除，则将该项目的analysis_bool是否为分析项目的值改成0，即非分析项目，后面按照非分析项目的删除规则执行判断
+        if self.delete_type == "超期删除":
+            self.analysis_bool = 0 
         if self.analysis_bool == 1 :
             if self.delta_days > self.filter_delete_delta :
                 return self.project_id, self.delivery_start_time, id
@@ -203,6 +185,7 @@ class DeleteFQ():
         self.test_mode = test_mode
         self.time_handle = TimeFormat()
         self.retry_times = 3
+        self.fail_list = []
     def main(self):
         '''
         功能:根据提取到待删除项目信息（project_dict)，获取删除列表，并进行删除
@@ -220,18 +203,20 @@ class DeleteFQ():
             filter_path_glob_list = glob.glob( project_filter_path+'/*' ) #获取项目过滤路径下的所有路径和文件
             filter_path_list = self.filter_glob(filter_path_glob_list) #将文件和Filter_Result过滤掉,只保留Anlysis*开头的目录
             if len(filter_path_list) ==0 : continue
+            #一个项目一个删除列表
             delete_list = []
             for filter_analysis_dir in filter_path_list:
                 self.get_delete_list( filter_analysis_dir, project_id, delivery_start_time, delete_list )
             if delete_list :
                 self.run_delete( delete_list, project_id, delivery_start_time )
+            else:
+                #为什么有待删除记录，但是没有要删除的文件呢？ 需要查看
+                my_log.error( "项目 {0} 没有需要删除的文件".format(project_id ))
+        return self.fail_list
     def get_delete_list(self, filter_dir, project_id, delivery_start_time, delete_list ):
         '''
         功能：获取删除列表，并将其删除
         过程：
-            第一步：获取过滤路径下的所有目录，并判断目录的创建时间是否在启动交付时间之前，如果是，通过get_qc_dir获取芯片路径
-            第二步：获取qc_dir，如果qc_dir为空，则不加入到删除列表中（可能过滤路径为Filter_Result或其他类型路径则获取不到芯片路径）
-            第三步：调用run_delete执行删除命令
             第一步：获取过滤路径创建时间是否在启动交付时间之前，如果是，则继续判断
             第二步：通过get_qc_dir和get_chip_dir分别获取该Analysis路径对应芯片的下机数据路径和Filter_Result目录下的CHIP/CHIP_FC
             第三步：如果以上两个路径不为空，则添加到待删除列表中
@@ -254,7 +239,7 @@ class DeleteFQ():
             if chip_dir != '' :
                 delete_list.append( chip_dir )
         return delete_list
-    def run_delele( self, delete_list, id_list ):
+    def run_delete( self, delete_list, id_list ):
         '''
         功能：
             对删除列表执行删除操作。
@@ -267,6 +252,7 @@ class DeleteFQ():
             self.retry_times:删除命令失败的重试次数
             self.test_mode：是否为测试模式
         '''
+        delete_status = []
         for delete_dir in delete_list:
             retry_times = self.retry_times
             delete_cmd = 'rm -rf {0}'.format(delete_dir)
@@ -276,10 +262,13 @@ class DeleteFQ():
                 run_status = cmd_run(delete_cmd, self.test_mode )
                 retry_times -= 1
             if run_status == False:
+                delete_status.append( False )
                 my_log.error("{0} Failed".format( delete_cmd))
             else:
+                delete_status.append( True )
+        if set( delete_status ) :
                 #如果是测试模式不更新删除数据库状态
-                if not self.test_mode : continue
+            if not self.test_mode : 
                 now_time = self.time_handle.now_time()
                 update_info = [("local_delete_bool",1),('delete_time',now_time)]
                 for each_id in id_list:
@@ -288,6 +277,8 @@ class DeleteFQ():
                         self.local_sql.update(self.config_dict['table'],value_list=update_info, conditions=update_condition )
                     except:
                         my_log.error("update {0} in {1} Failed".format( each_id, self.config_dict['table'] ))
+        else:
+            self.fail_list.apeend(','.join(id_list))
     def get_filter_dir(self, project_id):
         '''
         功能：根据项目编号从tb_filter_task表中获取项目过滤路径
@@ -395,7 +386,7 @@ def main():
     select_record = SelectItem(local_sql, config_dict, date_format)
     project_record = select_record.main() #{project_id:{"delivery_start_time":"2024-05-17 09:43:56", "id":[1,2,3]}}
     delete_handle = DeleteFQ( project_record, config_dict, lims_db, local_sql, args.test )
-    delete_handle.main()
+    fail_list = delete_handle.main()
 
 if __name__ == '__main__':
     main()
