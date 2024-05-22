@@ -23,17 +23,26 @@ __doc__ = """
 ##纯测序与微生物项目部群
 #real_url = "https://qyapi.weixin.qq.com/cgi-bin/webhook/send?key=a5039603-857e-472f-99d0-7022f0a57f10"
 real_url = "https://qyapi.weixin.qq.com/cgi-bin/webhook/send?key=a5039603-857e-472f-99d0-7022f0a57f10"
+'''
+调用方式：
+    Robor(title, label_list, content_list, url )
+    title:为提醒时的主题
+    lable_list：为表头信息，展示时按照|分割展示
+    content_list：内容信息，展示时按照|分割展示
+
+'''
 class Robots():
 
-    def __init__(self,title,label_list,content_list):                                                              #调用该类时，需要传入这3个参数，以下为调用该函数时就会发生的，生成属性和执行方法，而不是用main函数来执行
+    def __init__(self,title,label_list,content_list, url):                                                              #调用该类时，需要传入这3个参数，以下为调用该函数时就会发生的，生成属性和执行方法，而不是用main函数来执行
         self.title = title
         self.label_list = label_list
         self.content_list = content_list
+        self.url = url
         self.mes = self.content_list_to_markdown(self.content_list)
         self.label = self.label_list_to_markdown(self.label_list)                                               #to_markdown是后面定义的方法，对输入数据进一步处理
         #self.send_txt(title=self.title,label=self.label,mes=self.mes)
         #self.send_txt(title=self.title,label=self.label,mes=self.mes,url=yw_url)
-        self.send_txt(title=self.title,label=self.label,mes=self.mes,url=real_url)
+        self.send_txt(title=self.title,label=self.label,mes=self.mes,url=self.url)
     
     def content_list_to_markdown(self,rets):
         mes=''
