@@ -25,10 +25,11 @@ __doc__ = """
 real_url = "https://qyapi.weixin.qq.com/cgi-bin/webhook/send?key=a5039603-857e-472f-99d0-7022f0a57f10"
 '''
 调用方式：
-    Robor(title, label_list, content_list, url )
+    Robot(title, label_list, content_list, url )
     title:为提醒时的主题
     lable_list：为表头信息，展示时按照|分割展示
     content_list：内容信息，展示时按照|分割展示
+    url:机器人的链接信息
 
 '''
 class Robots():
