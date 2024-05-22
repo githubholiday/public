@@ -30,3 +30,4 @@ class Log():
 	def critical( self, message ) :
 		formatter = self.format( 'CRITICAL', message )
 		sys.stderr.write( formatter )
+

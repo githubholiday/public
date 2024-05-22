@@ -10,7 +10,7 @@ from Lims_SQL import LIMS
 #infile 是项目列表
 infile = sys.argv[0]
 outfile = sys.argv[1]
-lims_db_do = LIMS("{0}/config.txt")
+lims_db_do = LIMS("{0}/config.txt".format(bindir))
 ### update
 #表名
 tb_name='tb_info_sequence_bill'

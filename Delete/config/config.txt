@@ -1,0 +1,50 @@
+##### 删除时间,程序都设置为>*时间为删除或提醒时间
+#### 拆分质控不通过项目删除时间
+QC_delete_delta=30
+
+
+#### 拆分路径下的未拆分和raw删除时间
+pass_delete_delta=7
+#### 过滤项目本地数据删除时间
+filter_delete_delta=8
+
+#### 分析项目本地数据删除时间
+analysis_delete_delta=30
+
+#### 过滤路径下超期提醒时间，拆分路径下质控不通过项目超期提醒时间
+overdue_delete_delta=21
+
+#### T7二次重拆路径删除时间
+t7_delete_delta=7
+
+
+##### 邮件信息
+Filter_Delelte=【数据删除提醒】过滤项目数据超期删除提醒
+Filter_Reciver=xiangguan
+Filter_Copy=od@genome.cn；ngs-pm@genome.cn; huayunli@annoroad.com;jiechen@genome.cn;xunzhou@genome.cn;yingli@genome.cn;
+
+QC_Delete=【数据删除提醒】质控不通过项目超期删除提醒
+QC_Reciver=od@genome.cn；ngs-pm@genome.cn; huayunli@annoroad.com;jiechen@genome.cn;xunzhou@genome.cn;yingli@genome.cn;
+
+#####  数据库信息
+### 删除数据库信息
+sql_usr=cloud_message
+sql_pwd=Asd@1234
+sql_host=rm-2zeehe7grk2jjgknr.mysql.rds.aliyuncs.com
+sql_port=3306
+sql_db=cloud_message_info
+table=
+
+### lims数据库信息
+lims_sql_usr=raw
+lims_sql_pwd=K8b#xx2^QcYs
+lims_sql_host=rm-2zeb5kq11g3u77b5b.mysql.rds.aliyuncs.com
+lims_sql_port=3306
+lims_sql_db=lims3
+
+##### 路径 
+filter_path=/annogene/data1/bioinfo/Seq/Commercial/filter/NGS,/annogene/data1/bioinfo/Seq/Commercial/filter/TGS
+sci_path=/annogene/data1/bioinfo/Seq/Commercial/sci-qc/NGS,/annogene/data1/bioinfo/Seq/Commercial/sci-qc/TGS
+t7_path=/annogene/data1/bioinfo/Seq/Commercial/sci-qc/MGI_T7
+
+

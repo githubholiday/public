@@ -1,5 +1,5 @@
-sql_usr=raw
-sql_pwd=K8b#xx2^QcYs
-sql_host=rm-2zeb5kq11g3u77b5b.mysql.rds.aliyuncs.com
-sql_port=3306
-sql_db=lims3
+usr=raw
+pwd=K8b#xx2^QcYs
+host=rm-2zeb5kq11g3u77b5b.mysql.rds.aliyuncs.com
+port=3306
+db=lims3

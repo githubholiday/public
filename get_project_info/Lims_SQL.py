@@ -17,19 +17,19 @@ class LIMS():
     def __init__( self, config_file, port = 3306, charset='utf8' ):
         self.config_file = config_file
         self.config_dic = self.read_config( )
-        usr  = self.config_dic['sql_usr']
-        pwd = self.config_dic['sql_pwd']
-        port = self.config_dic['sql_port']
-        host = self.config_dic['sql_host']
-        database = self.config_dic['sql_db']
+        usr  = self.config_dic['usr']
+        pwd = self.config_dic['pwd']
+        port = self.config_dic['port']
+        host = self.config_dic['host']
+        database = self.config_dic['db']
         try:
             self.cnx = mysql.connector.connect(user=usr, password=pwd, host=host, database=database, port = port, charset = charset)
-            print( 'connect db {0}-{1} successed'.format(host, usr) )
+            print( 'connect db successed' )
             self.cursor = self.cnx.cursor()
         except mysql.connector.Error as err:
-            print( 'connect db {0}-{1} failed'.format(host, usr) )
+            print ( 'connect db failed' )
             print ( 'Error: {0}'.format( err ) )
-            sys.exit(1)
+            sys.exit()
         self.charset = charset
         
     def read_config(self):
@@ -58,34 +58,41 @@ class LIMS():
         col_list: 查询的列名,list
         conditions: 条件,形如[ (colname1,value1), (colname2,value2), ... ]
         '''
+        table = self.config_dic[table_name]
         if col_list == '*':
             col = col_list
         else:
             col = ','.join( col_list )
-        cmd = 'SELECT {0} from {1}'.format( col, table_name )
+        cmd = 'SELECT {0} from {1}'.format( col, table )
         if conditions:
-            if "NULL" in conditions[0][2] :
-                cmd = cmd + ' where {0} {1} {2}'.format( conditions[0][0], conditions[0][1], conditions[0][2] )
-            else:
-                cmd = cmd + ' where {0} {1} "{2}"'.format( conditions[0][0], conditions[0][1], conditions[0][2] )
+            cmd = cmd + ' where {0} = "{1}"'.format( conditions[0][0], conditions[0][1] )
             if len( conditions ) > 1:
-                for n,r,v in conditions[1:]:
-                    if "NULL" in v:
-                        cmd = cmd + ' and {0} {1} {2}'.format( n,r,v )
-                    else:
-                        cmd = cmd + ' and {0} {1} "{2}"'.format( n,r,v )
+                for n,v in conditions[1:]:
+                    cmd = cmd + ' and {0} = "{1}"'.format( n,v )
         self.execute( cmd )
         return self.cursor.fetchall()
     
-    #def insert( self, table_name, col_list, value_list ):
-    def insert( self, table_name, name_list, value_list ):
+    def sql(self, cmd):
+        self.execute( cmd )
+        info = self.cursor.fetchall()
+        if info:
+            for line in info:
+                print("\t".join([str(x) for x in line]))
+    def sql_update(self, cmd):
+        print(cmd)
+        self.execute( cmd )
+    
+    def insert( self, table_name, col_list, value_list ):
         '''
         col_list: 要插入的列名list
         value_list: 要插入的值,形如[(value1.1,value1.2,...), (value2.1,value2.2,...)]
         '''
-        format_value = lambda x : '"{0}"'.format(str(x))
-        cmd = 'INSERT INTO {0} ( {1} ) VALUES ({2});'.format(table_name , ",".join(name_list) , ",".join( map( format_value , value_list) ))
-        self.execute(cmd)
+        table = self.config_dic[table_name]
+        cmd = 'INSERT INTO {0}({1}) VALUES ({2})'.format( table, ','.join( col_list ), ','.join( [str(i) for i in value_list[0]] ) )
+        if len( value_list ) > 1:
+            for i in value_list[1:]:
+                cmd = cmd + ',({0})'.format( ','.join([str(j) for j in i]) )
+        self.execute( cmd )
     
     def update( self, table_name, value_list, conditions = None ):
         '''
@@ -96,12 +103,20 @@ class LIMS():
         value = []
         value_list=list(zip(ziduan,value))
         '''
-        cmd = 'UPDATE {0} SET '.format( table_name )
+        table = self.config_dic[table_name]
+        cmd = 'UPDATE {0} SET '.format( table )
         for n,v in value_list:
-            if n=='reads':
-                cmd = cmd + '`{0}`="{1}", '.format( n,v )
+            
+            if v == None or v=="None" or v=="-" :
+                if n=='reads':
+                    cmd = cmd + '`{0}`=NULL, '.format( n )
+                else:
+                    cmd = cmd + '{0}=NULL, '.format( n)
             else :
-                cmd = cmd + '{0}="{1}", '.format( n,v )
+                if n=='reads':
+                    cmd = cmd + '`{0}`="{1}", '.format( n,v )
+                else:
+                    cmd = cmd + '{0}="{1}", '.format( n,v )
         cmd = cmd.rstrip( ', ' )
         if conditions:
             cmd = cmd + ' where {0} = "{1}"'.format( conditions[0][0], conditions[0][1] )
@@ -114,7 +129,8 @@ class LIMS():
         '''
         conditions: 删除条件: 形如[ (colname1,value1), (colname2,value2), ... ]
         '''
-        cmd = 'delete from {0} where {1}="{2}"'.format( table_name, conditions[0][0], conditions[0][1] )
+        table = self.config_dic[table_name]
+        cmd = 'delete from {0} where {1}="{2}"'.format( table, conditions[0][0], conditions[0][1] )
         if len( conditions ) > 1:
             for n,v in conditions[1:]:
                 cmd = cmd + ' and {0} = "{1}"'.format( n,v )
@@ -126,6 +142,7 @@ class LIMS():
                 self.cursor.execute(cmd)
                 if cmd.startswith( ('INSERT' ,'UPDATE' , 'DELETE')):
                     self.cnx.commit()
+                    print ( '{0} 运行成功'.format(cmd) )
             except mysql.connector.Error as err:
                 print ('{0} 尝试倒数第{1}次失败'.format( cmd, times ) )
                 print ( 'Error: {0}'.format( err ) )
