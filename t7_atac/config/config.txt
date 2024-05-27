@@ -1,2 +1,2 @@
-SEQKIT=/annoroad/data1/bioinfo/PMO/tuchengfang/bin/seqtk-master/seqkit
+SEQKIT=/annogene/data1/bioinfo/Seq/software/seqkit/seqtk-master/seqtk
 GZIP=gzip
