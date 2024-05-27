@@ -14,7 +14,7 @@ Help:
 	@echo Usage:
 	@echo -e "\n" Usage获取Config文件
 	@echo -e "\t" make -f ${file} project_id= hcsv= outfile= I5_discard= R2_discard= raw_fq= GetSampleList
-	@echo  Parameters:
+	@echo Parameters:
 	@echo -e "\t" project_id: 子项目编号
 	@echo -e "\t" hcsv: 拆分目录下的Hcsv文件
 	@echo -e "\t" I5_discard: 获取I5需要截取掉的长度，使用参数为seqkit -b
@@ -24,7 +24,7 @@ Help:
 	@echo -e "\n" Usage:获取ATAC的I5和R2数据长度
 	@echo -e "\t" make -f ${file} R2= discard_len= outfile= ATAC_I5
 	@echo -e "\t" make -f ${file} R2= discard_len= outfile= ATAC_R2
-	@echo  Parameters:
+	@echo Parameters:
 	@echo -e "\t" R2: 样本的R2.fq.gz路径
 	@echo -e "\t" discard_len:需要切除的碱基数，I5使用seqkit -b 参数，R2使用seqkit -e参数
 	@echo -e "\t" outfile:输出文件名，如outdir/sample1_I5.fq
