@@ -1,0 +1,1 @@
+SEQKIT=/annogene/data1/bioinfo/Seq/software/seqkit/2.8.2/seqkit
