@@ -1,0 +1,9 @@
+第一步生成流程需要的config.ini文件
+make -f /annogene/data1/bioinfo/Seq/RD/PMO/tuchengfang/238/Develop/public/t7_atac/bin/atac.mk  project_id=子项目编号 hcsv=芯片.hcsv outfile=输出的config.ini I5_discard=获取I5需要截取掉的长度 R2_discard=获取R2需要截取的长度 raw_fq=原始fq目录到文库上一次层  GetSampleList
+
+第二步投递-203
+/annogene/data1/bioinfo/Seq/RD/Public/Stable/Public/ags_plus/current/bin_ags_plus/ags_plus pipeline -p /annogene/data1/bioinfo/Seq/RD/PMO/tuchengfang/238/Develop/public/t7_atac/config/k8s.job_config.txt  -i config.ini  -j 项目编号 -b /annogene/data1/bioinfo/Seq/RD/PMO/tuchengfang/238/Develop/public/t7_atac/bin/ -o 输出目录 -r
+
+第二步投递-238
+/annoroad/data1/software/bin/miniconda/envs/python3_base/bin/python3 /annoroad/data1/software/bin/pipeline_generate/bin/current/pipeline_generate.py -i /annogene/data1/bioinfo/Seq/RD/PMO/tuchengfang/238/Develop/public/t7_atac/config/sge.job_config.txt -o 输出目录/pipeline
+/annoroad/data1/software/bin/miniconda/envs/python3_base/bin/python3 /annogene/data1/bioinfo/Seq/RD/PMO/tuchengfang/238/Develop/public/t7_atac/config/sge.job_config.txt -o 输出目录/pipeline/pipeline.py -i config.ini -j 子项目编号 -b /annogene/data1/bioinfo/Seq/RD/PMO/tuchengfang/238/Develop/public/t7_atac/bin/ -o 输出目录 -c -r

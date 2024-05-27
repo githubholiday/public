@@ -1,0 +1,19 @@
+[Job Start]
+Name	ATAC-I5
+Queue   "sci.q,suto.q,mid.q,nassci.q,micro.q"
+Memory	100G
+CPU	1
+Order	1
+Major	T
+Command	make -f BIN/atac.mk R2=Para_raw_fq/$(Sample)[0]/$(Sample)[0]_R2.fq.gz discard_len=$(Sample)[2] outfile=OUTDIR/$(Sample)[1]/$(Sample)[1]_i5.fq ATAC_I5
+[Job End]
+
+[Job Start]
+Name	ATAC-R2
+Queue   "sci.q,suto.q,mid.q,nassci.q,micro.q"
+Memory	100G
+CPU	1
+Order	1
+Major	T
+Command	make -f BIN/atac.mk R2=Para_raw_fq/$(Sample)[0]/$(Sample)[0]_R2.fq.gz discard_len=$(Sample)[3] outfile=OUTDIR/$(Sample)[1]/$(Sample)[1]_R2.fq ATAC_R2
+[Job End]
