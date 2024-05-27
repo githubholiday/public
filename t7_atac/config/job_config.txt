@@ -1,5 +1,5 @@
 [Job Start]
-Name	ATAC_I5
+Name	ATAC-I5
 Env	sci:sci
 Memory	110,1
 CPU	1
@@ -10,7 +10,7 @@ Command	make -f BIN/atac.mk R2=Para_raw_fq/$(Sample)[0]/$(Sample)[0]_R2.fq.gz di
 [Job End]
 
 [Job Start]
-Name	ATAC_R2
+Name	ATAC-R2
 Env	sci:sci
 Memory	110,1
 CPU	1
