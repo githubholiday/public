@@ -54,6 +54,6 @@ outfile=$(outdir)/$(sample)/$(sample)_R2.fq
 ATAC_R2:
 	echo "########## ATAC Cut R2 start at" `date`
 	mkdir $(outdir)
-	$(SEQKIT) trimfq -e $(right_bp) $(R2) > $(outfile)
+	$(SEQKIT) trimfq -e $(discard_len) $(R2) > $(outfile)
 	$(GZIP) $(outfile)
 	echo "########## ATAC Cut R2 finish at" `date`
