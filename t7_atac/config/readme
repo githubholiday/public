@@ -6,4 +6,4 @@ make -f /annogene/data1/bioinfo/Seq/RD/PMO/tuchengfang/238/Develop/public/t7_ata
 
 第二步投递-238
 /annoroad/data1/software/bin/miniconda/envs/python3_base/bin/python3 /annoroad/data1/software/bin/pipeline_generate/bin/current/pipeline_generate.py -i /annogene/data1/bioinfo/Seq/RD/PMO/tuchengfang/238/Develop/public/t7_atac/config/sge.job_config.txt -o 输出目录/pipeline
-/annoroad/data1/software/bin/miniconda/envs/python3_base/bin/python3 /annogene/data1/bioinfo/Seq/RD/PMO/tuchengfang/238/Develop/public/t7_atac/config/sge.job_config.txt -o 输出目录/pipeline/pipeline.py -i config.ini -j 子项目编号 -b /annogene/data1/bioinfo/Seq/RD/PMO/tuchengfang/238/Develop/public/t7_atac/bin/ -o 输出目录 -c -r
+/annoroad/data1/software/bin/miniconda/envs/python3_base/bin/python3 输出目录/pipeline/pipeline.py -i config.ini  -j 子项目编号  -name 子项目编号 -b /annogene/data1/bioinfo/Seq/RD/PMO/tuchengfang/238/Develop/public/t7_atac/bin/ -o 输出目录 -c -r
