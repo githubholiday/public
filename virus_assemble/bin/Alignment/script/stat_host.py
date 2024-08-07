@@ -40,9 +40,10 @@ def get_total( stat ):
              if '+ 0 primary' in line:
                 total = line.split("+")[0].strip()
                 return total
-
-
 def get_unmap( report ):
+    '''
+    从report中获取reads数，单端reads数
+    '''
     with open( report, 'r') as infile:
         for line in infile:
             if line.startswith('#total_reads'):
@@ -59,19 +60,33 @@ def main():
     parser.add_argument('-r','--report',help='*.report',dest='report',required=False)
     parser.add_argument('-o','--output',help='output file',dest='out',type=argparse.FileType('w'),required=True)
     parser.add_argument('-s','--sample',help='sample file',dest='sample',required=True)
+    parser.add_argument('-t','--type',help='Mapped or Unmapped',dest='type',required=True)
     args=parser.parse_args()
+    #如果输入的report是未必对上的，则-t 给定 unmap, 如果为比对上的，则为 map
 
-
+    if args.type not in ["map","unmap"]:
+        print("-t Please input map|unmap")
+        sys.exit(1)
     total_reads = get_total( args.input )
-    unmaped_reads = get_unmap( args.report) #int
-    mapped_reads = int(total_reads) - unmaped_reads
+    #从report里面获取的是unmaped
+    report_reads = get_unmap( args.report) #int
+    other_reads = int(total_reads) - report_reads
+    if args.type == "map":
+        mapped_reads = report_reads
+        unmapped_reads = other_reads
+    else:
+        unmapped_reads = report_reads
+        mapped_reads = other_reads
+    
     map_rate = '{0:.2f}'.format( 100*mapped_reads/int(total_reads))
+    unmap_rate = '{0:.2f}'.format( 100*unmapped_reads/int(total_reads))
 
     args.out.write("Sample\t"+args.sample+"\n")
     args.out.write("Total Reads\t"+total_reads+"\n")
-    args.out.write("Mapped Host Reads\t"+str(mapped_reads)+"\n")
-    args.out.write("Mapped Host Rate(%)\t"+map_rate+"\n")
-    args.out.write("Unmapped Host Reads\t"+str(unmaped_reads))
+    args.out.write("Mapped Reads\t"+str(mapped_reads)+"\n")
+    args.out.write("Mapped Rate(%)\t"+map_rate+"\n")
+    args.out.write("Unmapped Reads\t"+str(unmapped_reads))
+    args.out.write("Unmapped Rate(%)\t"+str(unmap_rate))
 
 if __name__ == '__main__':
     main()
