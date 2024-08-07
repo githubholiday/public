@@ -1,0 +1,8 @@
+PERL=/annoroad/data1/software/bin/miniconda/envs/Transcriptome_pipeline_2023_2/bin/perl
+BWA=/annoroad/data1/software/install/Miniconda/Miniconda3-4.10.3-py3.9.5/envs/micro/bin/bwa
+SAMTOOLS=/annoroad/data1/software/install/smrtlink_11.0/bin/smrtcmds/bin//samtools
+BAM2FASTQ=/annoroad/data1/software/install/bam2fastq/bam2fastq-1.1.0/bam2fastq
+GZIP=gzip
+FQTOOLS=/annoroad/data1/software/install/Miniconda/software/fqtools
+PYTHON3=/annoroad/data1/software/bin/miniconda/envs/python3_base/bin/python3
+CSVTK=/annoroad/data1/software/bin/miniconda/envs/TGS_16s_pbtools/bin/csvtk
