@@ -184,8 +184,12 @@ def main():
     comm.color_print("正在复核的路径为 {0}".format( check_dir ))
     my_path_job = Path_Deal( check_dir )
     clean_num, raw_num = my_path_job.check_raw_clean()
-    comm.color_print("Cleandata下样本数量为 {0}\nRawdata下样本数量为{1}".format( clean_num, raw_num ))
+    comm.color_print(content="Cleandata下样本数量为 {0}\nRawdata下样本数量为{1}".format( clean_num, raw_num ,backgroud='42',font_color='37',asc_control='0'))
     my_path_job.check_md5_exists()
+
+
+    my_md5_job = MD5(check_dir)
+    my_md5_job.check_repeat_md5()
 
 
 if __name__ == '__main__':
