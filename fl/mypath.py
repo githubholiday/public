@@ -173,7 +173,7 @@ def main():
     args = parser.parse_args()
 
     if not args.dir :
-        check_dir = os.path.getcwd()
+        check_dir = os.getcwd()
     else:
         check_dir = args.dir
 
