@@ -180,7 +180,7 @@ def main():
     else:
         check_dir = os.path.abspath(args.dir)
     
-    comm.color_print(content="**正在复核的路径为 {0}\n".format( check_dir ), backgroud='40',font_color='37',asc_control='0')
+    comm.color_print(content="\n**正在复核的路径为 {0}\n".format( check_dir ), backgroud='40',font_color='37',asc_control='0')
     my_path_job = Path_Deal( check_dir )
     clean_num, raw_num = my_path_job.check_raw_clean()
     comm.color_print(content="Cleandata下样本数量为 {0}\nRawdata下样本数量为{1}".format( clean_num, raw_num ),backgroud='40',font_color='37',asc_control='0') 
