@@ -11,6 +11,9 @@ class MD5( object ) :
     def __init__(self, release_dir ) :
         self.release_dir = release_dir
         self.md5file = self.release_dir+'/md5.txt'
+        if not os.path.exists(self.md5file):
+            print("不存在md5文件,退出")
+            sys.exit(0)
         #self.md5_repeat = self.check_repeat_md5()
 
     def check_repeat_md5( self ) :
