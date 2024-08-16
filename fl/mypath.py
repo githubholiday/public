@@ -175,8 +175,9 @@ def main():
     if not args.dir :
         check_dir = os.getcwd()
     else:
-        check_dir = args.dir
-
+        check_dir = os.path.abspath(args.dir)
+    
+    comm.color_print("正在复核的路径为 {0}".format( check_dir ))
     my_path_job = Path_Deal( check_dir )
     my_path_job.check_raw_clean()
     my_path_job.check_md5_exists()
