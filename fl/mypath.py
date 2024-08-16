@@ -112,7 +112,7 @@ class Path_Deal():
         返回软连接失效的文件
         '''
         no_link_file = []
-        data_file_list = glob.glob(indir +'/*/*') + glob.glob(indir +'/*/')
+        data_file_list = glob.glob(indir +'/*/*') + glob.glob(indir +'/*')
         for infile in data_file_list :
             if not os.path.exists( infile ):
                 no_link_file.append(os.path.basename(infile))
