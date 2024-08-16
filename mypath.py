@@ -169,7 +169,7 @@ def main():
     parser=argparse.ArgumentParser(description=__doc__,
             formatter_class=argparse.RawDescriptionHelpFormatter)
 
-    parser.add_argument( '-d', '--dir', help='dir to check', dest = 'dir',default=os.path.getcwd())
+    parser.add_argument( '-d', '--dir', help='dir to check', dest = 'dir',default=os.getcwd())
     args = parser.parse_args()
 
     if not args.dir :
