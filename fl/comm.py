@@ -17,7 +17,6 @@ def color_print( content, backgroud='40', font_color= '31', asc_control = '0' ) 
             print("b:{0} f:{1}".format(b,f))
             print("\033[{0};{1}m{2}\033[{3}m".format( b, f, "测试", '0' ))
     '''
-
     print("\033[{0};{1}m{2}\033[{3}m".format( backgroud, font_color, content, asc_control ))
     
 def myinput( content, empty="no" ) :
