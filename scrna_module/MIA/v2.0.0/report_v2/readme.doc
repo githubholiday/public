@@ -1,0 +1,44 @@
+├── 1_Space
+│   └── sample_space_umap.pdf
+├─2_MIA
+│   ├ *_top3_gene_FeaturePlot.pdf
+│   ├── sample_MIA.pdf
+│   ├── sample_mia_result.xls
+│   ├── sample_pheatmap.pdf
+│   ├── sample_region_celltype_gene.xls
+│   ├── sample_region_celltype.xls
+│   ├── sample_space_anno_umap.pd
+│   └ sample_SpatialDimPlot_Pit1_eachcell.pdf
+└── readme.doc
+
+1. sample_space_umap.pdf
+空间数据集中的 cluster 的UMAP图（左图） 和 在空间切片上的展示图（右图）。
+
+2. *_top3_gene_FeaturePlot.pdf
+RNA数据集的各细胞类型同空间数据集共有的 top3 marker基因在空间转录组中的表达分布图
+
+3. sample_mia_result.xls
+（1）region：空间转录组中的的cluster编号；
+（2）term：RNA转录组中的细胞类型；
+（3）pvalue：P值；
+（4）Enrichment：富集值；
+（5）Depletion：缺失值；
+（6）final_value：富集值和缺失值中的最大值；
+（7）final_class：该细胞类型在该cluster中的状态，是富集还是缺失。
+
+4. sample_pheatmap.pdf
+展示不同cluster在各个细胞类型中的P值情况，横轴表示不同cluster，纵轴表示对应不同细胞类型的P值。
+
+5. sample_MIA.pdf
+将enrichment 和Depletion两个值在热图中展示，可以看出每个cluster最可能的细胞类型，括号里面的genes数值为高可变基因数量。
+
+6. sample_region_celltype.xls
+（1）region：空间转录组中的的cluster编号；
+（2）term：预测的细胞类型。
+
+7. sample_space_anno_umap.pdf
+使用MIA预测的细胞类型，空间数据集中的细胞类型的UMAP图（左图） 和 在空间切片上的展示图（右图）。
+
+8. sample_SpatialDimPlot_Pit1_eachcell.pdf
+每个细胞类型分别在空间转录组中的切片图展示。
+

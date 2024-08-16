@@ -1,0 +1,5 @@
+#Monocle3_multi_mk
+PERL=perl
+PYTHON=python3
+RSCRIPT_monocle3=Rscript
+CONVERT=/software/conda/bin/convert

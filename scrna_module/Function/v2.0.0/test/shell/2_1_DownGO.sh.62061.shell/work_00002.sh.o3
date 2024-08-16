@@ -1,0 +1,4 @@
+echo "########## Anno start at" `date`
+########## Anno start at Fri Jun 14 15:26:23 CST 2024
+mkdir -p /work/share/acuhtwkcu9/taoxiao/05_tool/Stable/Function/v2.0.0/test/result/IMT_vs_MT_scRNA_T-cell_IMT_vs_T-cell_MT/down/
+cut -f 1 /work/share/acuhtwkcu9/taoxiao/05_tool/Stable/Function/v2.0.0/test/result/IMT_vs_MT_scRNA_T-cell_IMT_vs_T-cell_MT/.csv > /work/share/acuhtwkcu9/taoxiao/05_tool/Stable/Function/v2.0.0/test/result/IMT_vs_MT_scRNA_T-cell_IMT_vs_T-cell_MT/down//all.gene.xls

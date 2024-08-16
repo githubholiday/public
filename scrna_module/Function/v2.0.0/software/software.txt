@@ -1,0 +1,31 @@
+#SHARE_DIR=/annoroad/share/software/install/
+#General software
+PERL=perl
+PYTHON3=python3
+RSCRIPT=Rscript
+CONVERT=/usr/bin/convert
+cellranger_ref_dir=/work/share/acuhtwkcu9/RefDB/cellranger_ref/refdata-cellranger-
+species_category=/work/share/acuhtwkcu9/tuchengfang/database//species_category.ini
+generate_pipeline=/work/share/acuhtwkcu9/liutao/seqwisdom/easy_bioinfo/wdl_related/7.pipeline_generate/pipeline_generate_sugon.py
+ref_index=/work/share/acuhtwkcu9/RefDB/All_Species_database/RNA/
+
+#Function
+GO_Rscript=/opt/install/R-4.2.3/bin/Rscript
+#database
+KEGG_Base=/work/share/acuhtwkcu9/tuchengfang/database/KEGG/20221108/
+GO_Base=/work/share/acuhtwkcu9/tuchengfang/database/GO/20221108/
+MAP2NAME=/work/share/acuhtwkcu9/tuchengfang/database/KEGG/20221108/data/pathway_$(category).list
+KO2MAP=/work/share/acuhtwkcu9/tuchengfang/database/KEGG/20221108/data/ko2map/ko2map.xls
+KEGG_MAP_DIR=/work/share/acuhtwkcu9/tuchengfang/database/ClusterProfile/KEGG
+#GO_Clusterfiler
+GO2NAME=/work/share/acuhtwkcu9/tuchengfang/database/GO/20221108/data/go.class.clusterprofile
+ORGDB=/work/share/acuhtwkcu9/tuchengfang/database/ClusterProfile/OrgDb.list
+
+#GOKEGG qsub
+slurm_sge=/work/share/acuhtwkcu9/liutao/seqwisdom/easy_bioinfo/wdl_related/7.pipeline_generate/src/slurm/slurm_sge
+queue=xhacnormalb
+mount=/work/share/acuhtwkcu9/:/work/share/acuhtwkcu9/
+sif=/work/share/acuhtwkcu9/tuchengfang/01_Pipeline/Sif/scRNA/clusterprofiler_v0.0.4.sif
+
+
+
