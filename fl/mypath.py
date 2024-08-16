@@ -117,7 +117,7 @@ class Path_Deal():
             if not os.path.exists( infile ):
                 no_link_file.append(infile)
         if no_link_file :
-            comm.color_print("{0} 有失效链接，请确认".format(indir))
+            comm.color_print("{0} 有失效链接，请确认,{1}".format(indir,no_link_file))
         else:
             comm.color_print(content="{0} 没有失效软链接".format(indir),backgroud='42',font_color='37',asc_control='0')
 
@@ -133,7 +133,7 @@ class Path_Deal():
             if len(sample_file ) == 0 :
                 empty_list.append( sample )
         if empty_list:
-            comm.color_print("{0} 下的样本目录有空目录，请确认".format(indir))
+            comm.color_print("{0} 下的样本目录有空目录，请确认,{1}".format(indir,empty_list))
         else:
             comm.color_print(content="{0} 下没有空目录".format(indir),backgroud='42',font_color='37',asc_control='0')
         
@@ -147,7 +147,7 @@ class Path_Deal():
                 if os.path.getsize(fq_file):continue
                 empty_list.append( sample )
         if empty_list:
-            comm.color_print("{0} 下的样本目录有大小为0的文件，请确认".format(indir))
+            comm.color_print("{0} 下的样本目录有大小为0的文件,请确认,{1}".format(indir, empty_list))
             sys.exit(1)   
         else:
             comm.color_print(content="{0} 下没有大小为0的文件".format(indir),backgroud='42',font_color='37',asc_control='0')
@@ -167,8 +167,6 @@ class Path_Deal():
             if sample_name not in sample_list:
                 sample_list.append( sample_name )
         return sample_list
-       
-
 def main():
     parser=argparse.ArgumentParser(description=__doc__,
             formatter_class=argparse.RawDescriptionHelpFormatter)
@@ -181,7 +179,7 @@ def main():
     else:
         check_dir = os.path.abspath(args.dir)
     
-    comm.color_print("正在复核的路径为 {0}".format( check_dir ))
+    comm.color_print(content="正在复核的路径为 {0}".format( check_dir ), backgroud='40',font_color='32',asc_control='0')
     my_path_job = Path_Deal( check_dir )
     clean_num, raw_num = my_path_job.check_raw_clean()
     comm.color_print(content="Cleandata下样本数量为 {0}\nRawdata下样本数量为{1}".format( clean_num, raw_num ),backgroud='42',font_color='37',asc_control='0') 
