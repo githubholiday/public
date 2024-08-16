@@ -119,7 +119,7 @@ class Path_Deal():
         if no_link_file :
             comm.color_print("{0} 有失效链接，请确认".format(indir))
         else:
-            comm.color_print("{0} 没有失效软链接".format(indir,backgroud='42',font_color='37',asc_control='0'))
+            comm.color_print(content="{0} 没有失效软链接".format(indir,backgroud='42',font_color='37',asc_control='0'))
 
     def judge_empty_dir(self, indir ):
         '''
@@ -135,7 +135,7 @@ class Path_Deal():
         if empty_list:
             comm.color_print("{0} 下的样本目录有空目录，请确认".format(indir))
         else:
-            comm.color_print("{0} 下没有空目录".format(indir,backgroud='42',font_color='37',asc_control='0'))
+            comm.color_print(content="{0} 下没有空目录".format(indir,backgroud='42',font_color='37',asc_control='0'))
         
     def judge_empty_file(self, indir ):
         empty_list = []
@@ -150,7 +150,7 @@ class Path_Deal():
             comm.color_print("{0} 下的样本目录有大小为0的文件，请确认".format(indir))
             sys.exit(1)   
         else:
-            comm.color_print("{0} 下没有大小为0的文件".format(indir,backgroud='42',font_color='37',asc_control='0'))
+            comm.color_print(content="{0} 下没有大小为0的文件".format(indir,backgroud='42',font_color='37',asc_control='0'))
     def get_sampleList( self, indir ):
         '''
         获取样本名，如果clean和raw目录下的样本名不一致，报错退出
