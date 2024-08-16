@@ -85,7 +85,7 @@ class Path_Deal():
             if sorted(clean_sample_list) == sorted(raw_sample_list):
                 return len(clean_sample_list), len(raw_sample_list)
             else:
-                comm.color_print("Cleandata 和 Rawdata 下的数据不一致，请确认")
+                comm.color_print("Cleandata 和 Rawdata 下的样本不一致，请确认")
                 sys.exit(1)
                 
         elif os.path.exists( self.raw ) and not os.path.exists(self.clean ) :
@@ -103,7 +103,7 @@ class Path_Deal():
             return len(samplelist),0
         else:
             comm.color_print("交付目录下既没有Cleandata也没有Rawdata，请核实")
-            return "",0,0
+            return 0,0
             
     
     def judge_link( self, indir ):
@@ -118,7 +118,8 @@ class Path_Deal():
                 no_link_file.append(infile)
         if no_link_file :
             comm.color_print("{0} 有失效链接，请确认".format(indir))
-            sys.exit(1)
+        else:
+            comm.color_print("{0} 没有失效软链接".format(indir))
 
     def judge_empty_dir(self, indir ):
         '''
@@ -133,7 +134,8 @@ class Path_Deal():
                 empty_list.append( sample )
         if empty_list:
             comm.color_print("{0} 下的样本目录有空目录，请确认".format(indir))
-            sys.exit(1)
+        else:
+            comm.color_print("{0} 下没有空目录".format(indir))
         
     def judge_empty_file(self, indir ):
         empty_list = []
@@ -145,8 +147,10 @@ class Path_Deal():
                 if os.path.getsize(fq_file):continue
                 empty_list.append( sample )
         if empty_list:
-            comm.color_print("{0} 下的样本目录有为0的文件，请确认".format(indir))
-            sys.exit(1)    
+            comm.color_print("{0} 下的样本目录有大小为0的文件，请确认".format(indir))
+            sys.exit(1)   
+        else:
+            comm.color_print("{0} 下没有大小为0的文件".format(indir))
     def get_sampleList( self, indir ):
         '''
         获取样本名，如果clean和raw目录下的样本名不一致，报错退出
@@ -179,7 +183,8 @@ def main():
     
     comm.color_print("正在复核的路径为 {0}".format( check_dir ))
     my_path_job = Path_Deal( check_dir )
-    my_path_job.check_raw_clean()
+    clean_num, raw_num = my_path_job.check_raw_clean()
+    comm.color_print("Cleandata下样本数量为 {0}\nRawdata下样本数量为{1}".format( clean_num, raw_num ))
     my_path_job.check_md5_exists()
 
 
