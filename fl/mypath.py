@@ -178,6 +178,9 @@ def main():
         check_dir = args.dir
 
     my_path_job = Path_Deal( check_dir )
+    my_path_job.check_raw_clean()
+    my_path_job.check_md5_exists()
+
 
 if __name__ == '__main__':
     main()
