@@ -1,0 +1,9 @@
+spot	AACACTTGGCAAGGAA-1
+predicted.id	Stromal
+prediction.score.Pit1_Epithelial	0.056119969
+prediction.score.Myeloid	0
+prediction.score.Stromal	0.617489981
+prediction.score.T_cell	0.000000000
+prediction.score.Epithelial	0.326390050
+prediction.score.B_cell	0
+prediction.score.max	0.6174900

@@ -1,0 +1,2 @@
+#将单细胞数据基因表达转化为bulkRNA数据 输出为xls
+singularity exec --bind /work/share/acuhtwkcu9/:/work/share/acuhtwkcu9/ /work/share/acuhtwkcu9/liutao/sif/sif/scRNA/seurat5/seurat5_sccustomize.sif Rscript /work/share/acuhtwkcu9/taoxiao/04_Project/P2024050717K4YH7T/taoxiao/Analysis/sto/07_kmeans/Pseudobulk.r -i /work/share/acuhtwkcu9/taoxiao/04_Project/P2024050717K4YH7T/taoxiao/Analysis/sto/07_kmeans/../05_gene_umap_0704/HEC_all_analysis.rds  -o /work/share/acuhtwkcu9/taoxiao/04_Project/P2024050717K4YH7T/taoxiao/Analysis/sto/07_kmeans -n horse -s mean -c  seurat_clusters -a Spatial

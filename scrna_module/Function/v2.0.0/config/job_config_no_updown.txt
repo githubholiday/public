@@ -1,0 +1,33 @@
+
+[Job Start]
+Name	MarkerAnno
+Memory	5G
+Qsub	False
+CPU	N
+Major	F
+Order	1
+Command	make -f BIN/bin/anno.mk log_file=LOGFILE sample=$(sample)[0] infile=$(sample)[1] outdir=$(sample)[2] relation_file=Para_relation_file anno_file=Para_anno_file Anno
+[Job End]
+
+[Job Start]
+Name	AllGO
+Memory	5G
+Qsub	False
+CPU	N
+Major	T
+Order	2
+Depend	MarkerAnno
+Command	make -f BIN/bin/anno.mk log_file=LOGFILE gene_list=$(sample)[2]/$(sample)[0].csv  go_dir=$(sample)[2]/all/GO sample=$(sample)[0] go=Para_go_list relation_file=Para_relation_file GO
+[Job End]
+
+[Job Start]
+Name	AllKEGG
+Memory	5G
+Qsub	False
+CPU	N
+Major	T
+Order	2
+Depend	MarkerAnno
+Command	make -f BIN/bin/anno.mk log_file=LOGFILE gene_list=$(sample)[2]/$(sample)[0].csv  kegg_dir=$(sample)[2]/all/KEGG sample=$(sample)[0] ko=Para_kegg_list category=animal relation_file=Para_relation_file KEGG
+[Job End]
+

@@ -1,0 +1,7 @@
+iconv=/usr/bin/iconv
+CONVERT=convert
+RSCRIPT=Rscript
+python3_202=python3
+python3_238=python3
+get_upload=/work/share/acuhtwkcu9/Stable/Generate_report/script/get_upload.py
+reportpy=/annoroad/data1/bioinfo/PROJECT/Commercial/Cooperation/Public/Pipeline/Stable/Public/Report/Report_local/current/Public_webreport//Report.py
