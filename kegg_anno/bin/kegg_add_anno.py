@@ -43,7 +43,7 @@ def main():
                 continue
             map_id = tmp[2]
             if map_id in relation_dict:
-                level_info = relation_dict
+                level_info = relation_dict[map_id]
                 content = '\t'.join(tmp)+level_info
                 output.write(content+'\n')
 
