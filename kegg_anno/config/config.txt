@@ -1,0 +1,1 @@
+kegg_relation=/annoroad/data1/bioinfo/PROJECT/Commercial/Cooperation/FTP/Database/KEGG/current/data/map_pathway.list
