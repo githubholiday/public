@@ -73,7 +73,7 @@ BWA_MEM:
 	${SAMTOOLS} flagstat ${sort_bam} > ${flag_stat_file}
 	echo bwa mem end and sort at `date`
 
-outbam=$(outdir)/$(sample).mapped.bam
+outdir=$(dir $(abspath $(firstword $(outbam))))
 para=-F #比对上的，-f未比对上的
 SelectBam:
 	echo get map or unmap bam from sort.bam start at `date`
@@ -83,7 +83,7 @@ SelectBam:
 
 DepthStat:
 	echo bam stat start at `date`
-	singularity exec --bind /work/share/acuhtwkcu9/:/work/share/acuhtwkcu9/ /work/share/acuhtwkcu9/liutao/sif/chip/chip_macs2.sif genomeCoverageBed -ibam ${inbam} > $(depth_file)
+	genomeCoverageBed -ibam ${inbam} > $(depth_file)
 	$(PYTHON3) $(ScriptDir)/coverage.py -f $(flag_stat_file) -d $(depth_file) -o $(coverage_out) -n $(sample)
 
 prefix=@$(sample)_$(type)
