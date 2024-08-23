@@ -47,6 +47,7 @@ GSEA_plot<-function(gsea_res,out_pre, ids ){
     #如果想将所有id的画在一个图中，不循环即可
     for (k in (1:length(ids))){
         geneSetID = ids[k]
+		print(paste(geneSetID,"绘图中"))
         filename<-paste(out_pre, geneSetID,'GSEA_score.pdf',sep='_')
         pdf(filename, w=12, h=8)
         

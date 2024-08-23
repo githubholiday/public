@@ -42,5 +42,5 @@ outdir=$(dir $(abspath $(firstword $(output))))
 FilterStat:
 	echo "########## filter_stat  start at" `date`
 	mkdir -p $(outdir)
-	$(BIN)/merge_json --input $(input) --output $(output)
+	$(BIN)/bin/merge_json --input $(input) --output $(output)
 	echo "########## filter_stat finish at" `date`

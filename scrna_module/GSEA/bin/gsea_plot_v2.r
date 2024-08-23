@@ -30,11 +30,11 @@ print_usage <- function(para=NULL) {
 
 #对输入进行检查
 if ( !is.null(opt$help) ){ print_usage(para) }
-if ( is.null(opt$idfile) ){ cat("Please input the rds file\n\n") ; print_usage(para)}
+if ( is.null(opt$rds) ){ cat("Please input the rds file\n\n") ; print_usage(para)}
 if ( is.null(opt$idfile) ){ cat("Please input the id list file\n\n") ; print_usage(para)}
 if ( is.null(opt$outdir) ){ cat("Please input the outdir of result\n\n") ; print_usage(para)}
 if ( is.null(opt$prefix) ){ cat("Please input the prefix of result\n\n") ; print_usage(para)}
-if ( is.null(opt$header) ) { opt$header <- False }
+if ( is.null(opt$header) ) { opt$header <- FALSE }
 #对输出进行赋值处理
 
 
@@ -42,7 +42,7 @@ library(enrichplot)
 library(ggplot2)
 library(ggpp)
 
-GSEA_plot<-function(gsea_res,out_pre, ids ){
+GSEA_plot<-function(gsea_res,out_pre, ids , ids_data ){
     library(ggpp)
     #如果想将所有id的画在一个图中，不循环即可
     for (k in (1:length(ids))){
@@ -51,9 +51,12 @@ GSEA_plot<-function(gsea_res,out_pre, ids ){
         filename<-paste(out_pre, geneSetID,'GSEA_score.pdf',sep='_')
         pdf(filename, w=12, h=8)
         
-        pd <- gsea_res[geneSetID, c( "NES","pvalue", "p.adjust")]
+        #pd <- gsea_res[geneSetID, c( "NES","pvalue", "p.adjust")]
+        pd <- ids_data [ which(ids_data$ID==geneSetID), c( "NES","pvalue", "p.adjust")]
         rownames(pd) <- NULL
-        for (i in seq_len(ncol(pd))){pd[, i] <- format(pd[, i], digits = 4)}
+        for (i in seq_len(ncol(pd))){
+            pd[, i] <- format(pd[, i], digits = 4)
+        }
         pd_t <- data.frame(t(pd))
         data<-cbind("Type" = rownames(pd_t),pd_t)
         colnames(data) <- c("Type","Value")
@@ -75,18 +78,20 @@ GSEA_plot<-function(gsea_res,out_pre, ids ){
         }
 }
 
+
 ######Main#####
 rds_file <- opt$rds
 infile <- opt$idfile
 outdir <- opt$outdir
 prefix <- opt$prefix
+
 ## 
 rds_data <- readRDS(rds_file)
 ids_data <- read.table( infile, header=opt$header, sep='\t')
 print(ids_data)
-ids_list <- ids_data[,1]
+ids_list <- ids_data[,2]
 print(paste("绘图ID数量为:",length(ids_list),sep=""))
 outpre <- paste( outdir, prefix, sep='/')
-GSEA_plot( rds_data, outpre, ids_list )
+GSEA_plot( rds_data, outpre, ids_list ,ids_data )
 
 
