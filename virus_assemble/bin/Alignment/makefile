@@ -7,6 +7,7 @@ else
 endif
 include $(Bconfig)
 ScriptDir=$(BIN)/script
+FQTOOLS=$(ScriptDir)/fqtools
 
 HELP:
 	@echo Description: 此脚本用于ccs reads比对

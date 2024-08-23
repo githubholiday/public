@@ -3,5 +3,4 @@ BWA=bwa
 SAMTOOLS=samtools
 BAM2FASTQ=bam2fastq
 GZIP=gzip
-FQTOOLS=fqtools
 PYTHON3=python3
