@@ -8,7 +8,7 @@ endif
 include $(Bconfig)
 ScriptDir=$(BIN)/script
 
-cpu=?3
+cpu=3
 fastp=fastp
 HELP:
 	@echo Description: 此脚本用于ccs reads比对
