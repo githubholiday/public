@@ -36,7 +36,7 @@ Order	1
 Depend	HostGetUnmap
 Mount	/work/share/acuhtwkcu9/:/work/share/acuhtwkcu9/
 Sif	/work/share/acuhtwkcu9/liutao/sif/sif/gatk/wgs_tools_v0.0.1.sif
-Command	make -f BIN/Alignment/makefile config=Para_config inbam=Para_outdir/01_rm_host/$(Sample)[0]/$(Sample)[0].unmap.bam sample=$(Sample)[0] type=unmap flag_stat=Para_outdir/01_rm_host/$(Sample)[0]/$(Sample)[0].flagstat.xls outdir=Para_outdir/01_rm_host/$(Sample)[0]/ BAM2FQ_SE
+Command	make -f BIN/Alignment/makefile config=Para_config inbam=Para_outdir/01_rm_host/$(Sample)[0]/$(Sample)[0].unmap.bam sample=$(Sample)[0] type=unmap flag_stat_file=Para_outdir/01_rm_host/$(Sample)[0]/$(Sample)[0].flagstat.xls outdir=Para_outdir/01_rm_host/$(Sample)[0]/ BAM2FQ_SE
 [Job End]
 
 [Job Start]
@@ -78,7 +78,7 @@ Order	2
 Depend	SelfGetMap
 Mount	/work/share/acuhtwkcu9/:/work/share/acuhtwkcu9/
 Sif	/work/share/acuhtwkcu9/liutao/sif/sif/gatk/wgs_tools_v0.0.1.sif
-Command		make -f BIN/Alignment/makefile config=Para_config inbam=Para_outdir/02_self_mem/$(Sample)[0]/$(Sample)[0].map.bam sample=$(Sample)[0] type=unmap flag_stat=Para_outdir/02_self_mem/$(Sample)[0]/$(Sample)[0].self.flagstat.xls outdir=Para_outdir/02_self_mem/$(Sample)[0]/ BAM2FQ_SE
+Command		make -f BIN/Alignment/makefile config=Para_config inbam=Para_outdir/02_self_mem/$(Sample)[0]/$(Sample)[0].map.bam sample=$(Sample)[0] type=unmap flag_stat_file=Para_outdir/02_self_mem/$(Sample)[0]/$(Sample)[0].self.flagstat.xls outdir=Para_outdir/02_self_mem/$(Sample)[0]/ BAM2FQ_SE
 [Job End]
 
 [Job Start]

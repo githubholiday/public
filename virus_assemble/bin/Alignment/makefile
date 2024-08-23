@@ -37,7 +37,7 @@ HELP:
 	@echo   depth_file:genomeCoverageBed的输出文件
 	@echo   coverage_out:覆盖度统计输出文件
 	@echo   sample:样本名称
-	@echo make -f makefile config= inbam= sample= type= flag_stat= outdir= BAM2FQ_SE
+	@echo make -f makefile config= inbam= sample= type= flag_stat_file= outdir= BAM2FQ_SE
 	@echo   [参数说明]	
 	@echo   将输入的bam转化为SE的fq文件,并且统计比对上和未比对上reads数/比率
 	@echo   inbam:sort后的bam文件
@@ -47,7 +47,7 @@ HELP:
 	@echo   outdir:输出目录
 	@echo   输出信息：outdir/sample_type_1|2.fq|fq.gz,outdir/sample_type_1.fq.gz.report,outdir/sample_map.stat.xls,
 	@echo   sample:样本名称
-	@echo make -f makefile config= inbam= sample= type= flag_stat= outdir= BAM2FQ_PE
+	@echo make -f makefile config= inbam= sample= type= flag_stat_file= outdir= BAM2FQ_PE
 	@echo   [参数说明]	
 	@echo   将输入的bam转化为SE的fq文件,并且统计比对上和未比对上reads数/比率
 	@echo   inbam:sort后的bam文件
@@ -93,7 +93,7 @@ BAM2FQ_SE:
 	${BAM2FASTQ} -f -o ${outdir}/${prefix}_1.fq ${inbam}
 	$(GZIP) ${outdir}/${prefix}_1.fq
 	$(FQTOOLS) stat ${outdir}/${prefix}_1.fq.gz ${outdir}/${prefix}_1.fq.gz.report
-	$(PYTHON3) $(ScriptDir)/stat_host.py -i ${flag_stat} -r ${outdir}/${prefix}_1.fq.gz.report -s ${sample} -o ${outdir}/${sample}.map.stat.xls -t $(type)
+	$(PYTHON3) $(ScriptDir)/stat_host.py -i ${flag_stat_file} -r ${outdir}/${prefix}_1.fq.gz.report -s ${sample} -o ${outdir}/${sample}.map.stat.xls -t $(type)
 	echo bam2fq SE end at `date`
 
 prefix=$(sample)_$(type)
@@ -105,6 +105,6 @@ BAM2FQ_PE:
 	$(GZIP) ${outdir}/${prefix}_2.fq
 	$(FQTOOLS) stat ${outdir}/${prefix}_1.fq.gz ${outdir}/${prefix}_1.fq.gz.report
 	$(FQTOOLS) stat ${outdir}/${prefix}_2.fq.gz ${outdir}/${prefix}_2.fq.gz.report
-	$(PYTHON3) $(ScriptDir)/script/stat_host.py -i ${flag_stat} -r  ${outdir}/${prefix}_1.fq.gz.report -s ${sample} -o ${outdir}/${sample}.map.stat.xls -t $(type)
+	$(PYTHON3) $(ScriptDir)/script/stat_host.py -i ${flag_stat_file} -r  ${outdir}/${prefix}_1.fq.gz.report -s ${sample} -o ${outdir}/${sample}.map.stat.xls -t $(type)
 	echo bam2fq PE end at `date`
 
