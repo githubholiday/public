@@ -1,6 +1,6 @@
 makefile_dir=$(dir $(abspath $(firstword $(MAKEFILE_LIST))))
 makefile_name=$(notdir $(firstword $(MAKEFILE_LIST)))
-script=$(makefile_dir)/script/
+script=$(makefile_dir)/bin/
 
 ifdef config
 	include $(config)
@@ -15,283 +15,59 @@ HELP:
 	@echo Version: v1.0.0
 	@echo Contactor: yangzhang@genome.cn
 	@echo Usage:
-	@echo -e "\t" "make -f $(makefile_name) infa= TPM= cuts= sample= config= annotation"
+	@echo -e "\t" "make -f $(makefile_name) input= kegg_level_file= TPM= outdir= KEGG_Combine"
+	@echo 功能说明：
+	@echo -e "\t" "对切割的fa做的kegg注释的结果进行合并以及增加TPM值"
 	@echo 参数说明：
 	@echo -e "\t" "config: [文件|可选]  模块配置文件，和软件相关参数，默认为$(makefile_dir)/config/config.txt "
-	@echo -e "\t" "infile: [文件|必需]  进行数据库比对的非冗余蛋白质序列，fa文件"
-	@echo -e "\t" "outdir: [路径|必需]  分析结果输出路径 "
-	@echo -e "\t" "sample: [字符|必需]  样本名称 "
-	@echo -e "\t" "TPM: [字符|必需]  全部样本的TPM文件 Gene_Quant/TPM.all.xls "
+	@echo -e "\t" "input: [文件|必需]  KEGG注释结果,一般为*.out"
+	@echo -e "\t" "kegg_level_file: [路径|必需]  KEGG 不同Level对应关系表，一般为/annoroad/data1/bioinfo/PROJECT/Commercial/Cooperation/FTP/Database/KEGG/current/data/map_pathway.list"
+	@echo -e "\t" "TPM: [字符|必需]  基因在不同样本中的TPM表，第一行为表头，第一列为gene名，值为TPM值"
+	@echo -e "\t" "outdir: [字符|必需] 结构输出目录"
 
-
-
-cutf=1000
-queue=sci.q,nassci.q
-top?=10
-SWISSPROT_name=SWISSPROT_ID
-EggNOG_name=EggNOG_ID
-PHI_name=PHI_ID
-COG_name=COG_Class
-ARDB-name=ARDB-type
-ARDB_name=ARDB_type
-# 需要注意，由于生成脚本的时候会对DB_进行注解插入，所以不能出现该字符串的内容。因为这块文件名字改为中划线，但是文件里面的下划线不改。
-CARD_name=ARO_name
-BacMet_name=BacMet_ID
-VFDB_name=VF_category_level1
-GO_name=Term_name
-KEGG_name=Pathway
-CAZy_name=CAZy_class
-
-.PHONY:GO_Diamond
-GO_Diamond:
-	echo GO annotation start at `date`
-	mkdir -p $(outdir)
-	$(DIAMOND) blastp -q $(infa) --db $(UNIPROT) $(Diamond_blastp) -o $(outdir)/Gene_All.uniprot.aln
-	$(PERL) $(script)/get_bestblast.pl $(outdir)/Gene_All.uniprot.aln 1 $(outdir)/Gene_All.uniprot.xls
-	$(PYTHON3) $(script)/GO/anno.py -i $(outdir)/Gene_All.uniprot.xls -a $(SPORTDB) -o $(outdir)/Gene_All.anno
-	$(PERL) $(script)/GO/stat_gene_go.pl $(outdir)/Gene_All.anno >$(outdir)/Gene_All.GO.xls
-	$(PYTHON3) $(script)/go_with_gene.py -c $(GO_DB)/go.class -p $(GO_DB)/go.path -s $(GO_DB)/go.alias -i $(outdir)/Gene_All.GO.xls -o $(outdir)/Gene_All.GO.go_with_gene.xls
-	# 添加tpm值
-	$(PYTHON3) $(script)/go_add_TPM.py -i $(outdir)/Gene_All.GO.go_with_gene.xls -t $(TPM) -o $(outdir)/Gene_All.GO.TPM.xls
-	# 根据指定列进行统计，生成后续分析的文件
-	$(RSCRIPT) $(script)/summary.r $(outdir)/Gene_All.GO.TPM.xls $(GO_name) $(outdir)/Gene_All.GO.TPM.Summary.$(GO_name).xls
-	cut -f 2-4 $(outdir)/Gene_All.GO.TPM.Summary.$(GO_name).xls --complement > $(outdir)/GO.$(GO_name).in
-	sed -i 's#/# #g' $(outdir)/GO.$(GO_name).in
-	echo GO annotation end at `date`
-
-.PHONY:Fa_Deal
-Fa_Deal:
-	echo Fa deal start at `date`
-	$(PERL) $(faDeal) -cutf $(cutf) $(infa) -outdir $(outdir)
-	echo Fa deal end at `date`
-
-.PHONY:SWISSPROT
-SWISSPROT:
-	echo blastp start at `date`
-	mkdir -p $(outdir)
-	$(BLASTP) -query $(infa) -db $(uniprot) $(BLAST_PAREMATERS) -out $(outdir)/$(cuts).out
-	echo blastp end at `date`
-
-.PHONY:SWISSPROT_Combine
-SWISSPROT_Combine:
-	echo SWISSPROT_Combine annotation start at `date`
-	ls $(indir)/*.out > $(outdir)/blast_list
-	$(PERL) $(script)/KEGG/choose_blast_m8.pl -i $(outdir)/blast_list -o $(outdir)/ncbi_blast_prot.out
-	cut -f1,2,13 $(outdir)/ncbi_blast_prot.out > $(outdir)/Gene_All.SWISSPROT.xls
-	sed -i "1i Gene_ID\tSWISSPROT_ID\tSWISSPROT_Anno" $(outdir)/Gene_All.SWISSPROT.xls
-	# 添加tpm值
-	$(PYTHON3) $(script)/add.TPM.py -i $(outdir)/Gene_All.SWISSPROT.xls -ar $(TPM) -c 0 0 -o $(outdir)/Gene_All.SWISSPROT.TPM.xls
-
-	# 根据指定列进行统计，生成后续分析的文件
-	$(RSCRIPT) $(script)/summary.r $(outdir)/Gene_All.SWISSPROT.TPM.xls $(SWISSPROT_name) $(outdir)/Gene_All.SWISSPROT.TPM.Summary.$(SWISSPROT_name).xls
-	cut -f 2-3 $(outdir)/Gene_All.SWISSPROT.TPM.Summary.$(SWISSPROT_name).xls --complement > $(outdir)/SWISSPROT.$(SWISSPROT_name).in
-	sed -i 's#/# #g' $(outdir)/SWISSPROT.$(SWISSPROT_name).in
-	echo SWISSPROT_Combine annotation end at `date`
-
-
-.PHONY:KEGG_Diamond
-KEGG_Diamond:
-	echo KEGG_Diamond  start at `date`
-	mkdir -p $(outdir)
-	$(DIAMOND) blastx --db $(diamond_db) -q $(infa) -o $(outdir)/$(cuts).txt
-	echo KEGG_Diamond  end at `date`
-
-.PHONY:KEGG_KOBAS_Anno
-KEGG_KOBAS_Anno:
-	echo KEGG_KOBAS_Anno  start at `date`
-	mkdir -p $(outdir)
-	$(PYTHON3_kobas) $(script)/KEGG/kobas-3.0/scripts/annotate.py -i $(indir)/$(cuts).txt -t blastout:tab -s ko -o $(outdir)/$(cuts).out -n 6 
-	# -k $(kobas_home) -v $(blast_home)
-	echo KEGG_KOBAS_Anno  end at `date`
 
 .PHONY:KEGG_Combine
 KEGG_Combine:
 	echo KEGG_Combine  start at `date`
+	mkdir -p $(outdir)
 	$(PYTHON3) $(script)/kegg_format.py -i $(input) -o $(outdir)/Gene_All.pathway.xls -k $(outdir)/Gene_All.KEGG.xls
 	$(PYTHON3) $(script)/kegg_add_anno.py -i $(outdir)/Gene_All.pathway.xls -r $(kegg_level_file) -o $(outdir)/Gene_All.KEGG.Anno.xls
 	# 添加tpm值
 	$(PYTHON3) $(script)/add.TPM.py -i $(outdir)/Gene_All.Anno.xls -ar $(TPM) -c 0 0 -o $(outdir)/Gene_All.KEGG.TPM.xls
+	echo KEGG_Combine  start at `date`
+
+.PHONY:KEGG_level_tpm_stat
+KEGG_level_tpm_stat:
 	# 根据指定列进行统计，生成后续分析的文件
-	$(RSCRIPT) $(script)/summary.r $(outdir)/Gene_All.KEGG.TPM.xls $(KEGG_name) $(outdir)/Gene_All.KEGG.TPM.Summary.$(KEGG_name).xls
-	cut -f 2-4 $(outdir)/Gene_All.KEGG.TPM.Summary.$(KEGG_name).xls --complement > $(outdir)/KEGG.$(KEGG_name).in
-	sed -i 's#/# #g' $(outdir)/KEGG.$(KEGG_name).in
-	rm -f $(outdir)/*bak*
-	echo KEGG_Combine  end at `date`
+	echo do Level1 start at `date`
+	$(RSCRIPT) $(script)/summary.r $(outdir)/Gene_All.KEGG.TPM.xls Level1 $(outdir)/Gene_All.KEGG.TPM.Summary.Level1.tmp.xls
+	cut -f 1,7- $(outdir)/Gene_All.KEGG.TPM.Summary.Level1.tmp.xls > $(outdir)/Gene_All.KEGG.Level1.TPM.Summary.xls
+	cut -f 1,2 $(outdir)/Gene_All.KEGG.TPM.Summary.Level1.tmp.xls > $(outdir)/Gene_All.KEGG.Level1.genelist.xls
+	echo do Level1 end at `date`
 
+	echo do Level2 start at `date`
+	$(RSCRIPT) $(script)/summary.r $(outdir)/Gene_All.KEGG.TPM.xls Level2 $(outdir)/Gene_All.KEGG.TPM.Summary.Level2.tmp.xls
+	cut -f 1,6- $(outdir)/Gene_All.KEGG.TPM.Summary.Level2.tmp.xls > $(outdir)/Gene_All.KEGG.Level2.TPM.Summary.xls
+	awk -F "\t" '{print $1"\t"$6"\t"$2}' $(outdir)/Gene_All.KEGG.TPM.Summary.Level2.tmp.xls > $(outdir)/Gene_All.KEGG.Level2.genelist.xls
+	echo do Level2 end at `date`
 
-.PHONY:EggNOG
-EggNOG:
-	echo EGG annotation start at `date`
-	mkdir -p $(outdir)
-	# $(BLASTP) -query $(infa) -db $(EGGNOG) $(BLAST_PAREMATERS) -out $(outdir)/Gene_All.EggNOG.aln
-	$(DIAMOND) blastp -q $(infa) --db $(EGGNOG) $(Diamond_blastp) -o $(outdir)/Gene_All.EggNOG.aln.tmp
-	$(PERL) $(script)/get_bestblast.pl $(outdir)/Gene_All.EggNOG.aln.tmp 1 $(outdir)/Gene_All.EggNOG.aln
-	$(PYTHON3) $(script)/EggNOG.deal.py -i $(outdir)/Gene_All.EggNOG.aln -ar $(EggNOG_anno) -c 1 0 -o $(outdir)/Gene_All.EggNOG.xls.tmp
-	cut -f 3 $(outdir)/Gene_All.EggNOG.xls.tmp  --complement > $(outdir)/Gene_All.EggNOG.xls
-	# 添加tpm值
-	$(PYTHON3) $(script)/add.TPM.py -i $(outdir)/Gene_All.EggNOG.xls -ar $(TPM) -c 0 0 -o $(outdir)/Gene_All.EggNOG.TPM.xls
-	sed -i 's#Subject_ID#EggNOG_ID#g' $(outdir)/Gene_All.EggNOG.TPM.xls
-	# 根据指定列进行统计，生成后续分析的文件
-	$(RSCRIPT) $(script)/summary.r $(outdir)/Gene_All.EggNOG.TPM.xls $(EggNOG_name) $(outdir)/Gene_All.EggNOG.TPM.Summary.$(EggNOG_name).xls
-	cut -f 2,3 $(outdir)/Gene_All.EggNOG.TPM.Summary.$(EggNOG_name).xls --complement > $(outdir)/EggNOG.$(EggNOG_name).in
-	sed -i 's#/# #g' $(outdir)/EggNOG.$(EggNOG_name).in
-	echo EGG annotation end at `date`
+	echo do Level3 start at `date`
+	$(RSCRIPT) $(script)/summary.r $(outdir)/Gene_All.KEGG.TPM.xls Level3 $(outdir)/Gene_All.KEGG.TPM.Summary.Level3.tmp.xls
+	cut -f 1,4- $(outdir)/Gene_All.KEGG.TPM.Summary.Level3.tmp.xls > $(outdir)/Gene_All.KEGG.Level3.TPM.Summary.xls
+	awk -F "\t" '{print $1"\t"$4"\t"$5"\t"$6"\t"$2}' $(outdir)/Gene_All.KEGG.TPM.Summary.Level3.tmp.xls > $(outdir)/Gene_All.KEGG.Level3.genelist.xls
+	echo do Level3 end at `date`
 
-
-.PHONY:PHI
-PHI:
-	echo PHI annotation start at `date`
-	mkdir -p $(outdir)
-	$(BLASTP) -query $(infa) -db $(PHIDB) $(BLAST_PAREMATERS) -out $(outdir)/Gene_All.PHI.aln 
-	$(PERL) $(script)/get_bestblast.pl $(outdir)/Gene_All.PHI.aln 1 $(outdir)/Gene_All.PHI.xls
-	$(PERL) -i.bak2 -F'\t' -alne 'if(!/Gene_ID/){$$F[2]=(split(/\|/,$$F[1]))[-1];$$F[1]=(split(/\|/,$$F[1]))[0]};print "$$F[0]\t$$F[1]\t$$F[2]"' $(outdir)/Gene_All.PHI.xls
-	sed -i 's/Gene_ID\tSubject_ID\tAnnotation/Gene_ID\tPHI_ID\tPHI_Affection/' $(outdir)/Gene_All.PHI.xls
-	# 添加tpm值
-	$(PYTHON3) $(script)/add.TPM.py -i $(outdir)/Gene_All.PHI.xls -ar $(TPM) -c 0 0 -o $(outdir)/Gene_All.PHI.TPM.xls
-	# 根据指定列进行统计，生成后续分析的文件
-	$(RSCRIPT) $(script)/summary.r $(outdir)/Gene_All.PHI.TPM.xls $(PHI_name) $(outdir)/Gene_All.PHI.TPM.Summary.$(PHI_name).xls
-	cut -f 2,3 $(outdir)/Gene_All.PHI.TPM.Summary.$(PHI_name).xls --complement > $(outdir)/PHI.$(PHI_name).in
-	sed -i 's#/# #g' $(outdir)/PHI.$(PHI_name).in
-	rm -f $(outdir)/*bak*
-	echo PHI annotation end at `date`
-
-
-.PHONY:COG_Diamond
-COG_Diamond:
-	echo COG annotation start at `date`
-	mkdir -p $(outdir)
-	$(DIAMOND) blastp -q $(infa) --db $(COGDB) $(Diamond_blastp) -o $(outdir)/Gene_All.COG.aln  
-	$(PERL) $(script)/get_bestblast.pl $(outdir)/Gene_All.COG.aln 1 $(outdir)/Gene_All.COG
-	$(CSVTK) -t -f "Subject_ID;Subject_ID" join $(outdir)/Gene_All.COG $(COGAnno) |cut -f 2,3 --complement > $(outdir)/Gene_All.COG.xls
-	# 添加tpm值
-	$(PYTHON3) $(script)/add.TPM.py -i $(outdir)/Gene_All.COG.xls -ar $(TPM) -c 0 0 -o $(outdir)/Gene_All.COG.TPM.xls
-	# 根据指定列进行统计，生成后续分析的文件
-	$(RSCRIPT) $(script)/summary.r $(outdir)/Gene_All.COG.TPM.xls $(COG_name) $(outdir)/Gene_All.COG.TPM.Summary.$(COG_name).xls
-	cut -f 2-5 $(outdir)/Gene_All.COG.TPM.Summary.$(COG_name).xls --complement > $(outdir)/COG.$(COG_name).in
-	sed -i 's#/# #g' $(outdir)/COG.$(COG_name).in
-	rm -f $(outdir)/*bak*
-	echo COG annotation end at `date`
-
-
-.PHONY:ARDB
-ARDB:
-	echo ARDB annotation start at `date`
-	mkdir -p $(outdir)
-	$(BLASTP) -query $(infa) -db $(ARDB) $(BLAST_PAREMATERS) -out $(outdir)/Gene_All.ARDB.aln
-	$(PERL) $(script)/get_bestblast.pl $(outdir)/Gene_All.ARDB.aln 1 $(outdir)/Gene_All.ARDB.xls.tmp
-	$(PYTHON3) $(script)/ARDB_file_deal.py -a $(ARDB_IDfile) -i $(outdir)/Gene_All.ARDB.xls.tmp -o $(outdir)/Gene_All.ARDB.xls
-	# 添加tpm值
-	$(PYTHON3) $(script)/add.TPM.py -i $(outdir)/Gene_All.ARDB.xls -ar $(TPM) -c 0 0 -o $(outdir)/Gene_All.ARDB.TPM.xls
-	# 根据指定列进行统计，生成后续分析的文件
-	$(RSCRIPT) $(script)/summary.r $(outdir)/Gene_All.ARDB.TPM.xls $(ARDB_name) $(outdir)/Gene_All.ARDB.TPM.Summary.$(ARDB-name).xls
-	cut -f 2-6 $(outdir)/Gene_All.ARDB.TPM.Summary.$(ARDB-name).xls --complement > $(outdir)/ARDB.$(ARDB-name).in
-	sed -i 's#/# #g' $(outdir)/ARDB.$(ARDB-name).in
-	rm -rf $(outdir)/*tmp $(outdir)/*bak
-	echo ARDB annotation end at `date`
-
-
-.PHONY:CAZy
-CAZy:
-	echo CAZY annotation start at `date`
-	mkdir -p $(outdir)
-	$(HMMSCAN) -E 10 --domtblout $(outdir)/CAZyme.dbCAN.txt -o $(outdir)/CAZyme.dbCAN $(DBCAN) $(infa)
-	sh $(script)/CAZy/hmmscan-parser.sh $(outdir)/CAZyme.dbCAN.txt > $(outdir)/CAZyme.annot
-	awk '$$5<1e-15&&$$10>0.35' $(outdir)/CAZyme.annot > $(outdir)/CAZyme.annot.stringent
-	#$(PERL) $(script)/CAZy/CAZy_stat.pl $(outdir)/CAZyme.annot.stringent $(outdir)/Gene_All.CAZy.num $(outdir)/Gene_All.CAZy.xls
-	$(PYTHON3) $(script)/CAZy.py -i $(outdir)/CAZyme.annot.stringent -a $(CAZy_Activity) -o $(outdir)/Gene_All.CAZy.xls
-	# 添加tpm值
-	$(PYTHON3) $(script)/add.TPM.py -i $(outdir)/Gene_All.CAZy.xls -ar $(TPM) -c 0 0 -o $(outdir)/Gene_All.CAZy.TPM.xls
-	# 根据指定列进行统计，生成后续分析的文件
-	$(RSCRIPT) $(script)/summary.r $(outdir)/Gene_All.CAZy.TPM.xls $(CAZy_name) $(outdir)/Gene_All.CAZy.TPM.Summary.$(CAZy_name).xls
-	cut -f 2-3 $(outdir)/Gene_All.CAZy.TPM.Summary.$(CAZy_name).xls --complement > $(outdir)/CAZy.$(CAZy_name).in
-	sed -i 's#/# #g' $(outdir)/CAZy.$(CAZy_name).in
-	rm -rf $(outdir)/*tmp $(outdir)/*bak
-	echo CAZY annotation end at `date`
-
-
-.PHONY:CARD_Diamond
-CARD_Diamond:
-	echo CARD_Diamond start at `date`
-	mkdir -p $(outdir)
-	$(DIAMOND) blastp -q $(infa) --db $(CARD_DB) $(Diamond_blastp) -o $(outdir)/Gene_All.CARD.aln.tmp
-	$(PERL) $(script)/get_bestblast.pl $(outdir)/Gene_All.CARD.aln.tmp 1 $(outdir)/Gene_All.CARD.aln
-	$(PYTHON3) $(script)/CARD.py -i $(outdir)/Gene_All.CARD.aln -l $(ARO_level) -o $(outdir)/Gene_All.CARD.xls
-	# 添加tpm值
-	$(PYTHON3) $(script)/add.TPM.py -i $(outdir)/Gene_All.CARD.xls -ar $(TPM) -c 0 0 -o $(outdir)/Gene_All.CARD.TPM.xls
-	# 根据指定列进行统计，生成后续分析的文件
-	$(RSCRIPT) $(script)/summary.r $(outdir)/Gene_All.CARD.TPM.xls $(CARD_name) $(outdir)/Gene_All.CARD.TPM.Summary.$(CARD_name).xls
-	cut -f 2-7 $(outdir)/Gene_All.CARD.TPM.Summary.$(CARD_name).xls --complement > $(outdir)/CARD.$(CARD_name).in
-	sed -i 's#/# #g' $(outdir)/CARD.$(CARD_name).in
-	rm -rf $(outdir)/*tmp $(outdir)/*bak
-	echo CARD_Diamond end at `date`
-
-.PHONY:BacMet_Diamond
-BacMet_Diamond:
-	echo BacMet_Diamond start at `date`
-	mkdir -p $(outdir)
-	# 已知数据库 & 预测数据库
-	$(DIAMOND) blastp -q $(infa) --db $(BacMet_DB)/EXP $(Diamond_blastp) -o $(outdir)/Gene_All.BacMetEXP.aln.tmp
-	$(DIAMOND) blastp -q $(infa) --db $(BacMet_DB)/PRE $(Diamond_blastp) -o $(outdir)/Gene_All.BacMetPRE.aln.tmp
-	$(PERL) $(script)/get_bestblast.pl $(outdir)/Gene_All.BacMetEXP.aln.tmp 1 $(outdir)/Gene_All.BacMetEXP.aln
-	$(PERL) $(script)/get_bestblast.pl $(outdir)/Gene_All.BacMetPRE.aln.tmp 1 $(outdir)/Gene_All.BacMetPRE.aln
-	$(PYTHON3) $(script)/BacMet.py -e $(outdir)/Gene_All.BacMetEXP.aln -E $(BacMet_DB)/BacMet2_EXP.753.mapping.txt -oe $(outdir)/Gene_All.BacMetEXP.xls -p $(outdir)/Gene_All.BacMetPRE.aln -P $(BacMet_DB)/BacMet2_PRE.155512.mapping.txt -op $(outdir)/Gene_All.BacMetPRE.xls
-
-	# 合并结果，将预测数据库中在已知数据库中出现的结果去掉
-	cut -f 1 $(outdir)/Gene_All.BacMetEXP.xls > $(outdir)/Gene_All.BacMetEXP.xls.tmp 
-	cut -f 1 $(outdir)/Gene_All.BacMetPRE.xls > $(outdir)/Gene_All.BacMetPRE.xls.tmp
-	sort $(outdir)/Gene_All.BacMetEXP.xls.tmp $(outdir)/Gene_All.BacMetEXP.xls.tmp $(outdir)/Gene_All.BacMetPRE.xls.tmp |uniq -u > $(outdir)/Gene_All.BacMetPRE.xls.uniq.tmp
-	grep -f  $(outdir)/Gene_All.BacMetPRE.xls.uniq.tmp -F $(outdir)/Gene_All.BacMetPRE.xls |cut -f 2 --complement > $(outdir)/Gene_All.BacMetPRE.uniq.xls
-	cat $(outdir)/Gene_All.BacMetEXP.xls $(outdir)/Gene_All.BacMetPRE.uniq.xls > $(outdir)/Gene_All.BacMet.xls
-	sed -i 's#Gene_ID\tBacMet_ID\tGene_name\tOrganism\tCompound#Gene_ID\tBacMet_ID\tBacMet_Gene_name\tBacMet_Organism\tBacMet_Compound#g' $(outdir)/Gene_All.BacMet.xls
-
-	# 添加tpm值
-	$(PYTHON3) $(script)/add.TPM.py -i $(outdir)/Gene_All.BacMet.xls -ar $(TPM) -c 0 0 -o $(outdir)/Gene_All.BacMet.TPM.xls
-	# 根据指定列进行统计，生成后续分析的文件
-	$(RSCRIPT) $(script)/summary.r $(outdir)/Gene_All.BacMet.TPM.xls $(BacMet_name) $(outdir)/Gene_All.BacMet.TPM.Summary.$(BacMet_name).xls
-	cut -f 2-5 $(outdir)/Gene_All.BacMet.TPM.Summary.$(BacMet_name).xls --complement > $(outdir)/BacMet.$(BacMet_name).in
-	sed -i 's#/# #g' $(outdir)/BacMet.$(BacMet_name).in
-	rm -rf $(outdir)/*tmp $(outdir)/*bak
-
-.PHONY:VFDB-Diamond
-VFDB-Diamond:
-	echo VFDB-Diamond start at `date`
-	mkdir -p $(outdir)
-	# 已知数据库
-	$(DIAMOND) blastp -q $(infa) --db $(VFDB_DB)/SetA $(Diamond_blastp) -o $(outdir)/Gene_All.VFDBa.aln.tmp
-	$(PERL) $(script)/get_bestblast.pl $(outdir)/Gene_All.VFDBa.aln.tmp 1 $(outdir)/Gene_All.VFDBa.aln
-	$(PYTHON3) $(script)/VFDB.py -a $(outdir)/Gene_All.VFDBa.aln -A $(VFDB_DB)/SetA_info.tsv -v $(VFDB_DB)/VFs.txt -o $(outdir)/Gene_All.VFDBa.xls
-
-	# 预测数据库
-	$(DIAMOND) blastp -q $(infa) --db $(VFDB_DB)/SetB $(Diamond_blastp) -o $(outdir)/Gene_All.VFDBb.aln.tmp
-	$(PERL) $(script)/get_bestblast.pl $(outdir)/Gene_All.VFDBb.aln.tmp 1 $(outdir)/Gene_All.VFDBb.aln
-	$(PYTHON3) $(script)/VFDB.py -a $(outdir)/Gene_All.VFDBb.aln -A $(VFDB_DB)/SetB_info.tsv -v $(VFDB_DB)/VFs.txt -o $(outdir)/Gene_All.VFDBb.xls
-
-	# 合并结果，将预测数据库中在已知数据库中出现的结果去掉
-	cut -f 1 $(outdir)/Gene_All.VFDBa.xls > $(outdir)/Gene_All.VFDBa.xls.tmp 
-	cut -f 1 $(outdir)/Gene_All.VFDBb.xls > $(outdir)/Gene_All.VFDBb.xls.tmp
-	sort $(outdir)/Gene_All.VFDBa.xls.tmp $(outdir)/Gene_All.VFDBa.xls.tmp $(outdir)/Gene_All.VFDBb.xls.tmp |uniq -u > $(outdir)/Gene_All.VFDBb.xls.uniq.tmp
-	grep -f  $(outdir)/Gene_All.VFDBb.xls.uniq.tmp -F $(outdir)/Gene_All.VFDBb.xls > $(outdir)/Gene_All.VFDBb.uniq.xls
-	cat $(outdir)/Gene_All.VFDBa.xls $(outdir)/Gene_All.VFDBb.uniq.xls > $(outdir)/Gene_All.VFDB.xls
-
-	# 添加tpm值
-	$(PYTHON3) $(script)/add.TPM.py -i $(outdir)/Gene_All.VFDB.xls -ar $(TPM) -c 0 0 -o $(outdir)/Gene_All.VFDB.TPM.xls
-	# 按照VF_nama和level分别汇总，TPM值进行加和
-	# 根据指定列进行统计，生成后续分析的文件
-	$(RSCRIPT) $(script)/summary.r $(outdir)/Gene_All.VFDB.TPM.xls $(VFDB_name) $(outdir)/Gene_All.VFDB.TPM.Summary.$(VFDB_name).xls
-	cut -f 2-11 $(outdir)/Gene_All.VFDB.TPM.Summary.$(VFDB_name).xls --complement > $(outdir)/VFDB.$(VFDB_name).in
-	sed -i 's#/# #g' $(outdir)/VFDB.$(VFDB_name).in
-	rm -rf $(outdir)/*tmp $(outdir)/*bak
-
-.PHONY:KEGG_Stat
-KEGG_Stat:
-	echo KEGG Stat start at `date`
-	mkdir -p $(outdir)
-	$(CSVTK) -t join $(annotation_all) $(input) | cut -f 1,2 > $(annotation_sample)
-	$(CSVTK) -t join $(pathway_all) $(input) | cut -f 1,2,3,4 > $(pathway_sample)
-	$(PYTHON3) $(script)/kegg_addclass.py -i $(pathway_sample) -e $(annotation_sample) -d $(outdir)/$(sample).KEGG_classificate.xls -l $(script)/ko.list
-	cut -f 1,3,4,5 $(outdir)/$(sample).KEGG_classificate.xls >$(outdir)/$(sample).KEGG_classificate.xls.tmp
-	$(Rscript) $(script)/KEGG_classificate_plot.r --infile $(outdir)/$(sample).KEGG_classificate.xls.tmp --outfile $(outdir)/$(sample).KEGG_classificate.pdf --title "KEGG Classification" --xlabel "Percent of Genes(%)"
-	$(CONVERT) $(outdir)/$(sample).KEGG_classificate.pdf $(outdir)/$(sample).KEGG_classificate.png
-	less $(annotation_all) |head -2 | $(TRANSPOSE) > $(annotation_all).example
-	echo KEGG Stat end at `date`
-#==================== 没用的部分 =========================
+upload_dir=$(outdir)/kegg_upload
+.PHONY:upload
+upload:
+	echo do upload kegg start at `date`
+	mkdir $(upload_dir)
+	ln -s $(indir)/Gene_All.KEGG.TPM.xls .
+	ln -s $(indir)/Gene_All.KEGG.Level1.TPM.Summary.xls .
+	ln -s $(indir)/Gene_All.KEGG.Level1.genelist.xls .
+	ln -s $(indir)/Gene_All.KEGG.Level2.TPM.Summary.xls .
+	ln -s $(indir)/Gene_All.KEGG.Level2.genelist.xls .
+	ln -s $(indir)/Gene_All.KEGG.Level3.TPM.Summary.xls .
+	ln -s $(indir)/Gene_All.KEGG.Level4.genelist.xls .
+	cp $(makefile_dir)/doc/readme.doc .
+	echo do upload kegg end at `date`
