@@ -60,7 +60,7 @@ Queue	xhacnormalb
 CPU	N
 Major	T
 Thread	10
-Order	12
+Order	2
 Depend	SelfMEM
 Mount	/work/share/acuhtwkcu9/:/work/share/acuhtwkcu9/
 Sif	/work/share/acuhtwkcu9/liutao/sif/sif/gatk/wgs_tools_v0.0.1.sif
