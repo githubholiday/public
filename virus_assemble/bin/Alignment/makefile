@@ -95,7 +95,8 @@ BAM2FQ_SE:
 	$(FQTOOLS) stat ${outdir}/${prefix}_1.fq.gz ${outdir}/${prefix}_1.fq.gz.report
 	$(PYTHON3) $(ScriptDir)/stat_host.py -i ${flag_stat} -r ${outdir}/${prefix}_1.fq.gz.report -s ${sample} -o ${outdir}/${sample}.map.stat.xls -t $(type)
 	echo bam2fq SE end at `date`
-prefix=@$(sample)_$(type)
+
+prefix=$(sample)_$(type)
 BAM2FQ_PE:
 	echo bam2fq PE start at `date`
 	mkdir -p $(outdir)
