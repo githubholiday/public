@@ -1,91 +1,91 @@
 [Job Start]
-Name    HostMEM 
-Memory  30G
-Queue   xhacnormalb
-CPU     N
-Major   T
-Thread  10
-Order   1
-Mount   /work/share/acuhtwkcu9/:/work/share/acuhtwkcu9/
-Sif     /work/share/acuhtwkcu9/liutao/sif/sif/gatk/wgs_tools_v0.0.1.sif
-Command make -f BIN/Alignment/makefile config=Para_config ref=Para_host_ref R1=$(Sample)[1] outdir=Para_outdir/01_rm_host/$(sample)[0]/ sample=$(sample)[0] flag_stat_file=Para_outdir/01_rm_host/$(sample)[0]/$(sample)[0].flagstat.xls BWA_MEM
+Name	HostMEM 
+Memory	30G
+Queue	xhacnormalb
+CPU	N
+Major	T
+Thread	10
+Order	1
+Mount	/work/share/acuhtwkcu9/:/work/share/acuhtwkcu9/
+Sif	/work/share/acuhtwkcu9/liutao/sif/sif/gatk/wgs_tools_v0.0.1.sif
+Command	make -f BIN/Alignment/makefile config=Para_config ref=Para_host_ref R1=$(Sample)[1] outdir=Para_outdir/01_rm_host/$(sample)[0]/ sample=$(sample)[0] flag_stat_file=Para_outdir/01_rm_host/$(sample)[0]/$(sample)[0].flagstat.xls BWA_MEM
 [Job End]
 
 [Job Start]
-Name    HostGetUnmap
-Memory  30G
-Queue   xhacnormalb
-CPU     N
-Major   T
-Thread  10
-Order   1
-Mount   /work/share/acuhtwkcu9/:/work/share/acuhtwkcu9/
-Sif     /work/share/acuhtwkcu9/liutao/sif/sif/gatk/wgs_tools_v0.0.1.sif
-Command make -f BIN/Alignment/makefile config=Para_config inbam=Para_outdir/01_rm_host/$(sample)[0]/$(sample)[0].aln.sort.bam outbam=Para_outdir/01_rm_host/$(sample)[0]/$(sample)[0].unmap.bam para="-f" SelectBam
+Name	HostGetUnmap
+Memory	30G
+Queue	xhacnormalb
+CPU	N
+Major	T
+Thread	10
+Order	1
+Mount	/work/share/acuhtwkcu9/:/work/share/acuhtwkcu9/
+Sif	/work/share/acuhtwkcu9/liutao/sif/sif/gatk/wgs_tools_v0.0.1.sif
+Command	make -f BIN/Alignment/makefile config=Para_config inbam=Para_outdir/01_rm_host/$(sample)[0]/$(sample)[0].aln.sort.bam outbam=Para_outdir/01_rm_host/$(sample)[0]/$(sample)[0].unmap.bam para="-f" SelectBam
 [Job End]
 
 [Job Start]
-Name    HostUnmap2FQ
-Memory  30G
-Queue   xhacnormalb
-CPU     N
-Major   T
-Thread  10
-Order   1
-Mount   /work/share/acuhtwkcu9/:/work/share/acuhtwkcu9/
-Sif     /work/share/acuhtwkcu9/liutao/sif/sif/gatk/wgs_tools_v0.0.1.sif
-Command make -f BIN/Alignment/makefile config=Para_config inbam=Para_outdir/01_rm_host/$(sample)[0]/$(sample)[0].unmap.bam sample=$(sample)[0] type=unmap flag_stat_file=Para_outdir/01_rm_host/$(sample)[0]/$(sample)[0].flagstat.xls outdir=Para_outdir/01_rm_host/$(sample)[0]/ BAM2FQ_SE
+Name	HostUnmap2FQ
+Memory	30G
+Queue	xhacnormalb
+CPU	N
+Major	T
+Thread	10
+Order	1
+Mount	/work/share/acuhtwkcu9/:/work/share/acuhtwkcu9/
+Sif	/work/share/acuhtwkcu9/liutao/sif/sif/gatk/wgs_tools_v0.0.1.sif
+Command	make -f BIN/Alignment/makefile config=Para_config inbam=Para_outdir/01_rm_host/$(sample)[0]/$(sample)[0].unmap.bam sample=$(sample)[0] type=unmap flag_stat_file=Para_outdir/01_rm_host/$(sample)[0]/$(sample)[0].flagstat.xls outdir=Para_outdir/01_rm_host/$(sample)[0]/ BAM2FQ_SE
 [Job End]
 
 [Job Start]
-Name    SelfMEM
-Memory  30G
-Queue   xhacnormalb
-CPU     N
-Major   T
-Thread  10
-Order   1
-Mount   /work/share/acuhtwkcu9/:/work/share/acuhtwkcu9/
-Sif     /work/share/acuhtwkcu9/liutao/sif/sif/gatk/wgs_tools_v0.0.1.sif
-Command make -f BIN/Alignment/makefile config=Para_config ref=Para_virus_ref R1=Para_outdir/01_rm_host/$(sample)[0]/$(sample)[0]_unmap_1.fq.gz  outdir=Para_outdir/02_self_mem/$(sample)[0]/ sample=$(sample)[0] flag_stat_file=Para_outdir/02_self_mem/$(sample)[0]/$(sample)[0].self.flagstat.xls BWA_MEM
+Name	SelfMEM
+Memory	30G
+Queue	xhacnormalb
+CPU	N
+Major	T
+Thread	10
+Order	1
+Mount	/work/share/acuhtwkcu9/:/work/share/acuhtwkcu9/
+Sif	/work/share/acuhtwkcu9/liutao/sif/sif/gatk/wgs_tools_v0.0.1.sif
+Command	make -f BIN/Alignment/makefile config=Para_config ref=Para_virus_ref R1=Para_outdir/01_rm_host/$(sample)[0]/$(sample)[0]_unmap_1.fq.gz	outdir=Para_outdir/02_self_mem/$(sample)[0]/ sample=$(sample)[0] flag_stat_file=Para_outdir/02_self_mem/$(sample)[0]/$(sample)[0].self.flagstat.xls BWA_MEM
 [Job End]
 
 [Job Start]
-Name    SelfGetMap
-Memory  30G
-Queue   xhacnormalb
-CPU     N
-Major   T
-Thread  10
-Order   1
-Mount   /work/share/acuhtwkcu9/:/work/share/acuhtwkcu9/
-Sif     /work/share/acuhtwkcu9/liutao/sif/sif/gatk/wgs_tools_v0.0.1.sif
-Command make -f BIN/Alignment/makefile config=Para_config inbam=Para_outdir/02_self_mem/$(sample)[0]/$(sample)[0].aln.sort.bam outbam=Para_outdir/02_self_mem/$(sample)[0]/$(sample)[0].map.bam para="-F" SelectBam
+Name	SelfGetMap
+Memory	30G
+Queue	xhacnormalb
+CPU	N
+Major	T
+Thread	10
+Order	1
+Mount	/work/share/acuhtwkcu9/:/work/share/acuhtwkcu9/
+Sif	/work/share/acuhtwkcu9/liutao/sif/sif/gatk/wgs_tools_v0.0.1.sif
+Command	make -f BIN/Alignment/makefile config=Para_config inbam=Para_outdir/02_self_mem/$(sample)[0]/$(sample)[0].aln.sort.bam outbam=Para_outdir/02_self_mem/$(sample)[0]/$(sample)[0].map.bam para="-F" SelectBam
 [Job End]
 
 [Job Start]
-Name    SelfMap2FQ
-Memory  30G
-Queue   xhacnormalb
-CPU     N
-Major   T
-Thread  10
-Order   1
-Mount   /work/share/acuhtwkcu9/:/work/share/acuhtwkcu9/
-Sif     /work/share/acuhtwkcu9/liutao/sif/sif/gatk/wgs_tools_v0.0.1.sif
-Command make -f BIN/Alignment/makefile config=Para_config inbam=Para_outdir/02_self_mem/$(sample)[0]/$(sample)[0].map.bam sample=$(sample)[0] type=unmap flag_stat_file=Para_outdir/02_self_mem/$(sample)[0]/$(sample)[0].self.flagstat.xls outdir=Para_outdir/02_self_mem/$(sample)[0]/ BAM2FQ_SE
+Name	SelfMap2FQ
+Memory	30G
+Queue	xhacnormalb
+CPU	N
+Major	T
+Thread	10
+Order	1
+Mount	/work/share/acuhtwkcu9/:/work/share/acuhtwkcu9/
+Sif	/work/share/acuhtwkcu9/liutao/sif/sif/gatk/wgs_tools_v0.0.1.sif
+Command		make -f BIN/Alignment/makefile config=Para_config inbam=Para_outdir/02_self_mem/$(sample)[0]/$(sample)[0].map.bam sample=$(sample)[0] type=unmap flag_stat_file=Para_outdir/02_self_mem/$(sample)[0]/$(sample)[0].self.flagstat.xls outdir=Para_outdir/02_self_mem/$(sample)[0]/ BAM2FQ_SE
 [Job End]
 
 [Job Start]
-Name    SelfStat
-Memory  30G
-Queue   xhacnormalb
-CPU     N
-Major   T
-Thread  10
-Order   1
-Mount   /work/share/acuhtwkcu9/:/work/share/acuhtwkcu9/
-Sif\t /work/share/acuhtwkcu9/liutao/sif/chip/chip_macs2.sif
-Command make -f BIN/Alignment/makefile config=Para_config inbam=Para_outdir/02_self_mem/$(sample)[0]/$(sample)[0].aln.sort.bam flag_stat_file=Para_outdir/02_self_mem/$(sample)[0]/$(sample)[0].self.flagstat.xls depth_file=Para_outdir/02_self_mem/$(sample)[0]/$(sample)[0].self.depth.xls coverage_out=Para_outdir/02_self_mem/$(sample)[0]/$(sample)[0].self.coverage.xls sample=$(sample)[0] DepthStat
+Name	SelfStat
+Memory	30G
+Queue	xhacnormalb
+CPU	N
+Major	T
+Thread	10
+Order	1
+Mount	/work/share/acuhtwkcu9/:/work/share/acuhtwkcu9/
+Sif	/work/share/acuhtwkcu9/liutao/sif/chip/chip_macs2.sif
+Command	make -f BIN/Alignment/makefile config=Para_config inbam=Para_outdir/02_self_mem/$(sample)[0]/$(sample)[0].aln.sort.bam flag_stat_file=Para_outdir/02_self_mem/$(sample)[0]/$(sample)[0].self.flagstat.xls depth_file=Para_outdir/02_self_mem/$(sample)[0]/$(sample)[0].self.depth.xls coverage_out=Para_outdir/02_self_mem/$(sample)[0]/$(sample)[0].self.coverage.xls sample=$(sample)[0] DepthStat
 [Job End]
 
