@@ -1,0 +1,5 @@
+[Sample]
+BLV	/work/share/acuhtwkcu9/taoxiao/04_Project/02_assemble/P2024082213QZID5H_1sample_cattle/data/ANNO_XS01KF2023080001_PM-XS01KF2023080001-26/Rawdata/BLV/BLV_R1.fq.gz	/work/share/acuhtwkcu9/taoxiao/04_Project/02_assemble/P2024082213QZID5H_1sample_cattle/data/ANNO_XS01KF2023080001_PM-XS01KF2023080001-26/Rawdata/BLV/BLV_R2.fq.gz
+[Para]
+Para_config=/work/share/acuhtwkcu9/taoxiao/05_tool/my_module/public/virus_assemble/bin/Alignment/config/config.txt
+Para_outdir=/work/share/acuhtwkcu9/taoxiao/04_Project/02_assemble/P2024082213QZID5H_1sample_cattle/analysis/result/02_mem
