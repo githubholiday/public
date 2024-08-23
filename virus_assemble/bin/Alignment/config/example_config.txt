@@ -3,3 +3,5 @@ BLV	/work/share/acuhtwkcu9/taoxiao/04_Project/02_assemble/P2024082213QZID5H_1sam
 [Para]
 Para_config=/work/share/acuhtwkcu9/taoxiao/05_tool/my_module/public/virus_assemble/bin/Alignment/config/config.txt
 Para_outdir=/work/share/acuhtwkcu9/taoxiao/04_Project/02_assemble/P2024082213QZID5H_1sample_cattle/analysis/result/02_mem
+Para_host_ref=/work/share/acuhtwkcu9/taoxiao/database/Homo_sapiens/hs37d5/DNA/hs37d5.fa
+Para_virus_ref=/work/share/acuhtwkcu9/taoxiao/database/GCF_000844845.1_ViralProj14464/DNA/GCF_000844845.1_ViralProj14464_genomic.fna
