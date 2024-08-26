@@ -76,13 +76,13 @@ KEGG_level_tpm_stat:
 	echo do Level2 start at `date`
 	$(RSCRIPT) $(script)/summary.r $(infile) Level2 $(outdir)/Gene_All.KEGG.TPM.Summary.Level2.tmp.xls
 	cut -f 1,6- $(outdir)/Gene_All.KEGG.TPM.Summary.Level2.tmp.xls > $(outdir)/Gene_All.KEGG.Level2.TPM.Summary.xls
-	awk -F "\t" '{print $1"\t"$6"\t"$2}' $(outdir)/Gene_All.KEGG.TPM.Summary.Level2.tmp.xls > $(outdir)/Gene_All.KEGG.Level2.genelist.xls
+	awk -F "\t" '{print $$1\t"$$6"\t"$$2}' $(outdir)/Gene_All.KEGG.TPM.Summary.Level2.tmp.xls > $(outdir)/Gene_All.KEGG.Level2.genelist.xls
 	echo do Level2 end at `date`
 
 	echo do Level3 start at `date`
 	$(RSCRIPT) $(script)/summary.r $(infile) Level3 $(outdir)/Gene_All.KEGG.TPM.Summary.Level3.tmp.xls
 	cut -f 1,4- $(outdir)/Gene_All.KEGG.TPM.Summary.Level3.tmp.xls > $(outdir)/Gene_All.KEGG.Level3.TPM.Summary.xls
-	awk -F "\t" '{print $1"\t"$4"\t"$5"\t"$6"\t"$2}' $(outdir)/Gene_All.KEGG.TPM.Summary.Level3.tmp.xls > $(outdir)/Gene_All.KEGG.Level3.genelist.xls
+	awk -F "\t" '{print $$1"\t"$$4"\t"$$5"\t"$$6"\t"$$2}' $(outdir)/Gene_All.KEGG.TPM.Summary.Level3.tmp.xls > $(outdir)/Gene_All.KEGG.Level3.genelist.xls
 	echo do Level3 end at `date`
 
 upload_dir=$(outdir)/kegg_upload
