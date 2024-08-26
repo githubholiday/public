@@ -86,6 +86,6 @@ upload:
 	ln -s $(indir)/Gene_All.KEGG.Level2.TPM.Summary.xls $(upload_dir)
 	ln -s $(indir)/Gene_All.KEGG.Level2.genelist.xls $(upload_dir)
 	ln -s $(indir)/Gene_All.KEGG.Level3.TPM.Summary.xls $(upload_dir)
-	ln -s $(indir)/Gene_All.KEGG.Level4.genelist.xls $(upload_dir)
+	ln -s $(indir)/Gene_All.KEGG.Level3.genelist.xls $(upload_dir)
 	cp $(makefile_dir)/doc/readme.doc $(upload_dir)
 	echo do upload kegg end at `date`
