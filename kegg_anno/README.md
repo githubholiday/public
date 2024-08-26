@@ -29,7 +29,7 @@ Usage:
 见test/input/
 .
 ├── *.out           KEGG注释后的文件
-├── tpm.xls         所有样本的TPM表格
+├── TPM.example.xls         所有样本的TPM表格
 
 ### 运行环境及软件：
 	北京238 R python3
@@ -40,25 +40,33 @@ Usage:
 	运行时长：5min
 
 ### 输出文件示例
-
+会在输出目录生成kegg_upload目录，将最终要交付的文件进行整理
+.
+├── Gene_All.KEGG.Level1.genelist.xls 
+├── Gene_All.KEGG.Level1.TPM.Summary.xls 
+├── Gene_All.KEGG.Level2.genelist.xls 
+├── Gene_All.KEGG.Level2.TPM.Summary.xls 
+├── Gene_All.KEGG.Level3.genelist.xls 
+├── Gene_All.KEGG.Level3.TPM.Summary.xls 
+├── Gene_All.KEGG.TPM.xls 
+└── readme.doc
 
 主要结果文件说明：
-（1）RDA_CCA.coordinate.pdf/png
-1）环境向量的长度表示样方物种的分布与该环境因子相关性的大小，长度越长，相关性越大；
-2）环境向量与约束轴夹角的大小表示环境因子与约束轴相关性的大小，夹角小说明关系密切，若正交则不相关；
-3）样本点与箭头距离越近，该环境因子对样本的作用越强；
-4）样本位于箭头同方向，表示环境因子与样本物种群落的变化正相关，样本位于箭头的反方向，表示环境因子与样本物种群落的变化负相关。
+（1）Gene_All.KEGG.Level*.genelist.xls
+KEGG不同层级的上注释到的基因信息，第一列为KEGG层级，最后一列为gene_id（基因之间以|分割）
+如果是Level3则会将其对应的Level2和Level1也标注在表格中
+ (2)Gene_All.KEGG.Level1.TPM.Summary.xls 
+ KEGG不同层级在不同样本中的TPM值（该条目上所有基因的TPM值总和）
 
-（2）RDA_CCA.coordinate.env.xls
-CCA1/RDA1: 第一轴的坐标
-CCA2/RDA2: 第二轴的坐标
-factor: 环境因子
-
-（3）RDA_CCA.coordinate.sample.xls 
-CCA1/RDA1: 第一轴的坐标
-CCA2/RDA2: 第二轴的坐标
-Sample: 样本 
-Group: 分组
+（3）Gene_All.KEGG.TPM.xls
+基因注释到KEGG数据库的结果总表
+Gene_ID:基因ID序号
+Annotation:基因注释到的K编号
+Map:基因注释到的Map编号
+Level3:基因注释到KEGG数据库的Level3层级（即pathway）
+Level2:基因注释到KEGG数据库的Level2层级
+Level1:基因注释到KEGG数据库的Level1层级
+样本：后面所有列为该样本中基因的TPM值
 
 ### 注意事项
 投递的时候有问题。
