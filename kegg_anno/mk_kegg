@@ -32,6 +32,14 @@ HELP:
 	@echo -e "\t" "config: [文件|可选]  模块配置文件，和软件相关参数，默认为$(makefile_dir)/config/config.txt "
 	@echo -e "\t" "infile: [文件|必需]  KEGG注释结果，也就是KEGG_Combine的输出结果"
 	@echo -e "\t" "outdir: [路径|必需]  结果输出路径，会输出不同level的丰度和对应的基因列表"
+    @echo Usage3:
+    @echo -e "\t" "make -f $(makefile_name) indir= outdir= upload"
+	@echo 功能说明：
+	@echo -e "\t" "对KEGG注释后的不同Level计算丰度以及输出基因列表"
+	@echo 参数说明：
+	@echo -e "\t" "config: [文件|可选]  模块配置文件，和软件相关参数，默认为$(makefile_dir)/config/config.txt "
+	@echo -e "\t" "indir: [文件|必需]  上面两个步骤的输出目录"
+	@echo -e "\t" "outdir: [路径|必需]  结果整理目录,会在该目录下创建upload目录，也可以给upload_dir"
 
 
 .PHONY:KEGG_Combine
@@ -72,12 +80,12 @@ upload_dir=$(outdir)/kegg_upload
 upload:
 	echo do upload kegg start at `date`
 	mkdir $(upload_dir)
-	ln -s $(indir)/Gene_All.KEGG.TPM.xls .
-	ln -s $(indir)/Gene_All.KEGG.Level1.TPM.Summary.xls .
-	ln -s $(indir)/Gene_All.KEGG.Level1.genelist.xls .
-	ln -s $(indir)/Gene_All.KEGG.Level2.TPM.Summary.xls .
-	ln -s $(indir)/Gene_All.KEGG.Level2.genelist.xls .
-	ln -s $(indir)/Gene_All.KEGG.Level3.TPM.Summary.xls .
-	ln -s $(indir)/Gene_All.KEGG.Level4.genelist.xls .
-	cp $(makefile_dir)/doc/readme.doc .
+	ln -s $(indir)/Gene_All.KEGG.TPM.xls $(upload_dir)
+	ln -s $(indir)/Gene_All.KEGG.Level1.TPM.Summary.xls $(upload_dir)
+	ln -s $(indir)/Gene_All.KEGG.Level1.genelist.xls $(upload_dir)
+	ln -s $(indir)/Gene_All.KEGG.Level2.TPM.Summary.xls $(upload_dir)
+	ln -s $(indir)/Gene_All.KEGG.Level2.genelist.xls $(upload_dir)
+	ln -s $(indir)/Gene_All.KEGG.Level3.TPM.Summary.xls $(upload_dir)
+	ln -s $(indir)/Gene_All.KEGG.Level4.genelist.xls $(upload_dir)
+	cp $(makefile_dir)/doc/readme.doc $(upload_dir)
 	echo do upload kegg end at `date`
