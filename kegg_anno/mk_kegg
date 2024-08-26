@@ -79,7 +79,7 @@ upload_dir=$(outdir)/kegg_upload
 .PHONY:upload
 upload:
 	echo do upload kegg start at `date`
-    [ -d $(upload_dir) ] && rm -r $(upload_dir) || echo $(upload_dir) not exists
+	[ -d $(upload_dir) ] && rm -r $(upload_dir) || echo $(upload_dir) not exists
 	mkdir -p $(upload_dir)
 	ln -sf $(indir)/Gene_All.KEGG.TPM.xls $(upload_dir)
 	ln -sf $(indir)/Gene_All.KEGG.Level1.TPM.Summary.xls $(upload_dir)
