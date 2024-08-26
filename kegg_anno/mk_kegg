@@ -79,13 +79,14 @@ upload_dir=$(outdir)/kegg_upload
 .PHONY:upload
 upload:
 	echo do upload kegg start at `date`
+    [ -d $(upload_dir) ] && rm -r $(upload_dir) || echo $(upload_dir) not exists
 	mkdir -p $(upload_dir)
-	ln -s $(indir)/Gene_All.KEGG.TPM.xls $(upload_dir)
-	ln -s $(indir)/Gene_All.KEGG.Level1.TPM.Summary.xls $(upload_dir)
-	ln -s $(indir)/Gene_All.KEGG.Level1.genelist.xls $(upload_dir)
-	ln -s $(indir)/Gene_All.KEGG.Level2.TPM.Summary.xls $(upload_dir)
-	ln -s $(indir)/Gene_All.KEGG.Level2.genelist.xls $(upload_dir)
-	ln -s $(indir)/Gene_All.KEGG.Level3.TPM.Summary.xls $(upload_dir)
-	ln -s $(indir)/Gene_All.KEGG.Level3.genelist.xls $(upload_dir)
+	ln -sf $(indir)/Gene_All.KEGG.TPM.xls $(upload_dir)
+	ln -sf $(indir)/Gene_All.KEGG.Level1.TPM.Summary.xls $(upload_dir)
+	ln -sf $(indir)/Gene_All.KEGG.Level1.genelist.xls $(upload_dir)
+	ln -sf $(indir)/Gene_All.KEGG.Level2.TPM.Summary.xls $(upload_dir)
+	ln -sf $(indir)/Gene_All.KEGG.Level2.genelist.xls $(upload_dir)
+	ln -sf $(indir)/Gene_All.KEGG.Level3.TPM.Summary.xls $(upload_dir)
+	ln -sf $(indir)/Gene_All.KEGG.Level3.genelist.xls $(upload_dir)
 	cp $(makefile_dir)/doc/readme.doc $(upload_dir)
 	echo do upload kegg end at `date`
