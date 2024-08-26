@@ -25,7 +25,7 @@ HELP:
 	@echo -e "\t" "TPM: [字符|必需]  基因在不同样本中的TPM表，第一行为表头，第一列为gene名，值为TPM值"
 	@echo -e "\t" "outdir: [字符|必需] 结果输出目录"
 
-    @echo -e "\t" "make -f $(makefile_name) infile= outdir= KEGG_level_tpm_stat"
+	@echo -e "\t" "make -f $(makefile_name) infile= outdir= KEGG_level_tpm_stat"
 	@echo 功能说明：
 	@echo -e "\t" "对KEGG注释后的不同Level计算丰度以及输出基因列表"
 	@echo 参数说明：

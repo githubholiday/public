@@ -1,4 +1,4 @@
-### 模块： mk_RDA_CCA
+### 模块： mk_kegg
 
 *模块功能：KEGG注释结果整理、统计、汇总
 *模块版本：v1.0.0
@@ -40,10 +40,7 @@ Usage:
 	运行时长：5min
 
 ### 输出文件示例
-.
-├── RDA_CCA.coordinate.env.xls       RDA/CCA结果图中环境因子的坐标 
-├── RDA_CCA.coordinate.pdf/png       RDA/CCA结果图，根据DCA的结果进行选择，只出一种图，会在图里标明是RDA或者CCA
-└── RDA_CCA.coordinate.sample.xls    RDA/CCA结果图中样本的坐标
+
 
 主要结果文件说明：
 （1）RDA_CCA.coordinate.pdf/png
