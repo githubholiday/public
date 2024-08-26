@@ -41,7 +41,7 @@ KEGG_Combine:
 	$(PYTHON3) $(script)/kegg_format.py -i $(input) -o $(outdir)/Gene_All.pathway.xls -k $(outdir)/Gene_All.KEGG.xls
 	$(PYTHON3) $(script)/kegg_add_anno.py -i $(outdir)/Gene_All.pathway.xls -r $(kegg_level_file) -o $(outdir)/Gene_All.KEGG.Anno.xls
 	# 添加tpm值
-	$(PYTHON3) $(script)/add.TPM.py -i $(outdir)/Gene_All.Anno.xls -ar $(TPM) -c 0 0 -o $(outdir)/Gene_All.KEGG.TPM.xls
+	$(PYTHON3) $(script)/add.TPM.py -i $(outdir)/Gene_All.KEGG.Anno.xls -ar $(TPM) -c 0 0 -o $(outdir)/Gene_All.KEGG.TPM.xls
 	echo KEGG_Combine  start at `date`
 
 indir=$(outdir)
