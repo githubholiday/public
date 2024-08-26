@@ -14,7 +14,7 @@ HELP:
 	@echo Program: mk_annotation
 	@echo Version: v1.0.0
 	@echo Contactor: yangzhang@genome.cn
-	@echo Usage:
+	@echo Usage1:
 	@echo -e "\t" "make -f $(makefile_name) input= kegg_level_file= TPM= outdir= KEGG_Combine"
 	@echo 功能说明：
 	@echo -e "\t" "对切割的fa做的kegg注释的结果进行合并以及增加TPM值"
@@ -24,7 +24,7 @@ HELP:
 	@echo -e "\t" "kegg_level_file: [路径|必需]  KEGG 不同Level对应关系表，一般为/annoroad/data1/bioinfo/PROJECT/Commercial/Cooperation/FTP/Database/KEGG/current/data/map_pathway.list"
 	@echo -e "\t" "TPM: [字符|必需]  基因在不同样本中的TPM表，第一行为表头，第一列为gene名，值为TPM值"
 	@echo -e "\t" "outdir: [字符|必需] 结果输出目录"
-
+	@echo Usage2:
 	@echo -e "\t" "make -f $(makefile_name) infile= outdir= KEGG_level_tpm_stat"
 	@echo 功能说明：
 	@echo -e "\t" "对KEGG注释后的不同Level计算丰度以及输出基因列表"
