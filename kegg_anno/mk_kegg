@@ -13,7 +13,7 @@ HELP:
 	@echo Description: 
 	@echo Program: mk_annotation
 	@echo Version: v1.0.0
-	@echo Contactor: yangzhang@genome.cn
+	@echo Contactor: chengfangtu@genome.cn
 	@echo Usage1:
 	@echo -e "\t" "make -f $(makefile_name) input= kegg_level_file= TPM= outdir= KEGG_Combine"
 	@echo 功能说明：
