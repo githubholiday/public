@@ -24,6 +24,7 @@ HELP:
 	@echo -e "\t" "kegg_level_file: [路径|必需]  KEGG 不同Level对应关系表，一般为/annoroad/data1/bioinfo/PROJECT/Commercial/Cooperation/FTP/Database/KEGG/current/data/map_pathway.list"
 	@echo -e "\t" "TPM: [字符|必需]  基因在不同样本中的TPM表，第一行为表头，第一列为gene名，值为TPM值"
 	@echo -e "\t" "outdir: [字符|必需] 结果输出目录"
+    @echo -e "\n"
 	@echo Usage2:
 	@echo -e "\t" "make -f $(makefile_name) infile= outdir= KEGG_level_tpm_stat"
 	@echo 功能说明：
@@ -32,6 +33,7 @@ HELP:
 	@echo -e "\t" "config: [文件|可选]  模块配置文件，和软件相关参数，默认为$(makefile_dir)/config/config.txt "
 	@echo -e "\t" "infile: [文件|必需]  KEGG注释结果,也就是KEGG_Combine的输出结果"
 	@echo -e "\t" "outdir: [路径|必需]  结果输出路径,会输出不同level的丰度和对应的基因列表"
+    @echo -e "\n"
 	@echo Usage3:
 	@echo -e "\t" "make -f $(makefile_name) indir= outdir= upload"
 	@echo 功能说明：
@@ -39,11 +41,13 @@ HELP:
 	@echo 参数说明：
 	@echo -e "\t" "config: [文件|可选]  模块配置文件，和软件相关参数，默认为$(makefile_dir)/config/config.txt "
 	@echo -e "\t" "indir: [文件|必需]  上面两个步骤的输出目录"
-	@echo -e "\t" "outdir: [路径|必需]  结果整理目录,会在该目录下创建upload目录,也可以给upload_dir"	@echo Usage4-合并运行:
+	@echo -e "\t" "outdir: [路径|必需]  结果整理目录,会在该目录下创建upload目录,也可以给upload_dir"
+    @echo -e "\n"	
+    @echo Usage4-合并运行:
 	@echo -e "\t" "make -f $(makefile_name) input= kegg_level_file= TPM= outdir= KEGG_Combine KEGG_level_tpm_stat upload"
 	@echo 功能说明：
 	@echo -e "\t" "对KEGG注释结果进行合并、增加KEGG多层级注释结果、不同层级的表达量进行统计、整理结果"
-    @echo 参数说明：
+	@echo 参数说明：
 	@echo -e "\t" "参考KEGG_Combine的参数即可"
 
 
