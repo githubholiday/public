@@ -1,3 +1,0 @@
-python3 /work/share/acuhtwkcu9/liutao/seqwisdom/easy_bioinfo/wdl_related/7.pipeline_generate/pipeline_generate_sugon.py  -i /work/share/acuhtwkcu9/taoxiao/05_tool/Stable/Function/v2.0.0/test/../config/job_config.txt -o /work/share/acuhtwkcu9/taoxiao/05_tool/Stable/Function/v2.0.0/test//pipeline
-#vi config.ini
-python3 /work/share/acuhtwkcu9/taoxiao/05_tool/Stable/Function/v2.0.0/test/pipeline/pipeline.py -i /work/share/acuhtwkcu9/taoxiao/05_tool/Stable/Function/v2.0.0/test/config.ini  -j test -b /work/share/acuhtwkcu9/taoxiao/05_tool/Stable/Function/v2.0.0/ -o /work/share/acuhtwkcu9/taoxiao/05_tool/Stable/Function/v2.0.0/test/ -name test_tcf -r 
