@@ -85,8 +85,8 @@ def main():
     args.out.write("Total Reads\t"+total_reads+"\n")
     args.out.write("Mapped Reads\t"+str(mapped_reads)+"\n")
     args.out.write("Mapped Rate(%)\t"+map_rate+"\n")
-    args.out.write("Unmapped Reads\t"+str(unmapped_reads))
-    args.out.write("Unmapped Rate(%)\t"+str(unmap_rate))
+    args.out.write("Unmapped Reads\t"+str(unmapped_reads)+"\n")
+    args.out.write("Unmapped Rate(%)\t"+str(unmap_rate)+"\n")
 
 if __name__ == '__main__':
     main()

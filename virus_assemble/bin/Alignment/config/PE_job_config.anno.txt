@@ -42,7 +42,7 @@ Major	T
 Thread	10
 Order	2
 Depend	HostUnmap2FQ
-Command	make -f BIN/Alignment/makefile config=Para_config ref=Para_virus_ref R1=Para_outdir/01_rm_host/$(Sample)[0]/$(Sample)[0]_unmap_1.fq.gz R1=Para_outdir/01_rm_host/$(Sample)[0]/$(Sample)[0]_unmap_2.fq.gz outdir=Para_outdir/02_self_mem/$(Sample)[0]/ sample=$(Sample)[0] flag_stat_file=Para_outdir/02_self_mem/$(Sample)[0]/$(Sample)[0].self.flagstat.xls BWA_MEM
+Command	make -f BIN/Alignment/makefile config=Para_config ref=Para_virus_ref R1=Para_outdir/01_rm_host/$(Sample)[0]/$(Sample)[0]_unmap_1.fq.gz R2=Para_outdir/01_rm_host/$(Sample)[0]/$(Sample)[0]_unmap_2.fq.gz outdir=Para_outdir/02_self_mem/$(Sample)[0]/ sample=$(Sample)[0] flag_stat_file=Para_outdir/02_self_mem/$(Sample)[0]/$(Sample)[0].self.flagstat.xls BWA_MEM
 [Job End]
 
 [Job Start]
