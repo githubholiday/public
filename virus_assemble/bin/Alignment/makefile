@@ -105,6 +105,6 @@ BAM2FQ_PE:
 	$(GZIP) ${outdir}/${prefix}_2.fq
 	$(FQTOOLS) stat ${outdir}/${prefix}_1.fq.gz ${outdir}/${prefix}_1.fq.gz.report
 	$(FQTOOLS) stat ${outdir}/${prefix}_2.fq.gz ${outdir}/${prefix}_2.fq.gz.report
-	$(PYTHON3) $(ScriptDir)/script/stat_host.py -i ${flag_stat_file} -r  ${outdir}/${prefix}_1.fq.gz.report -s ${sample} -o ${outdir}/${sample}.map.stat.xls -t $(type)
+	$(PYTHON3) $(ScriptDir)/stat_host.py -i ${flag_stat_file} -r  ${outdir}/${prefix}_1.fq.gz.report -s ${sample} -o ${outdir}/${sample}.map.stat.xls -t $(type)
 	echo bam2fq PE end at `date`
 
