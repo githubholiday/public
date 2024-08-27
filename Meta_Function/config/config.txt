@@ -10,5 +10,5 @@ KO2MAP=/annoroad/data1/bioinfo/PROJECT/Commercial/Cooperation/FTP/Database/KEGG/
 ORGDB=/annoroad/data1/bioinfo/PROJECT/Commercial/Cooperation/FTP/Database/ClusterProfile/OrgDb.list
 KEGG_MAP_DIR=/annoroad/data1/bioinfo/PROJECT/Commercial/Cooperation/FTP/Database/ClusterProfile/KEGG
 
-SinRun=/usr/local/bin/singularity exec --bind /annogene/:/annogene/
+SinRun=/usr/local/bin/singularity exec --bind /annogene/:/annogene/,/annoroad/:/annoroad/
 function_sif=/annogene/data1/bioinfo/Seq/RD/PMO/tuchengfang/238/sif/clusterprofiler_v0.0.4.sif
