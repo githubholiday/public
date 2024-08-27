@@ -1,0 +1,7 @@
+echo "########## GO Clusterprofiler start at" `date`
+########## GO Clusterprofiler start at Fri Jun 14 15:26:22 CST 2024
+mkdir -p /work/share/acuhtwkcu9/taoxiao/05_tool/Stable/Function/v2.0.0/test/result/IMT_vs_MT_scRNA_NK-cell_IMT_vs_NK-cell_MT/all/GO
+if [ `wc -l /work/share/acuhtwkcu9/taoxiao/05_tool/Stable/Function/v2.0.0/test/result/IMT_vs_MT_scRNA_NK-cell_IMT_vs_NK-cell_MT/.csv | awk '{print $1}'` -gt 1 ];\
+	then \
+		/public/software/apps/singularity/3.7.3/bin/singularity exec --bind /work/share/acuhtwkcu9/:/work/share/acuhtwkcu9/ /work/share/acuhtwkcu9/install/sif/clusterprofiler_v0.0.4.sif make -f /work/share/acuhtwkcu9/taoxiao/05_tool/Stable/Function/v2.0.0/bin///GO_clusterProfiler/GO_clusterProfiler.mk species=no term2gene=/work/share/acuhtwkcu9/taoxiao/database/Equus_caballus_EquCab3.0/RNA/annotation/go/go.list prefix=IMT_vs_MT_scRNA_NK-cell_IMT_vs_NK-cell_MT outdir=/work/share/acuhtwkcu9/taoxiao/05_tool/Stable/Function/v2.0.0/test/result/IMT_vs_MT_scRNA_NK-cell_IMT_vs_NK-cell_MT/all/GO genelist=/work/share/acuhtwkcu9/taoxiao/05_tool/Stable/Function/v2.0.0/test/result/IMT_vs_MT_scRNA_NK-cell_IMT_vs_NK-cell_MT/.csv config=/work/share/acuhtwkcu9/taoxiao/05_tool/Stable/Function/v2.0.0/bin///../config/config.txt GO_clusterProfiler ;\
+else \ 

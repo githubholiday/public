@@ -1,0 +1,3 @@
+/work/share/acuhtwkcu9/taoxiao/05_tool/Stable/Function/v2.0.0/test/shell//2_2_AllGO.sh.62067.shell/work_00002.sh: line 2: sample: command not found
+/bin/sh: -c: line 4: syntax error: unexpected end of file
+make: *** [/work/share/acuhtwkcu9/taoxiao/05_tool/Stable/Function/v2.0.0/bin/anno.mk:46: GO] Error 1

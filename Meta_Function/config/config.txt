@@ -1,0 +1,16 @@
+GO_Rscript=Rscript
+PERL=perl
+PYTHON3=python3
+#GOKEGG qsub
+sif=/work/share/acuhtwkcu9/install/sif/clusterprofiler_v0.0.4.sif
+
+RSCRIPT=Rscript
+GO2NAME=/annoroad/data1/bioinfo/PROJECT/Commercial/Cooperation/FTP/Database/GO/current/data/go.class.clusterprofile
+MAP2NAME=/annoroad/data1/bioinfo/PROJECT/Commercial/Cooperation/FTP/Database/KEGG/current/data/pathway_$(category).list
+KO2MAP=/annoroad/data1/bioinfo/PROJECT/Commercial/Cooperation/FTP/Database/KEGG/current/data/ko2map/ko2map.xls
+
+ORGDB=/annoroad/data1/bioinfo/PROJECT/Commercial/Cooperation/FTP/Database/ClusterProfile/OrgDb.list
+KEGG_MAP_DIR=/annoroad/data1/bioinfo/PROJECT/Commercial/Cooperation/FTP/Database/ClusterProfile/KEGG
+
+SinRun=/usr/local/bin/singularity exec --bind /annogene/:/annogene/
+function_sif=/work/share/acuhtwkcu9/install/sif/clusterprofiler_v0.0.4.sif
