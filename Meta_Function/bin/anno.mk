@@ -67,5 +67,5 @@ KEGG:
 	rm -r $(kegg_dir)/*id
 	rm -r $(kegg_dir)/*example*
 	rm -r $(kegg_dir)/*list
-	cp -r $(BIN)/../doc/ko.readme.doc $(kegg_dir)/readme.doc
+	cp -r $(BIN)/../doc/kegg.readme.doc $(kegg_dir)/readme.doc
 	echo "########## KEGG Clusterprofiler end at" `date`
