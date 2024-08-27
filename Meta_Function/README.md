@@ -1,35 +1,37 @@
 ### 模块： mk_kegg
 
-*模块功能：KEGG注释结果整理、统计、汇总
+*模块功能：GO和KEGG富集分析
 *模块版本：v1.0.0
 *邮箱： chengfangtu@genome.cn
 
 ### 使用示例及参数说明：
 
 Usage:
-    make -f $(makefile_name) input= kegg_level_file= TPM= outdir= KEGG_Combine
+	make -f ${file} indir= outdir= gene_list= prefix= GetGoList GO
 	功能说明：
-	    对切割的fa做的kegg注释的结果进行合并以及增加TPM值
+		对给定的gene_list做GO富集分析
 	参数说明：
-	    config: [文件|可选]  模块配置文件，和软件相关参数，默认为$(makefile_dir)/config/config.txt 
-	    input: [文件|必需]  KEGG注释结果,一般为*.out
-	    kegg_level_file: [路径|必需]  KEGG 不同Level对应关系表，一般为/annoroad/data1/bioinfo/PROJECT/Commercial/Cooperation/FTP/Database/KEGG/current/data/map_pathway.list
-	    TPM: [字符|必需]  基因在不同样本中的TPM表，第一行为表头，第一列为gene名，值为TPM值
-	    outdir: [字符|必需] 结果输出目录
-
-    make -f $(makefile_name) infile= outdir= KEGG_level_tpm_stat
+		indir: 含有Gene_All.GO.xls的文件的目录
+		outdir:输出目录
+		gene_list:待做GO的基因列表,表头为Gene
+		prefix:结果文件前缀名
+	
+	make -f ${file} indir= outdir= gene_list= category= prefix= GetKEGGList KEGG
 	功能说明：
-	    对KEGG注释后的不同Level计算丰度以及输出基因列表
+		对给定的gene_list做KEGG富集分析
 	参数说明：
-	    config: [文件|可选]  模块配置文件，和软件相关参数，默认为$(makefile_dir)/config/config.txt 
-	    infile: [文件|必需]  KEGG注释结果，也就是KEGG_Combine的输出结果
-	    outdir: [路径|必需]  结果输出路径，会输出不同level的丰度和对应的基因列表
+		indir: 含有Gene_All.GO.xls的文件的目录
+		outdir:输出目录
+		gene_list:待做GO的基因列表,表头为Gene
+		category:物种类型，[fungi,plant,animal]
+		prefix:结果文件前缀名
 
 ### 输入文件示例
 见test/input/
 .
-├── *.out           KEGG注释后的文件
-├── TPM.example.xls         所有样本的TPM表格
+├── Gene_All.GO.xls		   基因和GO的对应关系
+├── Gene_All.KEGG.xls	   基因和KEGG的对应关系
+|-- gene.list              待分析的基因列表
 
 ### 运行环境及软件：
 	北京238 R python3
@@ -40,33 +42,74 @@ Usage:
 	运行时长：5min
 
 ### 输出文件示例
-会在输出目录生成kegg_upload目录，将最终要交付的文件进行整理
+会在输出目录生成GO和KEGG目录，可以直接交付GO和KEGG目录
 .
-├── Gene_All.KEGG.Level1.genelist.xls 
-├── Gene_All.KEGG.Level1.TPM.Summary.xls 
-├── Gene_All.KEGG.Level2.genelist.xls 
-├── Gene_All.KEGG.Level2.TPM.Summary.xls 
-├── Gene_All.KEGG.Level3.genelist.xls 
-├── Gene_All.KEGG.Level3.TPM.Summary.xls 
-├── Gene_All.KEGG.TPM.xls 
-└── readme.doc
+├── GO
+│   ├── readme.doc
+│   ├── test.go.barplot.pdf
+│   ├── test.go.dotplot.pdf
+│   ├── test.go.enrichment.xls
+│   └── test.go.report.xls
+├── go.list
+├── KEGG
+│   ├── readme.doc
+│   ├── test.kegg.barplot.pdf
+│   ├── test.kegg.dotplot.pdf
+│   ├── test.kegg.enrichment.xls
+│   └── test.kegg.report.xls
+└── ko.list
 
-主要结果文件说明：
-（1）Gene_All.KEGG.Level*.genelist.xls
-KEGG不同层级的上注释到的基因信息，第一列为KEGG层级，最后一列为gene_id（基因之间以|分割）
-如果是Level3则会将其对应的Level2和Level1也标注在表格中
- (2)Gene_All.KEGG.Level1.TPM.Summary.xls 
- KEGG不同层级在不同样本中的TPM值（该条目上所有基因的TPM值总和）
+GO主要结果文件说明：
+1. GO/*.go.report.xls : 候选基因GO统计结果
+（1）ID：GO Term的ID
+（2）Ontology：该Term 所属分类
+（3）Description：GO Term的描述
+（4）Count1：富集到该Term的基因数目；
+（5）Count2：用于富集分析的基因数目；
+（6）Count3：富集到该Term的的背景基因数目；
+（7）Count4：用于富集分析时的背景基因数目；
+（8）pval：检验后的p值；
+（9）p.adjust：BH方法校正后的p值；
+（10）qval：检验后的q值；
+（11）*Gene：富集到该Term上的基因
+（12）*Count：富集到该Term上的基因数目
+（13）Links：该GO Term的数据库链接；
+（14）Result：该Term是否显著富集，yes，为显著；no，为不显著。
 
-（3）Gene_All.KEGG.TPM.xls
-基因注释到KEGG数据库的结果总表
-Gene_ID:基因ID序号
-Annotation:基因注释到的K编号
-Map:基因注释到的Map编号
-Level3:基因注释到KEGG数据库的Level3层级（即pathway）
-Level2:基因注释到KEGG数据库的Level2层级
-Level1:基因注释到KEGG数据库的Level1层级
-样本：后面所有列为该样本中基因的TPM值
+2. GO/*.dotplot.p* : GO富集分析气泡图
+选取每个类别最显著的10个GO条目（如果不足10则用该类别全部条目）用气泡图展示
+纵坐标表示GO条目，横坐标表示富集到该条目的基因数量占总基因的比例，颜色表示padjust，颜色越红表示越显著；气泡大小表示富集到该条目的基因数量，气泡越大表示基因数量越多。
+
+3. GO/*.barplot.p* : GO富集分析气泡
+选取每个类别最显著的10个GO条目（如果不足10则用该类别全部条目）用条形图展示
+纵坐标表示GO条目，横坐标表示富集到该条目的基因数量，颜色表示padjust，颜色越红表示越显著。
+
+KEGG主要结果文件说明：
+1. KEGG/*.kegg.report.xls : 候选基因KEGG统计结果表
+（1）Map：kegg通路编号
+（2）Name：kegg通路名称
+（3）Count1：富集到该通路的基因数目；
+（4）Count2：用于富集分析的基因数目；
+（5）Count3：富集到该通路的的背景基因数目；
+（6）Count4：用于富集分析时的背景基因数目；
+（7）pval：检验后的p值；
+（8）p.adjust：BH方法校正后的p值；
+（8）qval：检验后的q值；
+（9）*Gene：富集到该通路上的基因
+（10）*Count：富集到该通路上的基因数目
+（11）Links：该map的数据库链接；
+（12）Result：该map是否显著富集，yes，为显著；no，为不显著。
+
+2. KEGG/*.dotplot.p* : KEGG富集分析气泡图
+选取最显著的30个pathway通路（如果不足30则用全部通路）用气泡图展示
+纵坐标表示通路名称，横坐标表示富集到该通路的基因数量占总基因的比例，颜色表示padjust，颜色越红表示越显著；气泡大小表示富集到该通路的基因数量，气泡越大表示基因数量越多。
+
+3. KEGG/*.barplot.p* : KEGG富集分析条形图
+选取最显著的30个pathway通路（如果不足30则用全部通路）用条形图展示
+纵坐标表示通路名称，横坐标表示富集到该通路的基因数量，颜色表示padjust，颜色越红表示越显著。
+
+
+
 
 ### 注意事项
 投递的时候有问题。
