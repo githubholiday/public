@@ -1,0 +1,16 @@
+（1）Gene_All.KEGG.Level*.genelist.xls
+KEGG不同层级的上注释到的基因信息，第一列为KEGG层级，最后一列为gene_id（基因之间以|分割）
+如果是Level3则会将其对应的Level2和Level1也标注在表格中
+ 
+ (2)Gene_All.KEGG.Level1.TPM.Summary.xls 
+ KEGG不同层级在不同样本中的TPM值（该条目上所有基因的TPM值总和）
+
+（3）Gene_All.KEGG.TPM.xls
+基因注释到KEGG数据库的结果总表
+Gene_ID:基因ID序号
+Annotation:基因注释到的K编号
+Map:基因注释到的Map编号
+Level3:基因注释到KEGG数据库的Level3层级（即pathway）
+Level2:基因注释到KEGG数据库的Level2层级
+Level1:基因注释到KEGG数据库的Level1层级
+样本：后面所有列为该样本中基因的TPM值
