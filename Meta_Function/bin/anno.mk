@@ -26,6 +26,7 @@ Help:
 	@echo -e "\t" category:物种类型，[fungi,plant,animal]
 
 infile=$(indir)/Gene_All.GO.xls
+.PHONY:GetGoList
 GetGoList:
 	echo "########## GetGoList start at" `date`
 	mkdir -p $(outdir)
@@ -34,6 +35,7 @@ GetGoList:
 
 go_dir=$(outdir)/GO
 go=$(outdir)/go.list
+.PHONY:GO
 GO:
 	echo "########## GO Clusterprofiler start at" `date`
 	mkdir -p $(go_dir)
@@ -45,6 +47,7 @@ GO:
 	echo "########## GO Clusterprofiler end at" `date`
 
 infile=$(indir)/Gene_All.KEGG.xls
+.PHONY:GetKEGGList
 GetKEGGList:
 	echo "########## GetKEGGList start at" `date`
 	mkdir -p $(outdir)
@@ -53,6 +56,7 @@ GetKEGGList:
 
 kegg_dir=$(outdir)/KEGG
 ko=$(outdir)/ko.list
+.PHONY:KEGG
 KEGG:
 	echo "########## KEGG Clusterprofiler start at" `date`
 	mkdir -p $(kegg_dir)

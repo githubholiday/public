@@ -57,7 +57,7 @@ HELP:
 	@echo   outdir:输出目录
 	@echo   输出信息：outdir/sample_type_1|2.fq|fq.gz,outdir/sample_type_1.fq.gz.report,outdir/sample_map.stat.xls,
 	@echo   sample:样本名称
-
+.PHONY:BWA_Index
 BWA_Index:
 	echo Index start at `date`
 	$(BWA) index $(ref)
@@ -65,6 +65,7 @@ BWA_Index:
 
 aln_bam=${outdir}/${sample}.aln.bam
 sort_bam=${outdir}/${sample}.aln.sort.bam
+.PHONY:BWA_MEM
 BWA_MEM:
 	echo bwa mem and sort start at `date`
 	mkdir -p $(outdir)
@@ -75,18 +76,21 @@ BWA_MEM:
 
 outdir=$(dir $(abspath $(firstword $(outbam))))
 para=-F #比对上的，-f未比对上的
+.PHONY:SelectBam
 SelectBam:
 	echo get map or unmap bam from sort.bam start at `date`
 	mkdir -p $(outdir)
 	${SAMTOOLS} view -b ${para} 4 ${inbam} > ${outbam}
 	echo get map or unmap bam from sort.bam end at `date`
 
+.PHONY:DepthStat
 DepthStat:
 	echo bam stat start at `date`
 	genomeCoverageBed -ibam ${inbam} > $(depth_file)
 	$(PYTHON3) $(ScriptDir)/coverage.py -f $(flag_stat_file) -d $(depth_file) -o $(coverage_out) -n $(sample)
 
 prefix=@$(sample)_$(type)
+.PHONY:BAM2FQ_SE
 BAM2FQ_SE:
 	echo bam2fq SE start at `date`
 	mkdir -p $(outdir)
@@ -97,6 +101,7 @@ BAM2FQ_SE:
 	echo bam2fq SE end at `date`
 
 prefix=$(sample)_$(type)
+.PHONY:BAM2FQ_PE
 BAM2FQ_PE:
 	echo bam2fq PE start at `date`
 	mkdir -p $(outdir)
@@ -107,4 +112,3 @@ BAM2FQ_PE:
 	$(FQTOOLS) stat ${outdir}/${prefix}_2.fq.gz ${outdir}/${prefix}_2.fq.gz.report
 	$(PYTHON3) $(ScriptDir)/stat_host.py -i ${flag_stat_file} -r  ${outdir}/${prefix}_1.fq.gz.report -s ${sample} -o ${outdir}/${sample}.map.stat.xls -t $(type)
 	echo bam2fq PE end at `date`
-
