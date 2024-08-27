@@ -17,8 +17,8 @@ Help:
 	@echo -e "\t" sample_list：样本列表文件
 	@echo -e "\t" release_dir：整理输出目录
 
-outfile=$(outdir)/$(sample).csv
-annoout=$(outdir)/$(sample).anno.csv
+outfile=$(outdir)/$(sample).xls
+annoout=$(outdir)/$(sample).anno.xls
 .PHONY:Anno
 Anno:
 	echo "########## Anno start at" `date`
@@ -49,6 +49,7 @@ GO:
 	rm -r $(go_dir)/*result
 	rm -r $(go_dir)/*example*
 	rm -r $(go_dir)/*list
+	cp -r $(BIN)/../report/readme.docx $(outdir)/
 	echo "########## GO Clusterprofiler end at" `date`
 
 kegg_dir=$(outdir)/KEGG

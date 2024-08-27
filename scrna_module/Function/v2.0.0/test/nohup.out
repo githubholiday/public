@@ -1,0 +1,69 @@
+error in Depend
+ , maybe no tab
+Exception in thread 2_4_DownKEGG:
+[1;31;40mWarings: test_tcf was existed already in your log file, please check it[0m
+1 1_0_MarkerAnno 
+2 2_0_UpGO 1_0_MarkerAnno
+2 2_1_DownGO 1_0_MarkerAnno
+2 2_2_AllGO 1_0_MarkerAnno
+2 2_3_UpKEGG 1_0_MarkerAnno
+2 2_4_DownKEGG 1_0_MarkerAnno
+2 2_5_AllKEGG 1_0_MarkerAnno
+None
+perl /work/share/acuhtwkcu9/taoxiao/05_tool/Stable/Function/v2.0.0/test/pipeline/src/slurm/multi-process.pl -cpu 3 --lines 1 /work/share/acuhtwkcu9/taoxiao/05_tool/Stable/Function/v2.0.0/test/shell//1_0_MarkerAnno.sh
+perl /work/share/acuhtwkcu9/taoxiao/05_tool/Stable/Function/v2.0.0/test/pipeline/src/slurm/multi-process.pl -cpu 3 --lines 2 /work/share/acuhtwkcu9/taoxiao/05_tool/Stable/Function/v2.0.0/test/shell//2_0_UpGO.sh
+perl /work/share/acuhtwkcu9/taoxiao/05_tool/Stable/Function/v2.0.0/test/pipeline/src/slurm/multi-process.pl -cpu 3 --lines 2 /work/share/acuhtwkcu9/taoxiao/05_tool/Stable/Function/v2.0.0/test/shell//2_1_DownGO.sh
+perl /work/share/acuhtwkcu9/taoxiao/05_tool/Stable/Function/v2.0.0/test/pipeline/src/slurm/multi-process.pl -cpu 3 --lines 2 /work/share/acuhtwkcu9/taoxiao/05_tool/Stable/Function/v2.0.0/test/shell//2_3_UpKEGG.sh
+perl /work/share/acuhtwkcu9/taoxiao/05_tool/Stable/Function/v2.0.0/test/pipeline/src/slurm/multi-process.pl -cpu 3 --lines 1 /work/share/acuhtwkcu9/taoxiao/05_tool/Stable/Function/v2.0.0/test/shell//2_5_AllKEGG.sh
+perl /work/share/acuhtwkcu9/taoxiao/05_tool/Stable/Function/v2.0.0/test/pipeline/src/slurm/multi-process.pl -cpu 3 --lines 1 /work/share/acuhtwkcu9/taoxiao/05_tool/Stable/Function/v2.0.0/test/shell//2_2_AllGO.sh
+Traceback (most recent call last):
+  File "/work/share/acuhtwkcu9/software/miniforge3/lib/python3.10/threading.py", line 1016, in _bootstrap_inner
+    self.run()
+  File "/work/share/acuhtwkcu9/taoxiao/05_tool/Stable/Function/v2.0.0/test/pipeline/lib/JobGuard.py", line 27, in run
+    self.logfile.flush()
+ValueError: write to closed file
+ some script was break
+Died at /work/share/acuhtwkcu9/taoxiao/05_tool/Stable/Function/v2.0.0/test/pipeline/src/slurm/multi-process.pl line 157.
+Exception in thread 2_5_AllKEGG:
+Traceback (most recent call last):
+  File "/work/share/acuhtwkcu9/software/miniforge3/lib/python3.10/threading.py", line 1016, in _bootstrap_inner
+    self.run()
+  File "/work/share/acuhtwkcu9/taoxiao/05_tool/Stable/Function/v2.0.0/test/pipeline/lib/JobGuard.py", line 30, in run
+    self.logfile.write('[break]: {0} break down at {1}\n'.format(self.name , myTime()))
+ValueError: I/O operation on closed file.
+ some script was break
+Died at /work/share/acuhtwkcu9/taoxiao/05_tool/Stable/Function/v2.0.0/test/pipeline/src/slurm/multi-process.pl line 157.
+ some script was break
+Died at /work/share/acuhtwkcu9/taoxiao/05_tool/Stable/Function/v2.0.0/test/pipeline/src/slurm/multi-process.pl line 157.
+Exception in thread 2_1_DownGO:
+Traceback (most recent call last):
+  File "/work/share/acuhtwkcu9/software/miniforge3/lib/python3.10/threading.py", line 1016, in _bootstrap_inner
+    self.run()
+  File "/work/share/acuhtwkcu9/taoxiao/05_tool/Stable/Function/v2.0.0/test/pipeline/lib/JobGuard.py", line 30, in run
+    self.logfile.write('[break]: {0} break down at {1}\n'.format(self.name , myTime()))
+ValueError: I/O operation on closed file.
+Exception in thread 2_2_AllGO:
+Traceback (most recent call last):
+  File "/work/share/acuhtwkcu9/software/miniforge3/lib/python3.10/threading.py", line 1016, in _bootstrap_inner
+    self.run()
+  File "/work/share/acuhtwkcu9/taoxiao/05_tool/Stable/Function/v2.0.0/test/pipeline/lib/JobGuard.py", line 30, in run
+    self.logfile.write('[break]: {0} break down at {1}\n'.format(self.name , myTime()))
+ValueError: I/O operation on closed file.
+ some script was break
+Died at /work/share/acuhtwkcu9/taoxiao/05_tool/Stable/Function/v2.0.0/test/pipeline/src/slurm/multi-process.pl line 157.
+Exception in thread 2_3_UpKEGG:
+Traceback (most recent call last):
+  File "/work/share/acuhtwkcu9/software/miniforge3/lib/python3.10/threading.py", line 1016, in _bootstrap_inner
+    self.run()
+  File "/work/share/acuhtwkcu9/taoxiao/05_tool/Stable/Function/v2.0.0/test/pipeline/lib/JobGuard.py", line 30, in run
+    self.logfile.write('[break]: {0} break down at {1}\n'.format(self.name , myTime()))
+ValueError: I/O operation on closed file.
+ some script was break
+Died at /work/share/acuhtwkcu9/taoxiao/05_tool/Stable/Function/v2.0.0/test/pipeline/src/slurm/multi-process.pl line 157.
+Exception in thread 2_0_UpGO:
+Traceback (most recent call last):
+  File "/work/share/acuhtwkcu9/software/miniforge3/lib/python3.10/threading.py", line 1016, in _bootstrap_inner
+    self.run()
+  File "/work/share/acuhtwkcu9/taoxiao/05_tool/Stable/Function/v2.0.0/test/pipeline/lib/JobGuard.py", line 30, in run
+    self.logfile.write('[break]: {0} break down at {1}\n'.format(self.name , myTime()))
+ValueError: I/O operation on closed file.
