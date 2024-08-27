@@ -11,19 +11,21 @@ Help:
 	@echo Description:
 	@echo -e "\t" 该脚本用于做GO和KEGG的富集分析
 	@echo Usage:
-	@echo -e "\t" make -f ${file} indir= outdir= gene_list= GetGoList GO
+	@echo -e "\t" make -f ${file} indir= outdir= gene_list= prefix= GetGoList GO
 	@echo Parameters:
 	@echo -e "\t" indir: 含有Gene_All.GO.xls的文件的目录
 	@echo -e "\t" outdir:输出目录
 	@echo -e "\t" gene_list:待做GO的基因列表,表头为Gene
+	@echo -e "\t" prefix:结果文件前缀名
 	
 	@echo -e "\n" Usage:
-	@echo -e "\t" make -f ${file} indir= outdir= gene_list= category= GetKEGGList KEGG
+	@echo -e "\t" make -f ${file} indir= outdir= gene_list= category= prefix= GetKEGGList KEGG
 	@echo Parameters:
 	@echo -e "\t" indir: 含有Gene_All.GO.xls的文件的目录
 	@echo -e "\t" outdir:输出目录
 	@echo -e "\t" gene_list:待做GO的基因列表,表头为Gene
 	@echo -e "\t" category:物种类型，[fungi,plant,animal]
+	@echo -e "\t" prefix:结果文件前缀名
 
 infile=$(indir)/Gene_All.GO.xls
 .PHONY:GetGoList
@@ -39,7 +41,7 @@ go=$(outdir)/go.list
 GO:
 	echo "########## GO Clusterprofiler start at" `date`
 	mkdir -p $(go_dir)
-	$(SinRun) $(function_sif) make -f $(BIN)/GO_clusterProfiler/GO_clusterProfiler.mk species=no term2gene=$(go) prefix=$(sample) outdir=$(go_dir) genelist=$(gene_list) config=$(Bconfig) GO_clusterProfiler
+	$(SinRun) $(function_sif) make -f $(BIN)/GO_clusterProfiler/GO_clusterProfiler.mk species=no term2gene=$(go) prefix=$(prefix) outdir=$(go_dir) genelist=$(gene_list) config=$(Bconfig) GO_clusterProfiler
 	rm -r $(go_dir)/*result
 	rm -r $(go_dir)/*example*
 	rm -r $(go_dir)/*list
@@ -60,7 +62,7 @@ ko=$(outdir)/ko.list
 KEGG:
 	echo "########## KEGG Clusterprofiler start at" `date`
 	mkdir -p $(kegg_dir)
-	$(SinRun) $(function_sif) make -f $(BIN)/KEGG_clusterProfiler/KEGG_clusterProfiler.mk species=no term2gene=$(ko) prefix=$(sample) outdir=$(kegg_dir) genelist=$(gene_list) config=$(Bconfig) category=$(category) KEGG_clusterProfiler
+	$(SinRun) $(function_sif) make -f $(BIN)/KEGG_clusterProfiler/KEGG_clusterProfiler.mk species=no term2gene=$(ko) prefix=$(prefix) outdir=$(kegg_dir) genelist=$(gene_list) config=$(Bconfig) category=$(category) KEGG_clusterProfiler
 	rm -r $(kegg_dir)/*result
 	rm -r $(kegg_dir)/*id
 	rm -r $(kegg_dir)/*example*
