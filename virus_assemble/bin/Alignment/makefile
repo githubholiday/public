@@ -100,7 +100,7 @@ prefix=$(sample)_$(type)
 BAM2FQ_PE:
 	echo bam2fq PE start at `date`
 	mkdir -p $(outdir)
-	${BAM2FASTQ} -f -o ${outdir}/${prefix}_#.fq ${inbam}
+	${BAM2FASTQ} -f -o ${outdir}/${prefix}#.fq ${inbam}
 	$(GZIP) ${outdir}/${prefix}_1.fq
 	$(GZIP) ${outdir}/${prefix}_2.fq
 	$(FQTOOLS) stat ${outdir}/${prefix}_1.fq.gz ${outdir}/${prefix}_1.fq.gz.report
