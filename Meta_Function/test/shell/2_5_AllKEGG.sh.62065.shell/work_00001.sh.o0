@@ -1,3 +1,0 @@
-echo "########## KEGG Clusterprofiler start at" `date`
-########## KEGG Clusterprofiler start at Fri Jun 14 15:26:22 CST 2024
-mkdir -p /KEGG

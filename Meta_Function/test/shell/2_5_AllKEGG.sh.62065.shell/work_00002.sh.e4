@@ -1,3 +1,0 @@
-/work/share/acuhtwkcu9/taoxiao/05_tool/Stable/Function/v2.0.0/test/shell//2_5_AllKEGG.sh.62065.shell/work_00002.sh: line 2: sample: command not found
-mkdir: cannot create directory ‘/KEGG’: Permission denied
-make: *** [/work/share/acuhtwkcu9/taoxiao/05_tool/Stable/Function/v2.0.0/bin/anno.mk:57: KEGG] Error 1
