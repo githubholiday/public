@@ -234,7 +234,3 @@ if(args$assay != "Spatial"){
 if(args$assay == "Spatial"){
     spatial_plot(pbmc, args$outdir, gene_set, args$name)
 }
-
-
-
-
