@@ -51,8 +51,8 @@ class Robots():
             mes = '\t'
         else:
             for ret in rets:
-                for i in ret:
-                    mes += str(i) + ' | '                                                                     #否则就是把rets列表里的内容用---连接起来
+                #for i in ret:
+                mes += str(ret) + ' | '                                                                     #否则就是把rets列表里的内容用---连接起来
                 mes += '\n'                                                           #多的这个'\n|\n'，是因为可能需要Markdown的内容有很多，也就时有多条项目信息要统计，需要换行
         return mes
     
@@ -85,7 +85,7 @@ class Robots():
                 "msgtype": "markdown", # 消息类型，固定为markdown
                 "markdown":{
                     "content":"# <font color=\"warning\">Everyone Attention!!!!!</font>\n" +
-                    "# <font color=\"warning\">Attention! {0}~ </font>\n".format(title) + "## **{0}**\n{1}".format(label,mes) +
+                    "# <font color=\"warning\"> {0}~ </font>\n".format(title) + "## **{0}**\n{1}".format(label,mes) +
                     "> <font color=\"warning\"> **请注意\n@所有人**</font>"
                 }
             }

@@ -8,6 +8,7 @@ pass_delete_delta=7
 #### 过滤项目本地数据删除时间
 filter_delete_delta=7
 
+
 #### 分析项目本地数据删除时间
 analysis_delete_delta=30
 
@@ -17,15 +18,6 @@ overdue_delete_delta=21
 #### T7二次重拆路径删除时间
 t7_delete_delta=7
 
-
-##### 邮件信息
-Filter_Delelte=【数据删除提醒-测试】过滤项目数据超期删除提醒
-Filter_Reciver=xiangguan
-Filter_Copy=yaleisu@genome.cn;chengfangtu@genome.cn;xueren@genome.cn;huiquan@genome.cn
-
-QC_Delete=【数据删除提醒-测试】质控不通过项目超期删除提醒
-QC_Reciver=yaleisu@genome.cn;chengfangtu@genome.cn;xueren@genome.cn;huiquan@genome.cn
-
 #####  数据库信息
 ### 删除数据库信息
 sql_usr=cloud_message
@@ -33,19 +25,39 @@ sql_pwd=Asd@1234
 sql_host=rm-2zeehe7grk2jjgknr.mysql.rds.aliyuncs.com
 sql_port=3306
 sql_db=cloud_message_info
-table=
+table=tb_deletion_info_copy
 
 
 ### lims数据库信息
 lims_sql_usr=raw
 lims_sql_pwd=K8b#xx2^QcYs
 lims_sql_host=rm-2zeb5kq11g3u77b5b.mysql.rds.aliyuncs.com
-lims_sql_port=3306
 lims_sql_db=lims3
+lims_sql_port=3306
+
 
 ##### 路径 
 filter_path=/annogene/data1/bioinfo/Seq/Commercial/filter/NGS,/annogene/data1/bioinfo/Seq/Commercial/filter/TGS
 sci_path=/annogene/data1/bioinfo/Seq/Commercial/sci-qc/NGS,/annogene/data1/bioinfo/Seq/Commercial/sci-qc/TGS
 t7_path=/annogene/data1/bioinfo/Seq/Commercial/sci-qc/MGI_T7
+outdir=/annogene/data1/bioinfo/Seq/RD/PMO/public/delete
+exception_dir=/annogene/data1/bioinfo/Seq/RD/PMO/public/release_exception
+############## software #################################
+PERL=perl
+#PYTHON=python3
+PYTHON=/annoroad/data1/software/bin/miniconda/envs/python3_base/bin/python3
 
 
+################################# CMD #################################
+oss_cmd=/annogene/data1/bioinfo/Seq/software/ossutil/ossutil64 ls -c bindir/oss.config
+obs_cmd=/annogene/data1/bioinfo/Seq/software/obsutil/obsutil ls -config=bindir/obs.config
+#limsConfig=bindir/lims.config
+## 超期提醒时间
+WarningDay=21
+## 非云交付判断交付成功时间
+ReleaseDay=15
+## 超期删除时间
+DeleteDay=30
+TimeFormat=%Y-%m-%d %H:%M:%S
+Scan_CMD=find -L /annogene/data1/bioinfo/Seq/Commercial/filter/test -maxdepth 3 -name Analysis_\*
+robot_url=https://qyapi.weixin.qq.com/cgi-bin/webhook/send?key=baff4900-5da6-4c6e-89eb-ae4b8841d1bd
