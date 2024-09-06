@@ -238,66 +238,50 @@ def Scan_local_dir(WarningDay,lims_config_file,table,local_dir_file,TimeFormat,D
         if not local_dir: # 防止空行 
             continue
         else:
-            if os.path.exists(local_dir):  # 防止处理到这步的时候，路径已经被删除了
-                create_time = datetime.datetime.fromtimestamp(os.stat(local_dir).st_mtime) # datetime格式(2024,3,14,2,4,5)
-                days = InterTime(create_time)
-                delete_time = (create_time + datetime.timedelta(days=int(DeleteDay))).strftime(TimeFormat) 
-                create_time = create_time.strftime(TimeFormat)
-                lists = local_dir.split("/")
-                project = [i for i in lists if "PM-" in i]
-                # print(project)
-                if len(project) == 1 :
-                    projects = project[0].split("_")
-                    projects = [i for i in projects if "PM-" in i]
-                    project_ID = projects[0]
-                elif len(project) == 0:
-                    print("这个目录下没有以PM-开头的层级，不能确认项目号，请核对："+local_dir)  # 以unknown记录异常情况
-                    project_ID = "unknown"
-                else :
-                    print("这个目录下不止一个PM-开头的层级，不能确认项目号，请核对："+local_dir)
-                    project_ID = "unknown"
-                try:
-                    record = lims_db.select("tb_info_sequence_bill", col_list=['latest_project_user_name','latest_project_user_email','task_name'], conditions=[('project_code',project_ID)])
-                    project_user_name = record[0][0]
-                    project_user_mail = record[0][1]
-                    project_name = record[0][2]
-                except:
-                    project_user_name = "unknown"
-                    project_user_mail = "-"
-                    project_name = "-"
-                value_list = [project_ID,'超期删除',create_time,1,now_time,0,0,now_time]
-                warn_list = [project_ID,project_name,project_user_name,project_user_mail,create_time,delete_time,local_dir]
+            if not os.path.exists(local_dir):  continue # 防止处理到这步的时候，路径已经被删除了
+            create_time = datetime.datetime.fromtimestamp(os.stat(local_dir).st_mtime) # datetime格式(2024,3,14,2,4,5)
+            days = InterTime(create_time)
+            delete_time = (create_time + datetime.timedelta(days=int(DeleteDay))).strftime(TimeFormat) 
+            create_time = create_time.strftime(TimeFormat)
+            lists = local_dir.split("/")
+            project = [i for i in lists if "PM-" in i]
+            if len(project) == 1 :
+                projects = project[0].split("_")
+                projects = [i for i in projects if "PM-" in i]
+                project_ID = projects[0]
+            elif len(project) == 0:
+                print("这个目录下没有以PM-开头的层级，不能确认项目号，请核对："+local_dir)  # 以unknown记录异常情况
+                project_ID = "unknown"
+            else :
+                print("这个目录下不止一个PM-开头的层级，不能确认项目号，请核对："+local_dir)
+                project_ID = "unknown"
+            try:
+                record = lims_db.select("tb_info_sequence_bill", col_list=['latest_project_user_name','latest_project_user_email','task_name'], conditions=[('project_code',project_ID)])
+                project_user_name = record[0][0]
+                project_user_mail = record[0][1]
+                project_name = record[0][2]
+            except:
+                project_user_name = "unknown"
+                project_user_mail = "-"
+                project_name = "-"
+            value_list = [project_ID,'超期删除',create_time,1,now_time,0,0,now_time]
+            warn_list = [project_ID,project_name,project_user_name,project_user_mail,create_time,delete_time,local_dir]
                 # [项目号，项目名称，项管名字，项管邮箱，本地目录创建时间，删除时间，本地目录（具体到Analysis_*）]
-                if days <= WarningDay :
-                    continue
-                else :
-                    lims_record = local_sql.select(table,conditions=[('project_id', project_ID)])
-                    if len(lims_record) > 0: # 判断项目是否存在
-                        # delete_type_list = [i[5] for i in lims_record]
-                        # if '交付删除' in delete_type_list:
-                        #     continue
-                        # else:
-                        #     local_delete_bool_list = [i[10] for i in lims_record]
-                        #     if 0 in local_delete_bool_list:  # 是否删除为0,1，类型为整数
-                        #         delete_list.append(warn_list)
-                        #     else:
-                        #         local_sql.insert(table,name_list,value_list)
-                        #         delete_list.append(warn_list)
-                        local_delete_bool_list = [i[10] for i in lims_record]
-                        if 0 in local_delete_bool_list:  # 是否删除为0,1，类型为整数
-                            delete_type_list = [i[5] for i in lims_record if i[10] == 0]  
-                            if '交付删除' in delete_type_list:
-                                continue
-                            else:
-                                delete_list.append(warn_list)
+            if days <= WarningDay :
+                continue
+            else :
+                lims_record = local_sql.select(table,conditions=[('project_id', project_ID)])
+                if len(lims_record) > 0: # 判断项目是否存在
+                    local_delete_bool_list = [i[10] for i in lims_record]
+                    if 0 in local_delete_bool_list:  # 是否删除为0,1，类型为整数
+                        delete_type_list = [i[5] for i in lims_record if i[10] == 0]  
+                        if '交付删除' in delete_type_list:
+                            continue
                         else:
-                            local_sql.insert(table,name_list,value_list)
                             delete_list.append(warn_list)
-                    # else:
-                    #     local_sql.insert(table,name_list,value_list)
-                    #     delete_list.append(warn_list)
-
-
+                    else:
+                        local_sql.insert(table,name_list,value_list)
+                        delete_list.append(warn_list)
     p.close()
     # delete_list_sort = sorted(delete_list,key=lambda x:(x[5],x[0]),reverse=True) # 按照删除日期排序，删除日期相同时，按照项目号排序
     return delete_list 

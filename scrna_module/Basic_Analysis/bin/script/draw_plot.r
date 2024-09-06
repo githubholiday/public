@@ -116,11 +116,11 @@ gene_dotplot <- function(pbmc, outdir, gene_set, prefix){
     pdf(paste0(outdir, "/", prefix, "_", "all_gene_dotplot", ".pdf") , width = 10, height = 10)
     p1 <- DotPlot_scCustom(pbmc, features = all_gene ,  flip_axes = T,   remove_axis_titles = FALSE) 
     print(p1)
-    if ( length(all_gene) > 10){
-        p2 <- Clustered_DotPlot(pbmc , features = all_gene)
-        print(p2)
-    }
-    dev.off()
+    #if ( length(all_gene) > 10){
+        #p2 <- Clustered_DotPlot(pbmc , features = all_gene)
+        #print(p2)
+    #}
+    #dev.off()
 }
 
 
