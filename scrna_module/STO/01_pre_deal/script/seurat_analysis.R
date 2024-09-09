@@ -133,7 +133,7 @@ for (value in values) {
     break
 }
 
-object <- FindClusters(object, verbose = FALSE, resolution = 0.5)
+#object <- FindClusters(object, verbose = FALSE, resolution = 0.5)
 object <- RunUMAP(object1, dims = 1:20, metric="correlation")
 
 
