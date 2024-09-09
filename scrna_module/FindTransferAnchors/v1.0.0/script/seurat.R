@@ -146,18 +146,6 @@ write.table(cell_num,paste(prefix,"celltype_count.xls",sep="_"),sep="\t",quote=F
 cells <- unique(tmp1@meta.data[,celltype])
 Idents(tmp1)<- tmp1@meta.data[,celltype]
 
-gene_set <- c("CGA","LHB")
-pdf(paste(prefix, "rna_CGA_LHB_feature.pdf",sep="_"))
-p<- FeaturePlot( tmp1, features=gene_set)
-print(p)
-dev.off()
-
-pdf(paste(prefix, "space_CGA_LHB_feature.pdf",sep="_"))
-p<- SpatialFeaturePlot( tmp, features=gene_set)
-print(p)
-dev.off()
-
-
 #输出细胞类型的umap图
 if(is.null(tmp1@reductions$umap)){
 	print("RNA数据集中不存在umap slot，需要运行以下步骤")
