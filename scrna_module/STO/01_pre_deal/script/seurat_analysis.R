@@ -128,12 +128,12 @@ for (value in values) {
 	cluster_count <- length(levels(object1$seurat_clusters))
 	print(paste("resolution:",value,"cluster count",cluster_count,sep=" "))
 	if (cluster_count < 12){
-		print("采用此分辨率进行后续分析")
-		break
+		print(paste("采用此分辨率进行后续分析",value, sep=":"))
 	}
+    break
 }
 
-#object <- FindClusters(object, verbose = FALSE, resolution = 0.5)
+object <- FindClusters(object, verbose = FALSE, resolution = 0.5)
 object <- RunUMAP(object1, dims = 1:20, metric="correlation")
 
 
