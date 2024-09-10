@@ -176,7 +176,7 @@ saveRDS(tmp1, paste(prefix, "rna_sct.rds", sep="_"))
 graph <- paste(prefix,"cluster_umap.pdf",sep="_")
 pdf(graph,w=12,h=8)
 p1 <- DimPlot(tmp, reduction = "umap", label = TRUE,raster = FALSE)
-SpatialDimPlot(tmp, label = TRUE, label.size = 1, stroke = NA)
+p2 <- SpatialDimPlot(tmp, label = TRUE, label.size = 1, stroke = NA)
 plot_grid(p1, p2,align = "h")
 dev.off()
 #method<-ini.list$Para$normalization.method
