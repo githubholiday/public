@@ -184,6 +184,7 @@ method<-"SCT"
 anchors <- FindTransferAnchors(reference = tmp1, query = tmp, normalization.method = method,dims = 1:anchors_ims,features=common_gene)        
 predictions <- TransferData(anchorset = anchors, refdata = tmp1@meta.data[,celltype], dims = 1:anchors_ims)
       
+#给query基因集加上映射信息
 pancreas.query0 <- AddMetaData(tmp, metadata = predictions)
 
 saveRDS(pancreas.query0, file = paste(prefix,"spot_cell.rds",sep='_'))
@@ -202,6 +203,7 @@ cell_num_space1<-cell_num_space[cell_num_space$count>0,]
 write.table(cell_num_space1,paste(prefix,"Spot_cell_count.xls",sep="_"),sep="\t",quote=F,row.names=F)
 
 #将所有细胞展示在切片上
+SpatialDimPlot(pancreas.query, label.size=1,, stroke = NA) + theme(legend.position = "right")
 Idents(pancreas.query) <- pancreas.query$predicted.id
 SpatialDimPlot(pancreas.query, label.size=1,, stroke = NA) + theme(legend.position = "right")
 ggsave(file=paste(prefix,"SpatialDimPlot.pdf",sep="_"),width=10, height=8)
