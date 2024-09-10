@@ -1,6 +1,6 @@
 #/annoroad/data1/bioinfo/PMO/yaomengcheng/bk_Anaconda3/envs/monocle3/bin/R
 #整合映射分析
-library(scibet)
+#library(scibet)
 library(Seurat)
 suppressMessages(library(ggplot2))
 suppressMessages(library(tidyverse))
