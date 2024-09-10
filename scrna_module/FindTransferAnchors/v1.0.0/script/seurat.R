@@ -194,6 +194,7 @@ dev.off()
 #method<-ini.list$Para$normalization.method
 method<-"SCT"
 #tmp1-RNA ,tmp-space
+#调整features，k.weights可以对结果进行调整
 anchors <- FindTransferAnchors(reference = tmp1, query = tmp, normalization.method = method,dims = 1:anchors_ims, features=common_gene)   
 
 #anchors <- FindTransferAnchors(reference = SCT_horse , query = SCT_donkey, normalization.method = "SCT",features= common_gene)
