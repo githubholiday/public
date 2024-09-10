@@ -181,7 +181,7 @@ plot_grid(p1, p2,align = "h")
 dev.off()
 #method<-ini.list$Para$normalization.method
 method<-"SCT"
-anchors <- FindTransferAnchors(reference = tmp1, query = tmp, normalization.method = method,dims = 1:anchors_ims)        
+anchors <- FindTransferAnchors(reference = tmp1, query = tmp, normalization.method = method,dims = 1:anchors_ims,features=common_gene)        
 predictions <- TransferData(anchorset = anchors, refdata = tmp1@meta.data[,celltype], dims = 1:anchors_ims)
       
 pancreas.query0 <- AddMetaData(tmp, metadata = predictions)
