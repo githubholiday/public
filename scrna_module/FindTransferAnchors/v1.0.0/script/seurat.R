@@ -193,9 +193,12 @@ plot_grid(p1, p2,align = "h")
 dev.off()
 #method<-ini.list$Para$normalization.method
 method<-"SCT"
-anchors <- FindTransferAnchors(reference = tmp1, query = tmp, normalization.method = method,dims = 1:anchors_ims, features=common_gene)        
-predictions <- TransferData(anchorset = anchors, refdata = tmp1@meta.data[,celltype], dims = 1:anchors_ims)
-      
+#tmp1-RNA ,tmp-space
+anchors <- FindTransferAnchors(reference = tmp1, query = tmp, normalization.method = method,dims = 1:anchors_ims, features=common_gene)   
+
+#anchors <- FindTransferAnchors(reference = SCT_horse , query = SCT_donkey, normalization.method = "SCT",features= common_gene)
+predictions <- TransferData(anchorset = anchors, refdata = tmp1@meta.data[,celltype], dims = 1:anchors_ims,k.weight=20)
+      #predictions <- TransferData(anchorset = anchors, refdata = SCT_horse$seurat_clusters ,  dims = 1:anchors_ims , k.weight=20)
 pancreas.query0 <- AddMetaData(tmp, metadata = predictions)
 
 saveRDS(pancreas.query0, file = paste(prefix,"spot_cell.rds",sep='_'))
