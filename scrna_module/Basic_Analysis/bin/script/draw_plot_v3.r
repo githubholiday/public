@@ -49,7 +49,7 @@ print_usage <- function(para=NULL){
     2. 增加by_gene_set的dotplot图 ")
 }
 
-if ( !is.null(opargst$help) )	{ print_usage(para) }
+if ( !is.null(args$help) )	{ print_usage(para) }
 
 if (!is.null(args$help) || is.null(args$input) || is.null(args$outdir) || is.null(args$name) || is.null(args$gmt)) {
   cat("Usage: Rscript cluster_umap -i input.rds -o outdir -n name\n")
