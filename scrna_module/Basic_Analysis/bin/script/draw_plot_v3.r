@@ -121,11 +121,11 @@ gene_dotplot <- function(pbmc, outdir, gene_set, prefix){
     print(p1)
     if(length(gene_set) > 1) {
         for (i in 1:length(gene_set)) {
-            print( paste0("开始绘制", name, "的DotPlot"))
             name =  names(gene_set[i])
+            print( paste0("开始绘制", name, "的DotPlot"))
             all_genes <- unique(Reduce(union, gene_set[i]))
             pdf(paste(prefix, "/", name,"_dotplot.pdf",sep=""))
-            p1 <- DotPlot_scCustom(pbmc, features = all_gene ,  flip_axes = T,   remove_axis_titles = FALSE)
+            p1 <- DotPlot_scCustom(pbmc, features = all_genes ,  flip_axes = T,   remove_axis_titles = FALSE)
             print(p1)
             dev.off()
         }
