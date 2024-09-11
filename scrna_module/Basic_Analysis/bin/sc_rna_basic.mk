@@ -59,7 +59,7 @@ cluster_draw_dir=$(cluster_dir)/draw
 cluster:
 	echo "########## scRNA Basic Analysis start at" `date`
 	mkdir -p $(cluster_draw_dir)
-	$(SinRun) $(SIF) Rscript $(ScriptDir)/qc.r -i $(inrds) -m ^Mt- -o ./ -n rat_merge
+	$(SinRun) $(SIF) Rscript $(ScriptDir)/qc.r -i $(inrds) -m ^Mt- -o $(cluster_dir) -n rat_merge
 	$(SinRun) $(SIF) Rscript $(ScriptDir)/cluster_umap.r -i $(inrds) -o $(cluster_dir) -n $(sample)  -r $(resolution) 
 	$(SinRun) /work/share/acuhtwkcu9/liutao/sif/sif/scRNA/seurat5/louper.sif Rscript $(ScriptDir)/toloupr.r -i $(cluster_dir)/$(sample).rds -o $(cluster_dir) -n $(sample).cloupe
 	$(SinRun) $(SIF) Rscript $(ScriptDir)/findallmarker.r -i $(cluster_dir)/$(sample).rds -o $(cluster_dir) -n $(sample)
