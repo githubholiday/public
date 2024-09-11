@@ -1,3 +1,27 @@
+'''
+输入说明：
+gene.gmt 文件，至少三列：geneset_name gene_set_description gene1 gene2
+
+结果文件说明：
+1. by_gene
+    1.1 by_gene/gene_.pdf：umap图，featureplot图，在不同群里的violinplot（comine)
+    1.2 by_gene/gene_by_sample.pdf：在不同样本中的featureplot和violinplot
+2. by_gene_set/gene_set_dotplot.pdf:某个gene_set中所有基因在combine样本不同clsuter上的dotplot图
+3. by_sample：目前没画过，后续补充
+4. spatial
+    4.1 featureplt_spatial.pdf: 基因在空间上的featureplot图
+    4.2 spatial.pdf：是空间上的Umap和空间dimplot
+
+5. all_gene_dotplot.pdf：所有基因的dotplot图，可能会由于基因多，导致比较堆叠，可以删除
+6. all_gene_featureplot.pdf：所有基因的featureplot图，可能会由于基因多，导致比较堆叠，可以删除
+
+升级记录-v3
+2024-9-11 tx
+1. 如果是单个样本的不再绘制by_sample类型的图
+2. 增加by_gene_set的dotplot图
+
+'''
+
 library(getopt)
 
 command=matrix(c( 
@@ -80,25 +104,23 @@ gene_plot <- function( pbmc, outdir, gene_set){
                 print( paste0("开始绘制", name, "的", gene_set[[i]][j], "的图"))
                 a_gene <- gene_set[[i]][j]
                 height <- ceiling( sample_number / num_columns) * 4 
-
+                sample_num = length(unique( pbmc$orig.ident))
                 print(paste0( "height: ", height))
                 tryCatch({
                     pdf(paste0(prefix, "/", name, "_" , a_gene, ".pdf") , width = 16, height = 18)
                     p1 <- DimPlot_scCustom(pbmc, reduction = reduction)
                     p2 <- FeaturePlot_scCustom(pbmc, features= a_gene , reduction = reduction) 
                     p3 <- VlnPlot_scCustom(pbmc, features = a_gene , raster = FALSE)
-                    p4 <- VlnPlot_scCustom(pbmc, features = a_gene , split.by = "orig.ident", raster = FALSE)
-                
-                    p <- (p1 | p2) / p3 / p4 
+                    p <- (p1 | p2) / p3 
                     print(p)
                     dev.off()
 
-                    sample_num = length(unique( pbmc$orig.ident))
                     if( sample_num >1 ) {
                         pdf(paste0(prefix, "/", name, "_" , a_gene, "_by_sample.pdf") , width = 9, height = height)
-                        p2 <- FeaturePlot_scCustom(pbmc, features= a_gene , reduction = reduction, split.by = "orig.ident" , num_columns = num_columns, repel = TRUE)
+                        p1 <- FeaturePlot_scCustom(pbmc, features= a_gene , reduction = reduction, split.by = "orig.ident" , num_columns = num_columns, repel = TRUE)
+                        p2 <- VlnPlot_scCustom(pbmc, features = a_gene , split.by = "orig.ident", raster = FALSE)
 
-                        print(p2)
+                        print(p1,p2)
                         dev.off()
                     }
             }, error = function(e) {
