@@ -1,25 +1,3 @@
-cat("
-输入说明：
-gene.gmt 文件，至少三列：geneset_name gene_set_description gene1 gene2
-
-结果文件说明：
-1. by_gene
-    1.1 by_gene/gene_.pdf：umap图，featureplot图，在不同群里的violinplot（comine)
-    1.2 by_gene/gene_by_sample.pdf：在不同样本中的featureplot和violinplot
-2. by_gene_set/gene_set_dotplot.pdf:某个gene_set中所有基因在combine样本不同clsuter上的dotplot图
-3. by_sample：目前没画过，后续补充
-4. spatial
-    4.1 featureplt_spatial.pdf: 基因在空间上的featureplot图
-    4.2 spatial.pdf：是空间上的Umap和空间dimplot
-
-5. all_gene_dotplot.pdf：所有基因的dotplot图，可能会由于基因多，导致比较堆叠，可以删除
-6. all_gene_featureplot.pdf：所有基因的featureplot图，可能会由于基因多，导致比较堆叠，可以删除
-
-升级记录-v3
-2024-9-11 tx
-1. 如果是单个样本的不再绘制by_sample类型的图
-2. 增加by_gene_set的dotplot图 "
-)
 
 library(getopt)
 
@@ -38,6 +16,41 @@ command=matrix(c(
 
 ## 读取参数
 args=getopt(command)
+
+print_usage <- function(para=NULL){
+    cat("参数说明：
+    -i:rds文件
+    -o:输出目录，可以不存在
+    -n:输出前缀
+    -g:gene列表文件，以.gmt结尾 至少三列：geneset_name gene_set_description gene1 gene2
+    -a:数据类型，assay的标签名，可选RNA，Spatial
+    -r:降为方法，在画图的时候使用默认为umap,可选为map,tsne,integrated.cca,integrated.rpca,harmony,integrated.mnn,umap.harmony,tsne.harmony
+
+    使用实例：
+    /public/software/apps/singularity/3.7.3/bin/singularity exec --bind /work/share/acuhtwkcu9/:/work/share/acuhtwkcu9/ /work/share/acuhtwkcu9/liutao/sif/sif/scRNA/seurat5/seurat5_sccustomize.sif Rscript draw_plot.r -i rds -o outdir -n sample -g gene.gmt -a Spatial 
+
+
+    结果文件说明：
+    1. by_gene
+    1.1 by_gene/gene_.pdf：umap图，featureplot图，在不同群里的violinplot（comine)
+    1.2 by_gene/gene_by_sample.pdf：在不同样本中的featureplot和violinplot
+    2. by_gene_set/gene_set_dotplot.pdf:某个gene_set中所有基因在combine样本不同clsuter上的dotplot图
+        3. by_sample：目前没画过，后续补充
+    4. spatial
+    4.1 featureplt_spatial.pdf: 基因在空间上的featureplot图
+    4.2 spatial.pdf：是空间上的Umap和空间dimplot
+
+    5. all_gene_dotplot.pdf：所有基因的dotplot图，可能会由于基因多，导致比较堆叠，可以删除
+    6. all_gene_featureplot.pdf：所有基因的featureplot图，可能会由于基因多，导致比较堆叠，可以删除
+
+    升级记录-v3
+    2024-9-11 tx
+    1. 如果是单个样本的不再绘制by_sample类型的图
+    2. 增加by_gene_set的dotplot图 ")
+}
+
+if ( !is.null(opt$help) )	{ print_usage(para) }
+
 
 if (!is.null(args$help) || is.null(args$input) || is.null(args$outdir) || is.null(args$name) || is.null(args$gmt)) {
   cat("Usage: Rscript cluster_umap -i input.rds -o outdir -n name\n")
