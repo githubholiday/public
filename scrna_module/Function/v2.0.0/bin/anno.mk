@@ -49,7 +49,7 @@ GO:
 	rm -r $(go_dir)/*result
 	rm -r $(go_dir)/*example*
 	rm -r $(go_dir)/*list
-	cp -r $(BIN)/../report/readme.docx $(outdir)/
+	cp -r $(BIN)/../report/readme.docx $(go_dir)/../
 	echo "########## GO Clusterprofiler end at" `date`
 
 kegg_dir=$(outdir)/KEGG
