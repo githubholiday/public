@@ -1,4 +1,4 @@
-cat('''
+cat("
 输入说明：
 gene.gmt 文件，至少三列：geneset_name gene_set_description gene1 gene2
 
@@ -18,9 +18,8 @@ gene.gmt 文件，至少三列：geneset_name gene_set_description gene1 gene2
 升级记录-v3
 2024-9-11 tx
 1. 如果是单个样本的不再绘制by_sample类型的图
-2. 增加by_gene_set的dotplot图
-
-''')
+2. 增加by_gene_set的dotplot图 "
+)
 
 library(getopt)
 
