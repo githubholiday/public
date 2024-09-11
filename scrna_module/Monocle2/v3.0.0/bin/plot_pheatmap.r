@@ -147,7 +147,8 @@ length(annotation_row[annotation_row[,1]=='2',]) #1421 2319:3739
 length(annotation_row[annotation_row[,1]=='3',]) #2318 1:2318
 2318+1421
 #rownames(heatmap_matrix)[old_order]
-manul_order <- old_order[c(1:2318,3740:5691,2319:3739)]
+manul_order <- old_order
+#manul_order <- old_order[c(1:2318,3740:5691,2319:3739)]
 #rownames(heatmap_matrix)[manul_order]
 
 #对数据进行聚类，并且重新排序
