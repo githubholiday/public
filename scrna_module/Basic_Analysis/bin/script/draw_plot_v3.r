@@ -93,7 +93,7 @@ gene_plot <- function( pbmc, outdir, gene_set){
                     print(p)
                     dev.off()
 
-                    sample_num = length(unique( pbmc@orig.ident))
+                    sample_num = length(unique( pbmc$orig.ident))
                     if( sample_num >1 ) {
                         pdf(paste0(prefix, "/", name, "_" , a_gene, "_by_sample.pdf") , width = 9, height = height)
                         p2 <- FeaturePlot_scCustom(pbmc, features= a_gene , reduction = reduction, split.by = "orig.ident" , num_columns = num_columns, repel = TRUE)
@@ -213,6 +213,8 @@ spatial_plot <- function( pbmc, outdir,gene_set, out_name  ){
 }
 ########################### 执行部分 ####################################
 #读取gene.gmt文件
+dir.create(args$outdir, showWarnings = FALSE)
+
 gene_set <- qusage::read.gmt(args$gmt)
 all_gene <- unique(Reduce(union, gene_set))
 
