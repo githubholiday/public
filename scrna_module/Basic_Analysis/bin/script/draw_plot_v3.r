@@ -120,6 +120,8 @@ gene_dotplot <- function(pbmc, outdir, gene_set, prefix){
     p1 <- DotPlot_scCustom(pbmc, features = all_gene ,  flip_axes = T,   remove_axis_titles = FALSE) 
     print(p1)
     if(length(gene_set) > 1) {
+        prefix <- paste0(outdir, "/by_gene_set") 
+        dir.create(prefix, showWarnings = FALSE)
         for (i in 1:length(gene_set)) {
             name =  names(gene_set[i])
             print( paste0("开始绘制", name, "的DotPlot"))
