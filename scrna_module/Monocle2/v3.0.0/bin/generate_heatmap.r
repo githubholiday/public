@@ -9,13 +9,17 @@ library(getopt)
 command=matrix(c( 
   'help', 'h', 0,'logical', '帮助文档',
   'input', 'i', 1, 'character', '跑完monocle2的rds文件',
-  'outfile', 'o', 1, 'character', '输出的目录'
+  'outfile', 'o', 1, 'character', '输出的文件'
    ),
   byrow=T,ncol=5
 )
 
 args=getopt(command)
-
+if (!is.null(args$help) || is.null(args$input) || is.null(args$outfile)) {
+  cat("Usage: Rscript monocle2.r -i input.rds -o outfile \n")
+  cat(paste(getopt(command, usage = T), "\n"))
+    q() 
+}
 
 require(Seurat)
 require(dplyr)

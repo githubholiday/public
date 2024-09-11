@@ -15,6 +15,12 @@ command=matrix(c(
 )
 
 args=getopt(command)
+if (!is.null(args$help) || is.null(args$input) || is.null(args$outfile)) {
+  cat("Usage: Rscript monocle2.r -i input.rds -o outfile \n")
+  cat(paste(getopt(command, usage = T), "\n"))
+    q() 
+}
+
 
 require(Seurat)
 require(dplyr)

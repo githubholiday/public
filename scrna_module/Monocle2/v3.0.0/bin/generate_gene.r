@@ -20,7 +20,11 @@ command=matrix(c(
 )
 
 args=getopt(command)
-
+if (!is.null(args$help) || is.null(args$input) || is.null(args$outpre)) {
+  cat("Usage: Rscript monocle2.r -i input.rds -o outdir/name \n")
+  cat(paste(getopt(command, usage = T), "\n"))
+    q() 
+}
 
 
 require(Seurat)
