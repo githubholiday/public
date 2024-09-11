@@ -84,7 +84,7 @@ hmcols <- blue2green2red(length(bks) - 1)
 
 #####################################################################
 #读取输入文件
-m <- read.table(args$infile,header=TRUE)
+m <- read.table(args$input,header=TRUE)
 #处理输入数据
 heatmap_matrix <- m
 row_dist <- as.dist((1 - cor(Matrix::t(heatmap_matrix)))/2)
