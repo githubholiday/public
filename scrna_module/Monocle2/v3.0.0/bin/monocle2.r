@@ -257,8 +257,16 @@ plot_pseudotime_heatmap(HSMM[sig_gene_names,],
 dev.off()
 
 annotation_row <- plot_pseudotime_heatmap2(HSMM[sig_gene_names,],num_clusters = 3,cores = 1,show_rownames = T)
-gene_outfile = paste0(prefix, ".heatmap.gene.cluster.xls")
-write.table( annotation_row, gene_outfile, sep="\t", quote=FALSE, row.names=FALSE)
+#gene_outfile = paste0(prefix, ".heatmap.gene.cluster.xls")
+#write.table( annotation_row, gene_outfile, sep="\t", quote=FALSE, row.names=FALSE)
+
+cluster <-  unique(annotation_row[,"Cluster"])
+annotation_row <- cbind("Gene"=rownames(annotation_row),annotation_row)
+for (i in cluster){
+  outfile = paste0(prefix,".",i,".xls")
+  gene_name = annotation_row[annotation_row["Cluster"]==i,]
+  write.table(gene_name, outfile, quote=FALSE, sep="\t",row.names=FALSE)
+  }
 
 ## 分析单细胞轨迹中的分支
 print("分析单细胞轨迹中的分支")
