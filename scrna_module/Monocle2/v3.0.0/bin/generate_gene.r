@@ -2,6 +2,27 @@
 #setwd("F:\\plot")
 #最初用途是为了调整monocle2中heatmap图的分组顺序，也可以用于所有的pheatmap的分组顺序调整
 
+#Sys.setlocale(category = "LC_ALL", locale = "Chinese")
+#setwd("F:\\plot")
+#最初用途是为了调整monocle2中heatmap图的分组顺序，也可以用于所有的pheatmap的分组顺序调整
+#使用monocle2跑完rds中导出的matrix文件，使用pheatmap进行聚类（默认聚成3类）
+#将重新聚类后的每cluster的基因输出
+
+
+library(getopt)
+
+command=matrix(c( 
+  'help', 'h', 0,'logical', '帮助文档',
+  'input', 'i', 1, 'character', 'monocle2中导出的matrix文件',
+  'outpre', 'o', 1, 'character', '输出的前缀'
+   ),
+  byrow=T,ncol=5
+)
+
+args=getopt(command)
+
+
+
 require(Seurat)
 require(dplyr)
 require(Matrix)
@@ -58,11 +79,8 @@ hmcols <- blue2green2red(length(bks) - 1)
 
 
 #####################################################################
-#定义输入和输出文件
-infile <- "/work/share/acuhtwkcu9/taoxiao/04_Project/03_linshi/monocle2_heatmap/matrix.xls"
-outpre <- "/work/share/acuhtwkcu9/taoxiao/04_Project/03_linshi/monocle2_heatmap/lc_gene"
 #读取输入文件
-m <- read.table(infile,header=TRUE)
+m <- read.table(args$infile,header=TRUE)
 #处理输入数据
 heatmap_matrix <- m
 row_dist <- as.dist((1 - cor(Matrix::t(heatmap_matrix)))/2)
@@ -94,7 +112,7 @@ annotation_row <- data.frame(Cluster=factor(cutree(ph$tree_row, num_clusters)))
 cluster <-  unique(annotation_row[,"Cluster"])
 annotation_row <- cbind("Gene"=rownames(annotation_row),annotation_row)
 for (i in cluster){
-  outfile = paste0(outpre,i,".xls")
+  outfile = paste0(args$outpre,i,".xls")
   gene_name = annotation_row[annotation_row["Cluster"]==i,]
   write.table(gene_name, outfile, quote=FALSE, sep="\t",row.names=FALSE)
   }

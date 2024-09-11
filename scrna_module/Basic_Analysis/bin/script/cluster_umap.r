@@ -416,6 +416,8 @@ if (method == "SCtransform") {
 }
 
 
+
+
 print("保存结果")
 saveRDS(pbmc, file = paste0(args$outdir, '/', args$name, '.rds'))
 print("保存结果完成")

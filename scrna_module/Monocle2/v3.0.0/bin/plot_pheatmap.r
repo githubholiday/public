@@ -1,6 +1,20 @@
-Sys.setlocale(category = "LC_ALL", locale = "Chinese")
-setwd("F:\\plot")
+#Sys.setlocale(category = "LC_ALL", locale = "Chinese")
+#setwd("F:\\plot")
 #最初用途是为了调整monocle2中heatmap图的分组顺序，也可以用于所有的pheatmap的分组顺序调整
+#使用跑完monocle2的rds中输出heatmap图中的matrix文件，手动调整重新聚类后的cluster在热图中的顺序
+#顺序处需要手动调整，暂时无法通过参数实现
+
+library(getopt)
+
+command=matrix(c( 
+  'help', 'h', 0,'logical', '帮助文档',
+  'input', 'i', 1, 'character', '跑完monocle2的rds文件',
+  'outfile', 'o', 1, 'character', '输出的pdf文件全路径'
+   ),
+  byrow=T,ncol=5
+)
+
+args=getopt(command)
 
 require(Seurat)
 require(dplyr)
@@ -59,8 +73,8 @@ hmcols <- blue2green2red(length(bks) - 1)
 
 #####################################################################
 #定义输入和输出文件
-infile <- "matrix.xls"
-outpdf <- "lt/heatmap.pdf"
+infile <- args$input
+outpdf <- args$outfile
 rawpdf <- paste0(outpdf,".raw.pdf") #调整顺序前的图
 #读取输入文件
 m <- read.table(infile,header=TRUE)
@@ -72,7 +86,7 @@ row_dist[is.na(row_dist)] <- 1
 #定义参数
 cluster_rows=TRUE
 hclust_method = "ward.D2" #聚类方法
-num_clusters = 3 #最终聚类数量
+num_clusters = 3 #最终聚类数量,可以通过修改，生成不同cluster数量
 use_gene_short_name = TRUE
 ph <- pheatmap(heatmap_matrix, 
                useRaster = T,

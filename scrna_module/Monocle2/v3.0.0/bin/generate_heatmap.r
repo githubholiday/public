@@ -1,6 +1,21 @@
 #Sys.setlocale(category = "LC_ALL", locale = "Chinese")
 #setwd("F:\\plot")
 #最初用途是为了调整monocle2中heatmap图的分组顺序，也可以用于所有的pheatmap的分组顺序调整
+#从跑完monocle2的rds中输出heatmap图中的matrix文件
+#文件第一行为cluster(100个)，第一列为基因，值为基因在不同cluster中的表达值
+
+library(getopt)
+
+command=matrix(c( 
+  'help', 'h', 0,'logical', '帮助文档',
+  'input', 'i', 1, 'character', '跑完monocle2的rds文件',
+  'outfile', 'o', 1, 'character', '输出的目录'
+   ),
+  byrow=T,ncol=5
+)
+
+args=getopt(command)
+
 
 require(Seurat)
 require(dplyr)
@@ -12,9 +27,8 @@ library(cowplot)
 library(pheatmap)
 library(monocle)
 #定义输入和输出
-monocle2_rds <- "/work/share/acuhtwkcu9/taoxiao/04_Project/03_linshi/monocle2_heatmap/lc.monocle2.rds"
-outfile <- "/work/share/acuhtwkcu9/taoxiao/04_Project/03_linshi/monocle2_heatmap/matrix.xls"
-gene_file<- "/work/share/acuhtwkcu9/taoxiao/04_Project/03_linshi/monocle2_heatmap/gene.xls"
+monocle2_rds <- args$input
+#outfile <- paste(args.outdir, "/", "matrix.xls", sep="" )
 
 HSMM <- readRDS(monocle2_rds)
 
@@ -53,4 +67,4 @@ m[is.nan(m)] = 0
 m[m>scale_max] = scale_max
 m[m<scale_min] = scale_min
 
-write.table(m, outfile, quote=FALSE,sep="\t")
+write.table(m, args$outfile, quote=FALSE,sep="\t")
