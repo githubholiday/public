@@ -43,11 +43,14 @@ print_usage <- function(para=NULL){
     5. all_gene_dotplot.pdf：所有基因的dotplot图，可能会由于基因多，导致比较堆叠，可以删除
     6. all_gene_featureplot.pdf：所有基因的featureplot图，可能会由于基因多，导致比较堆叠，可以删除
 
-    升级记录-v3
-    2024-9-11 tx
+    升级记录
+    v3:2024-9-11 tx
     1. 如果是单个样本的不再绘制by_sample类型的图
     2. 增加by_gene_set的dotplot图 
-    3. 增加spatial目录下按照gene_set绘制的空间featureplo图")
+    3. 增加spatial目录下按照gene_set绘制的空间featureplo图
+    
+    v4:2024-09-29 tx
+    1. 将spatial目录下按照gene_set绘制的空间featureplo图改成按照单个基因绘制，可能会有与基因数量过多，导致图画不出来")
 }
 
 if ( !is.null(args$help) )	{ print_usage(para) }
@@ -237,14 +240,20 @@ spatial_plot <- function( pbmc, outdir,gene_set, out_name  ){
 	p2 <- SpatialDimPlot(pbmc, label = TRUE, label.size = 1, stroke = NA)
 	print(p2)
 	dev.off()
-	print("绘制每个基因集空间feaureplot图")
-	for (i in 1:length(gene_set)) {
-		print(gene_set[i])
-        name =  names(gene_set[i])
-		pdf(paste0(prefix, "/", out_name, "_", name, "_featureplot_spatial.pdf") , width = 10, height = 10)
-		p3 <- SpatialFeaturePlot(pbmc, features=gene_set[[i]])
-		print(p3)
-		dev.off()
+	print("绘制每个基因空间feaureplot图")
+    all_gene <- unique(Reduce(union, gene_set))
+    print(paste0("共有基因数量为:",length(all_gene)))
+	for (i in 1:length(all_gene)) {
+        gene <- all_gene[i]
+        print(paste( i, gene, sep=","))
+        if(gene %in% rownames(pbmc)){
+            pdf(paste0(prefix, "/", out_name, "_", gene, "_spatial.featureplot.pdf") , width = 10, height = 10)
+            p3 <- SpatialFeaturePlot(pbmc, features=gene)
+            print(p3)
+            dev.off()
+        }else{
+            print(paste0(gene, " not in rds"))
+        }
 	}
 }
 ########################### 执行部分 ####################################

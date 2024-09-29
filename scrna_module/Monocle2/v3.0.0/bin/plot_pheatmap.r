@@ -142,13 +142,16 @@ old_order <- ph_res$tree_row$order #现在的顺序应该是 2 1 3 ,要调整为
 #看一下原图是什么顺序 计算一下，调整顺序，输出到manul_ordel里
 #查看总的数量，以及各个cluster的数量
 dim(annotation_row) #5691,从1开始计数
-length(annotation_row[annotation_row[,1]=='1',]) #1952 3740:5691
+#312 
+#231 1:1526 1527:1991 1992:1641
+print("cluster num")
+length(annotation_row[annotation_row[,1]=='1',]) # 650 1526 465
 length(annotation_row[annotation_row[,1]=='2',]) #1421 2319:3739
 length(annotation_row[annotation_row[,1]=='3',]) #2318 1:2318
-2318+1421
+
 #rownames(heatmap_matrix)[old_order]
-manul_order <- old_order
-#manul_order <- old_order[c(1:2318,3740:5691,2319:3739)]
+#manul_order <- old_order
+manul_order <- old_order[c(1527:1991,1992:2641,1:1526 )]
 #rownames(heatmap_matrix)[manul_order]
 
 #对数据进行聚类，并且重新排序
