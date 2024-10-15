@@ -5,7 +5,6 @@ import sys
 import os
 import re
 import datetime
-import pandas as pd
 
 bindir = os.path.abspath(os.path.dirname(__file__))
 filename=os.path.basename(__file__)

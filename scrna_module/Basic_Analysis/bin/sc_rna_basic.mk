@@ -61,9 +61,9 @@ cluster:
 	mkdir -p $(cluster_draw_dir)
 	$(SinRun) $(SIF) Rscript $(ScriptDir)/qc.r -i $(inrds) -m ^Mt- -o $(cluster_dir) -n rat_merge
 	$(SinRun) $(SIF) Rscript $(ScriptDir)/cluster_umap.r -i $(inrds) -o $(cluster_dir) -n $(sample)  -r $(resolution) 
-	$(SinRun) /work/share/acuhtwkcu9/liutao/sif/sif/scRNA/seurat5/louper.sif Rscript $(ScriptDir)/toloupr.r -i $(cluster_dir)/$(sample).rds -o $(cluster_dir) -n $(sample).cloupe
-	$(SinRun) $(SIF) Rscript $(ScriptDir)/findallmarker.r -i $(cluster_dir)/$(sample).rds -o $(cluster_dir) -n $(sample)
-	$(SinRun) $(SIF) Rscript $(ScriptDir)/draw_cluster_composition.r -i $(cluster_dir)/$(sample).rds -o $(cluster_draw_dir)  -n $(sample)
+	#$(SinRun) /work/share/acuhtwkcu9/liutao/sif/sif/scRNA/seurat5/louper.sif Rscript $(ScriptDir)/toloupr.r -i $(cluster_dir)/$(sample).rds -o $(cluster_dir) -n $(sample).cloupe
+	#$(SinRun) $(SIF) Rscript $(ScriptDir)/findallmarker.r -i $(cluster_dir)/$(sample).rds -o $(cluster_dir) -n $(sample)
+	#$(SinRun) $(SIF) Rscript $(ScriptDir)/draw_cluster_composition.r -i $(cluster_dir)/$(sample).rds -o $(cluster_draw_dir)  -n $(sample)
 	echo "########## scRNA Basic Analysis end at" `date`
 
 marker_plot:
