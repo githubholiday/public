@@ -59,7 +59,7 @@ cluster_draw_dir=$(cluster_dir)/draw
 cluster:
 	echo "########## scRNA Basic Analysis start at" `date`
 	mkdir -p $(cluster_draw_dir)
-	$(SinRun) $(SIF) Rscript $(ScriptDir)/cluster_umap.r -i $(inrds) -o $(cluster_dir) -n $(sample)  -r $(resolution) -t $(test.use)
+	$(SinRun) $(SIF) Rscript $(ScriptDir)/cluster_umap.r -i $(inrds) -o $(cluster_dir) -n $(sample)  -r $(resolution) -t $(test_use)
 	$(SinRun) $(SIF) Rscript $(ScriptDir)/findallmarker.r -i $(cluster_dir)/$(sample).rds -o $(cluster_dir) -n $(sample)
 	echo "########## scRNA Basic Analysis end at" `date`
 
