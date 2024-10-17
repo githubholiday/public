@@ -59,14 +59,18 @@ cluster_draw_dir=$(cluster_dir)/draw
 cluster:
 	echo "########## scRNA Basic Analysis start at" `date`
 	mkdir -p $(cluster_draw_dir)
-	$(SinRun) $(SIF) Rscript $(ScriptDir)/qc.r -i $(inrds) -m ^Mt- -o $(cluster_dir) -n rat_merge
-	$(SinRun) $(SIF) Rscript $(ScriptDir)/cluster_umap.r -i $(inrds) -o $(cluster_dir) -n $(sample)  -r $(resolution) 
-	$(SinRun) /work/share/acuhtwkcu9/liutao/sif/sif/scRNA/seurat5/louper.sif Rscript $(ScriptDir)/toloupr.r -i $(cluster_dir)/$(sample).rds -o $(cluster_dir) -n $(sample).cloupe
+	$(SinRun) $(SIF) Rscript $(ScriptDir)/cluster_umap.r -i $(inrds) -o $(cluster_dir) -n $(sample)  -r $(resolution) -t $(test.use)
 	$(SinRun) $(SIF) Rscript $(ScriptDir)/findallmarker.r -i $(cluster_dir)/$(sample).rds -o $(cluster_dir) -n $(sample)
-	$(SinRun) $(SIF) Rscript $(ScriptDir)/draw_cluster_composition.r -i $(cluster_dir)/$(sample).rds -o $(cluster_draw_dir)  -n $(sample)
+	#$(SinRun) $(SIF) Rscript $(ScriptDir)/draw_cluster_composition.r -i $(cluster_dir)/$(sample).rds -o $(cluster_draw_dir)  -n $(sample)
 	echo "########## scRNA Basic Analysis end at" `date`
 
-marker_plot:
+inrds=$(outdir)/cluster_$(resolution)/$(sample).rds
+to_cloupe:
+	echo "########## scRNA rds to cloupe start at" `date`
+	$(SinRun) /work/share/acuhtwkcu9/liutao/sif/sif/scRNA/seurat5/louper.sif Rscript $(ScriptDir)/toloupr.r -i $(inrds) -o $(cloupe_dir) -n $(sample).cloupe
+	echo "########## scRNA rds to cloupe end at" `date`
 
+marker_plot:
+	echo "########## scRNA marker_plot start at" `date`
 	$(SinRun) $(SIF) Rscript $(ScriptDir)/draw_plot.r -i $(cluster_dir)/$(sample).rds -o $(cluster_draw_dir)  -n $(sample) -g $(gene_marker) -r umap.harmony
-	########## scRNA Basic Analysis end at" `date`
+	echo "########## scRNA marker_plot end at" `date`

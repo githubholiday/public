@@ -89,10 +89,23 @@ if ( !Ident.col %in% colnames(pbmc@meta.data)){
 
 
 all.markers <- FindAllMarkers(object = pbmc , only.pos = TRUE, min.pct = min.pct, logfc.threshold = logfc.threshold, test.use = test.use)
-all.markers <- all.markers[,c(7,6,1,2,3,4,5)]
+#all.markers <- all.markers[,c(7,6,1,2,3,4,5)]
+
+#增加基因列
+all.markers <- cbind("Gene"=all.markers[,"gene"],all.markers)
+#判断上下调以及是否显著
+all.markers <- all.markers %>% mutate(up_down = ifelse(avg_log2FC > 0, "Up", "Down"),significant = ifelse(p_val_adj < 0.05, "yes", "no"))
+#输出总的all_marker表
 write.table(all.markers,file = paste0(args$outdir,"/",args$name,".markers.xls") ,sep = "\t",quote = FALSE,row.names = FALSE)
 
 write.table(pbmc$harmony_clusters,file = paste0(args$outdir,"/",args$name,".cluster.xls") ,sep = "\t",quote = FALSE ,col.names = FALSE)
+
+#将每个cluster的marker表单独输出
+for (i in unique(pbmc@meta.data$seurat_clusters)){
+	markers <- all.markers[ all.markers$cluster==i,]
+	outfile <- paste(args$outdir,"/",args$name, "_" ,i, "marker.xls",sep="")
+	write.table(markers, outfile, sep="\t", quote=FALSE,row.names = FALSE )
+    }
 
 #按照每个cluster输出marker
 all_cluster <- sort(unique( unlist(pbmc[[Ident.col]]) ))
@@ -103,7 +116,6 @@ for (i in all_cluster){
 }
 print("完成")
 
-#result <-read.table("/work/share/acuhtwkcu9/Project/scRNA/P2024042410ZFSUFQ_horse/analysis/outdir/normal/cluster_0_3/annotation/singler/celltypst/predicted_labels.csv",header=T , row.names=1,sep=",")
 
 
 
