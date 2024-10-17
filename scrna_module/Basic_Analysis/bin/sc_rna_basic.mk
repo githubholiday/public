@@ -61,7 +61,6 @@ cluster:
 	mkdir -p $(cluster_draw_dir)
 	$(SinRun) $(SIF) Rscript $(ScriptDir)/cluster_umap.r -i $(inrds) -o $(cluster_dir) -n $(sample)  -r $(resolution) -t $(test.use)
 	$(SinRun) $(SIF) Rscript $(ScriptDir)/findallmarker.r -i $(cluster_dir)/$(sample).rds -o $(cluster_dir) -n $(sample)
-	#$(SinRun) $(SIF) Rscript $(ScriptDir)/draw_cluster_composition.r -i $(cluster_dir)/$(sample).rds -o $(cluster_draw_dir)  -n $(sample)
 	echo "########## scRNA Basic Analysis end at" `date`
 
 inrds=$(outdir)/cluster_$(resolution)/$(sample).rds

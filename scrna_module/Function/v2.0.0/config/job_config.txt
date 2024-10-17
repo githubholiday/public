@@ -2,7 +2,8 @@
 [Job Start]
 Name	MarkerAnno
 Memory	5G
-Qsub	False
+Qsub	True
+Queue	xhacnormalb,xhhctdnormal
 CPU	N
 Major	F
 Order	1
@@ -12,7 +13,8 @@ Command	make -f BIN/bin/anno.mk log_file=LOGFILE sample=$(sample)[0] infile=$(sa
 [Job Start]
 Name	UpGO
 Memory	5G
-Qsub	False
+Qsub	True
+Queue	xhacnormalb,xhhctdnormal
 CPU	N
 Major	T
 Order	2
@@ -24,7 +26,8 @@ make -f BIN/bin/anno.mk log_file=LOGFILE gene_list=$(sample)[2]/up/Up.gene.xls g
 [Job Start]
 Name	DownGO
 Memory	5G
-Qsub	False
+Qsub	True
+Queue	xhacnormalb,xhhctdnormal
 CPU	N
 Major	T
 Order	2
@@ -36,7 +39,7 @@ make -f BIN/bin/anno.mk log_file=LOGFILE gene_list=$(sample)[2]/down/Down.gene.x
 [Job Start]
 Name	AllGO
 Memory	5G
-Qsub	False
+Qsub	True
 CPU	N
 Major	T
 Order	2
@@ -47,7 +50,8 @@ Command	make -f BIN/bin/anno.mk log_file=LOGFILE gene_list=$(sample)[2]/$(sample
 [Job Start]
 Name	UpKEGG
 Memory	5G
-Qsub	False
+Qsub	True
+Queue	xhacnormalb,xhhctdnormal
 CPU	N
 Major	T
 Order	2
@@ -59,7 +63,8 @@ make -f BIN/bin/anno.mk log_file=LOGFILE gene_list=$(sample)[2]/up/Up.gene.xls k
 [Job Start]
 Name	DownKEGG
 Memory	5G
-Qsub	False
+Qsub	True
+Queue	xhacnormalb,xhhctdnormal
 CPU	N
 Major	T
 Order	2
@@ -71,7 +76,7 @@ make -f BIN/bin/anno.mk log_file=LOGFILE gene_list=$(sample)[2]/down/Down.gene.x
 [Job Start]
 Name	AllKEGG
 Memory	5G
-Qsub	False
+Qsub	True
 CPU	N
 Major	T
 Order	2
