@@ -218,14 +218,6 @@ if (method == "SCtransform") {
     print("TSNE降维")
     pbmc <- RunTSNE(object = pbmc, dims = 1:choose_pca)
     output_umap_result(pbmc , prefix , integrate=FALSE , method = "tsne")
-
-    pbmc <- RunUMAP(pbmc,  reduction="integrated.cca", reduction.name = "umap.integrated.cca" , dims = 1:choose_pca)
-    pbmc <- FindNeighbors(pbmc, reduction = "integrated.cca", dims = 1:choose_pca)
-
-    do_clustree(pbmc , resolution_step , prefix , "integrate.cca" , method = "sct" )
-
-    pbmc <- FindClusters(pbmc, resolution = resolution, cluster.name = "cca_clusters")
-    output_umap_result(pbmc , prefix , method = "umap.integrated.cca")
         
     #DimPlot(object = pbmc, reduction = "umap")
 }else{
@@ -289,16 +281,6 @@ if (method == "SCtransform") {
     pbmc <- RunTSNE(object = pbmc, dims = 1:choose_pca)
     output_umap_result(pbmc , prefix , integrate=FALSE , method = "tsne")
     print("tSNE降维完成")
-
-    ### 整合
-
-    pbmc<- RunUMAP(pbmc,  reduction="integrated.cca", reduction.name = "umap.integrated.cca" , dims = 1:choose_pca)
-    pbmc <- FindNeighbors(pbmc, reduction = "integrated.cca", dims = 1:choose_pca)
-
-    do_clustree(pbmc , resolution_step , prefix , "integrate.cca" , method = "standard" )
-
-    pbmc <- FindClusters(pbmc, resolution = resolution, cluster.name = "cca_clusters")
-    output_umap_result(pbmc , prefix , method = "umap.integrated.cca")
         
     pbmc <- JoinLayers(pbmc)
 
