@@ -50,12 +50,14 @@ for (i in 1:nrow(sample)) {
     if (file_type == "10x" ) {
         print("read 10x data from dir")
         seurat_data  <- Read10X(file_path)
-    }elif(file_type == "h5") {
+    }else if(file_type == "h5") {
         print("read 10x data from h5")
         seurat_data  <- Read10X_h5(file_path, use.names = TRUE, unique.features = TRUE)
-    }elif(file_type == "matrix") {
+    }else if(file_type == "matrix") {
         print("read 10x data from matrix")
         seurat_data  <- read.table(file_path, sep=" ")
+    }else{
+        print(paste("unknown file type", file_type, sep=" "))
     }
     seurat_obj   <- CreateSeuratObject(counts = seurat_data,
                                     project = sample$name[i],
