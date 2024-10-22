@@ -24,9 +24,15 @@ if (!is.null(args$help) || is.null(args$input) || is.null(args$outdir) || is.nul
     q() 
 }
 
-if (!file.exists(args$input)) {cat("Error: input file not exists!\n") q()}
+if (!file.exists(args$input)) {
+    cat("Error: input file not exists!\n") 
+    q()
+    }
 
-if (!dir.exists(args$outdir)) {cat("Error: outdir not exists!\n") dir.create(args$outdir, recursive = T)}
+if (!dir.exists(args$outdir)) {
+    cat("Error: outdir not exists!\n") 
+    dir.create(args$outdir, recursive = T)
+    }
 
 if ( is.null(args$resolution_step)) {
   resolution_step <- seq(0.1, 2, 0.2)
