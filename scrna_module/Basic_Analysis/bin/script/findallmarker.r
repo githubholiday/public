@@ -99,13 +99,6 @@ write.table(all.markers,file = paste0(args$outdir,"/",args$name,".markers.xls") 
 
 write.table(pbmc$harmony_clusters,file = paste0(args$outdir,"/",args$name,".cluster.xls") ,sep = "\t",quote = FALSE ,col.names = FALSE)
 
-#将每个cluster的marker表单独输出
-for (i in unique(pbmc@meta.data$seurat_clusters)){
-	markers <- all.markers[ all.markers$cluster==i,]
-	outfile <- paste(args$outdir,"/",args$name, "_" ,i, "marker.xls",sep="")
-	write.table(markers, outfile, sep="\t", quote=FALSE,row.names = FALSE )
-    }
-
 #按照每个cluster输出marker
 all_cluster <- sort(unique( unlist(pbmc[[Ident.col]]) ))
 for (i in all_cluster){

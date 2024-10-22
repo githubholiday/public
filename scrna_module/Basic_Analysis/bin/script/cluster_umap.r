@@ -24,15 +24,9 @@ if (!is.null(args$help) || is.null(args$input) || is.null(args$outdir) || is.nul
     q() 
 }
 
-if (!file.exists(args$input)) {
-  cat("Error: input file not exists!\n")
-  q()
-}
+if (!file.exists(args$input)) {cat("Error: input file not exists!\n") q()}
 
-if (!dir.exists(args$outdir)) {
-  cat("Error: outdir not exists!\n")
-  dir.create(args$outdir, recursive = T)
-}
+if (!dir.exists(args$outdir)) {cat("Error: outdir not exists!\n") dir.create(args$outdir, recursive = T)}
 
 if ( is.null(args$resolution_step)) {
   resolution_step <- seq(0.1, 2, 0.2)
@@ -50,8 +44,7 @@ if ( is.null(args$nfeature)) {
 print("选择的基因数为"  )
 print(nfeature)
 
-
-
+#分辨率，默认为0.6
 if ( is.null(args$resolution)) {
   resolution <- 0.6
 }else{
@@ -60,6 +53,7 @@ if ( is.null(args$resolution)) {
 print("聚类分辨率为"  )
 print(resolution)
 
+#标准化的方法
 if ( is.null(args$method)) {
   method <- "standard"
 }else{
@@ -68,6 +62,7 @@ if ( is.null(args$method)) {
 print("聚类方法为"  )
 print(method)
 
+#整合方法
 if ( is.null(args$integration)) {
   integration <- "Harmony"
 }else{
@@ -76,7 +71,7 @@ if ( is.null(args$integration)) {
 print( paste0("整合方法为", integration)  )
 
 
-
+#导入包
 library(dplyr)
 library(Seurat)
 library(patchwork)
@@ -85,8 +80,9 @@ library(clustree)
 library(batchelor)
 library(harmony)
 
+#输出ntop的高可变基因
 output_variable_gene <- function(pbmc ,  prefix , ntop=10){
-    VariableFeatures(pbmc) %>% as.data.frame %>% write.table(., file = paste(prefix, "_variable_gene.txt", sep = ""), sep = "\t", quote = F, row.names = F)
+    VariableFeatures(pbmc) %>% as.data.frame %>% write.table(., file = paste(prefix,"_", ntop, "_variable_gene.txt", sep = ""), sep = "\t", quote = F, row.names = F)
 
     pdf(file = paste(prefix, "_variable_gene.pdf", sep = ""))
     top10 <- head(VariableFeatures(pbmc), ntop)

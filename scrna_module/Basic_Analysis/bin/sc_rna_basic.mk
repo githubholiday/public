@@ -55,11 +55,11 @@ qc:
 
 inrds=$(outdir)/QC/$(sample).after_qc.rds
 cluster_dir=$(outdir)/cluster_$(resolution)
-cluster_draw_dir=$(cluster_dir)/draw
+#cluster_draw_dir=$(cluster_dir)
 test_use=wilcox
 cluster:
 	echo "########## scRNA Basic Analysis start at" `date`
-	mkdir -p $(cluster_draw_dir)
+	mkdir -p $(cluster_dir)
 	$(SinRun) $(SIF) Rscript $(ScriptDir)/cluster_umap.r -i $(inrds) -o $(cluster_dir) -n $(sample)  -r $(resolution) -t $(test_use)
 	$(SinRun) $(SIF) Rscript $(ScriptDir)/findallmarker.r -i $(cluster_dir)/$(sample).rds -o $(cluster_dir) -n $(sample)
 	echo "########## scRNA Basic Analysis end at" `date`
@@ -70,7 +70,10 @@ to_cloupe:
 	$(SinRun) /work/share/acuhtwkcu9/liutao/sif/sif/scRNA/seurat5/louper.sif Rscript $(ScriptDir)/toloupr.r -i $(inrds) -o $(cloupe_dir) -n $(sample).cloupe
 	echo "########## scRNA rds to cloupe end at" `date`
 
+inrds=$(outdir)/cluster_$(resolution)/$(sample).rds
+draw_dir=$(outdir)/cluster_$(resolution)/draw
 marker_plot:
 	echo "########## scRNA marker_plot start at" `date`
-	$(SinRun) $(SIF) Rscript $(ScriptDir)/draw_plot.r -i $(cluster_dir)/$(sample).rds -o $(cluster_draw_dir)  -n $(sample) -g $(gene_marker) -r umap.harmony
+	mkdir -p $(draw_dir)
+	$(SinRun) $(SIF) Rscript $(ScriptDir)/draw_plot.r -i $(inrds) -o $(draw_dir)  -n $(sample) -g $(gene_marker) -r umap.harmony
 	echo "########## scRNA marker_plot end at" `date`
