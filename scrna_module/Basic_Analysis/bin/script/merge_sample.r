@@ -38,20 +38,24 @@ seurat_list <- list()
 
 ##读取每个h5文件
 for (i in 1:nrow(sample)) {
-  file_path <- sample$path[i]
+    file_path <- sample$path[i]
+    file_type <- sample$type[i]
   
-  if (!file.exists(file_path)) {
-    cat("Error: input file not exists!\n")
-    print(file_path)
-    q()
-  }else{
-    dir_info <- file.info(file_path)
-    if (dir_info$isdir[1] ) {
-      print("read 10x data from dir")
-      seurat_data  <- Read10X(file_path)
-    }else {
-      print("read 10x data from h5")
-      seurat_data  <- Read10X_h5(file_path, use.names = TRUE, unique.features = TRUE)
+    if (!file.exists(file_path)) {
+        cat("Error: input file not exists!\n")
+        print(file_path)
+        q()
+    }else{
+        dir_info <- file.info(file_path)
+    if (file_type == "10x" ) {
+        print("read 10x data from dir")
+        seurat_data  <- Read10X(file_path)
+    }elif(file_type == "h5") {
+        print("read 10x data from h5")
+        seurat_data  <- Read10X_h5(file_path, use.names = TRUE, unique.features = TRUE)
+    }elif(file_type == "matrix") {
+        print("read 10x data from matrix")
+        seurat_data  <- read.table(file_path, sep=" ")
     }
     seurat_obj   <- CreateSeuratObject(counts = seurat_data,
                                     project = sample$name[i],

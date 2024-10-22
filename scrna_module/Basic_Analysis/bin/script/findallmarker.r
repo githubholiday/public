@@ -10,8 +10,7 @@ command=matrix(c(
   'test.use', 't', 2, 'character', '检验方法，默认为wilcox，可选为wilcox或roc等',
   'Ident' , "I" , 2 , 'character' , '聚类的标签，默认为harmony_clusters， 可选为任意列名'
 ),
-  byrow=T,ncol=5
-)
+  byrow=T,ncol=5)
 
 ## 读取参数
 args=getopt(command)
