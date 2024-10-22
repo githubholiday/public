@@ -56,6 +56,7 @@ qc:
 inrds=$(outdir)/QC/$(sample).after_qc.rds
 cluster_dir=$(outdir)/cluster_$(resolution)
 cluster_draw_dir=$(cluster_dir)/draw
+test_use=wilcox
 cluster:
 	echo "########## scRNA Basic Analysis start at" `date`
 	mkdir -p $(cluster_draw_dir)
