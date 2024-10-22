@@ -1,0 +1,2 @@
+SIF=/annogene/data1/bioinfo/Seq/RD/PMO/tuchengfang/238/sif/seurat5_sccustomize.sif
+SinRun=singularity exec --bind /annogene/:/annogene/ --bind /annoroad/:/annoroad/
