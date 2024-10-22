@@ -254,10 +254,12 @@ if (method == "SCtransform") {
         pbmc <- FindNeighbors(pbmc, reduction = "harmony", dims = 1:choose_pca)
         do_clustree(pbmc , resolution_step , prefix , "harmony" , method = "sct" )
         pbmc <- FindClusters(pbmc, resolution = resolution, cluster.name = "harmony_clusters")
-        for ( seed in 1:100){
-          pbmc<- RunUMAP(pbmc,  reduction="harmony", reduction.name = "umap.harmony"  , dims = 1:choose_pca , seed.use= seed)
-          output_umap_result(pbmc , prefix , method = "umap.harmony" , seed=seed)
-        }
+        #for ( seed in 1:100){
+          #pbmc<- RunUMAP(pbmc,  reduction="harmony", reduction.name = "umap.harmony"  , dims = 1:choose_pca , seed.use= seed)
+          #output_umap_result(pbmc , prefix , method = "umap.harmony" , seed=seed)
+        #}
+        pbmc<- RunUMAP(pbmc,  reduction="harmony", reduction.name = "umap.harmony"  , dims = 1:choose_pca )
+        output_umap_result(pbmc , prefix , method = "umap.harmony" )
 
         pbmc <- RunTSNE(pbmc,  reduction="harmony", reduction.name = "tsne.harmony"  , dims = 1:choose_pca)
         output_umap_result(pbmc , prefix , method = "tsne.harmony")
