@@ -84,6 +84,7 @@ pbmc.singler.percell<-SingleR(test = pbmc.data, ref = ref, labels = ref$label.ma
 
 prefix_percell <- paste0(prefix, "percell_" )
 
+
 pdf(file = paste(prefix_percell, "score_heatmap.pdf", sep = "") , width = 10, height = 10)
 p1 <- plotScoreHeatmap(pbmc.singler.percell, clusters = clusters)
 print(p1)
@@ -92,6 +93,13 @@ print(p2)
 dev.off()
 
 singleR_percell_annotations<-table(pbmc.singler.percell$labels , pbmc$seurat_clusters )
+
+#绘制umap/tsne图
+pbmc@meta.data$labels <- pbmc.singler.percell$labels
+pdf(file = paste(prefix_percell, "umap.pdf", sep = "") , width = 10, height = 10)
+p1<- DimPlot(pbmc, group.by=c("seurat_clusters","labels"), reduction="umap")
+print(p1)
+dev.off()
 
 show_table_function_result <- function(table_result , prefix){
   library(ggpubr)

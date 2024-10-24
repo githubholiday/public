@@ -18,6 +18,50 @@ command=matrix(c(
 ## 读取参数
 args=getopt(command)
 
+print_usage <- function(para=NULL){
+    cat("参数说明：
+    -i:rds文件
+    -o:输出目录，可以不存在
+    -n:输出前缀
+    -s:resolution_step分辨率的步值，默认为seq(0.1,2,0.2)
+    -r:聚类使用的分辨率，默认为0.6
+    -m:聚类的方法，默认为standard,或者可提供为 SCtransform
+    -t:整合的方法，默认为Harmony，可选 RPCA，CCA，FastMNN
+    -f:选择的基因数，默认为2000
+    -g:gene列表文件，以.gmt结尾 至少三列：geneset_name gene_set_description gene1 gene2
+    -a:数据类型，assay的标签名，可选RNA，Spatial
+    -r:降为方法，在画图的时候使用默认为umap,可选为map,tsne,integrated.cca,integrated.rpca,harmony,integrated.mnn,umap.harmony,tsne.harmony
+
+    使用实例：
+    /public/software/apps/singularity/3.7.3/bin/singularity exec --bind /work/share/acuhtwkcu9/:/work/share/acuhtwkcu9/ /work/share/acuhtwkcu9/liutao/sif/sif/scRNA/seurat5/seurat5_sccustomize.sif Rscript draw_plot.r -i rds -o outdir -n sample -g gene.gmt -a Spatial 
+
+
+    结果文件说明：
+    1. by_gene
+    1.1 by_gene/gene_.pdf：umap图，featureplot图，在不同群里的violinplot（comine)
+    1.2 by_gene/gene_by_sample.pdf：在不同样本中的featureplot和violinplot
+    2. by_gene_set/gene_set_dotplot.pdf:某个gene_set中所有基因在combine样本不同clsuter上的dotplot图
+        3. by_sample：目前没画过，后续补充
+    4. spatial
+    4.1 featureplt_spatial.pdf: 基因在空间上的featureplot图
+    4.2 spatial.pdf：是空间上的Umap和空间dimplot
+
+    5. all_gene_dotplot.pdf：所有基因的dotplot图，可能会由于基因多，导致比较堆叠，可以删除
+    6. all_gene_featureplot.pdf：所有基因的featureplot图，可能会由于基因多，导致比较堆叠，可以删除
+
+    升级记录
+    v3:2024-9-11 tx
+    1. 如果是单个样本的不再绘制by_sample类型的图
+    2. 增加by_gene_set的dotplot图 
+    3. 增加spatial目录下按照gene_set绘制的空间featureplo图
+    
+    v4:2024-09-29 tx
+    1. 将spatial目录下按照gene_set绘制的空间featureplo图改成按照单个基因绘制，可能会有与基因数量过多，导致图画不出来")
+}
+
+if ( !is.null(args$help) )	{ print_usage(para) }
+
+
 if (!is.null(args$help) || is.null(args$input) || is.null(args$outdir) || is.null(args$name)) {
   cat("Usage: Rscript cluster_umap -i input.rds -o outdir -n name\n")
   cat(paste(getopt(command, usage = T), "\n"))
@@ -390,10 +434,12 @@ if (method == "SCtransform") {
         do_clustree(pbmc , resolution_step , prefix , "harmony" , method = "standard" )
         pbmc <- FindClusters(pbmc, resolution = resolution, cluster.name = "harmony_clusters")
         
-        for ( seed in 1:100){
-          pbmc<- RunUMAP(pbmc,  reduction="harmony", reduction.name = "umap.harmony"  , dims = 1:choose_pca , seed.use= seed)
-          output_umap_result(pbmc , prefix , method = "umap.harmony" , seed=seed)
-        }
+        #for ( seed in 1:100){
+          #pbmc<- RunUMAP(pbmc,  reduction="harmony", reduction.name = "umap.harmony"  , dims = 1:choose_pca , seed.use= seed)
+          #output_umap_result(pbmc , prefix , method = "umap.harmony" , seed=seed)
+        #}
+        pbmc<- RunUMAP(pbmc,  reduction="harmony", reduction.name = "umap.harmony"  , dims = 1:choose_pca )
+        output_umap_result(pbmc , prefix , method = "umap.harmony")
 
         pbmc <- RunTSNE(pbmc,  reduction="harmony", reduction.name = "tsne.harmony"  , dims = 1:choose_pca)
         output_umap_result(pbmc , prefix , method = "tsne.harmony")
