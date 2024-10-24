@@ -97,7 +97,7 @@ singleR_percell_annotations<-table(pbmc.singler.percell$labels , pbmc$seurat_clu
 #绘制umap/tsne图
 pbmc@meta.data$labels <- pbmc.singler.percell$labels
 pdf(file = paste(prefix_percell, "umap.pdf", sep = "") , width = 10, height = 10)
-p1<- DimPlot(pbmc, group.by=c("seurat_clusters","labels"), reduction="umap")
+p1<- DimPlot(pbmc, group.by=c("seurat_clusters","labels"), reduction="UMAP.HARMONY")
 print(p1)
 dev.off()
 
