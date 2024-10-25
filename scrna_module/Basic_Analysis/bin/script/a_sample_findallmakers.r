@@ -10,7 +10,7 @@ para<- matrix(c(
   
 opt <- getopt(para, debug=FALSE)
 print_usage <- function(para=NULL) {
-    cat(getopt(para, ueasge=TRUE))
+    cat(getopt(para, usage=TRUE))
     cat("
 【功能说明】
     对单个样本做差异基因分析，使用FindAllMarkers函数对cluster做差异基因分析,并输出上下调和是否显著
