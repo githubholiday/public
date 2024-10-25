@@ -2,7 +2,7 @@ library('getopt')
 
 para<- matrix(c(
  'help', 'h', 0, 'logical',
- 'rds',  'i', 1, 'character',
+ 'rds',  'r', 1, 'character',
  'outdir',  'o',  1, 'character',
  'prefix',  'p',  1, 'character',
  'Ident',  'I',  1, 'character'
