@@ -113,7 +113,7 @@ gene_plot <- function( pbmc, outdir, gene_set){
         name =  names(gene_set[i])
         print( paste0("开始绘制", name, "的图"))
         for (j in 1:length(gene_set[[i]])) {
-            if ( ! gene_set[[i]][j] %in% Features(pbmc) ){
+            if ( ! gene_set[[i]][j] %in% rownames(pbmc) ){
                 cat("\n##Error: ", gene_set[[i]][j], "not in rds!\n")
             }else{
                 print( paste0("开始绘制", name, "的", gene_set[[i]][j], "的图"))
