@@ -4,7 +4,8 @@ para<- matrix(c(
  'help', 'h', 0, 'logical',
  'rds',  'i', 1, 'character',
  'outdir',  'o',  1, 'character',
- 'prefix',  'p',  1, 'character'
+ 'prefix',  'p',  1, 'character',
+ 'Ident',  'I',  1, 'character'
 ),byrow=TRUE, ncol=4)
   
 opt <- getopt(para, debug=FALSE)
@@ -39,6 +40,7 @@ library(Seurat)
 library(dplyr)
 
 rds <- readRDS(opt$rds)
+Idents(rds) <- args$Ident
 all.markers <- FindAllMarkers( rds,logfc.threshold = 0.1, test.use = "wilcox",min.pct = 0.01 )
 #增加基因列
 all.markers <- cbind("Gene"=rownames(all.markers),all.markers)
