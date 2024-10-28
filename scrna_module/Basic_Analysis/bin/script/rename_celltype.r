@@ -2,7 +2,7 @@ library(getopt)
 
 command=matrix(c( 
   'help', 'h', 0,'logical', '帮助文档',
-  'input', 'i', 1, 'character', '输入的rds文件',
+  'rds', 'r', 1, 'character', '输入的rds文件',
   'outdir', 'o', 1, 'character', '输出的目录',
   'prefix' , 'n', 1, 'character', '输出的文件名'
 ),

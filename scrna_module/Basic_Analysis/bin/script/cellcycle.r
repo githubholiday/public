@@ -57,7 +57,7 @@ marrow <- CellCycleScoring(marrow, s.features = s.genes, g2m.features = g2m.gene
 # 不同name中各细胞周期的数量,并输出
 marrow@meta.data$Phase <- factor(marrow@meta.data$Phase,levels=c("G1","S","G2M"))
 table(marrow@meta.data$Phase)
-tt <- table(marrow@meta.data$Phase,marrow@meta.data$name)
+tt <- table(marrow@meta.data$Phase,marrow[[name]])
 tt <- cbind(Phase=rownames(tt),tt)
 stat_file <- paste0(args$outdir, "/", args$prefix, ".cellcycle.xls")
 write.table(tt,stat_file,sep="\t",quote=FALSE, row.names=FALSE)
@@ -71,9 +71,9 @@ dev.off()
 
 #绘制不同cluster中各细胞周期的比例
 ## 计算细胞比例
-Cellratio <- prop.table(table(marrow@meta.data$Phase,marrow@meta.data$name))
+Cellratio <- prop.table(table(marrow[["Phase"]],marrow[[name]]))
 Cellratio <- as.data.frame(Cellratio)
-colnames(Cellratio) <- c("CellCycle","Cluster","Freq")
+colnames(Cellratio) <- c("CellCycle",name,"Freq")
 head(Cellratio)
 
 ## 绘制堆叠图
@@ -86,7 +86,7 @@ stack_pdf <- paste(args$outdir, "/", args$prefix, ".cellcycle.stackplot.pdf")
 pdf(stack_pdf)
 ggplot(Cellratio) + 
 #geom_bar(stat = "identity",position="fill")+
-    geom_bar(aes(x =Cluster, y= Freq, fill = CellCycle),stat = "identity",position="fill",width = 0.7,size = 0.5,colour = '#222222')+ 
+    geom_bar(aes(x =name, y= Freq, fill = CellCycle),stat = "identity",position="fill",width = 0.7,size = 0.5,colour = '#222222')+ 
     theme_classic() +
     labs(x='Cluster',y = 'Ratio')+
   #scale_fill_manual(values = allcolour)+

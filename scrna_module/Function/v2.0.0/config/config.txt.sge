@@ -1,0 +1,23 @@
+GO_Rscript=Rscript
+PERL=perl
+PYTHON3=python3
+#GOKEGG qsub
+slurm_sge=/work/share/acdgo9idhi/liutao/easy_bioinfo/wdl_related/7.pipeline_generate/src/slurm/slurm_sge
+queue=xahcnormal
+mount=/work/share/acdgo9idhi/:/work/share/acdgo9idhi/
+sif=/annogene/data1/bioinfo/Seq/RD/PMO/tuchengfang/238/sif/clusterprofiler_v0.0.4.sif
+
+RSCRIPT=Rscript
+GO2NAME=/annoroad/data1/bioinfo/PROJECT/Commercial/Cooperation/FTP/Database/GO/current/data/go.class.clusterprofile
+MAP2NAME=/annoroad/data1/bioinfo/PROJECT/Commercial/Cooperation/FTP/Database/KEGG/current/data/pathway_$(category).list
+KO2MAP=/annoroad/data1/bioinfo/PROJECT/Commercial/Cooperation/FTP/Database/KEGG/current/data/ko2map/ko2map.xls
+
+ORGDB=/annoroad/data1/bioinfo/PROJECT/Commercial/Cooperation/FTP/Database/ClusterProfile/OrgDb.list
+KEGG_MAP_DIR=/annoroad/data1/bioinfo/PROJECT/Commercial/Cooperation/FTP/Database/ClusterProfile/KEGG
+ref_index=/work/share/acuhtwkcu9/tuchengfang/04_Project/20240227_GOKEGGGSEA/shell/ref/
+#/work/share/acuhtwkcu9/RefDB/All_Species_database/RNA/
+
+
+SinRun=singularity exec --bind /annogene/:/annogene/ --bind /annoroad/:/annoroad/
+anno_sif=/work/share/acuhtwkcu9/install/sif/conda_perl_r_py_full_v0.0.1.sif
+function_sif=/annogene/data1/bioinfo/Seq/RD/PMO/tuchengfang/238/sif/clusterprofiler_v0.0.4.sif
