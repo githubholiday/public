@@ -92,9 +92,9 @@ if ( !Ident.col %in% colnames(pbmc@meta.data)){
 
 all_cluster <- sort(unique( unlist(pbmc[[Ident.col]]) ))
 for (i in all_cluster){
-    outfile <- paste0(args$outdir,"/",args$name,".cluster",i,".markers.xls")
-    cluster_data <- all.markers %>% filter( all.markers[,"cluster"] %in% i)
-    write.table(cluster_data,file=outfile,sep = "\t",quote = FALSE,row.names = FALSE)
+    outfile <- paste0(args$outdir,"/",args$name,".cluster",i,".markers.xls")
+    cluster_data <- all.markers %>% filter( all.markers[,"cluster"] %in% i)
+    write.table(cluster_data,file=outfile,sep = "\t",quote = FALSE,row.names = FALSE)
 }
  
 
