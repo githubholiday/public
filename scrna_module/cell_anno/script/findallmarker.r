@@ -89,7 +89,7 @@ if ( !Ident.col %in% colnames(pbmc@meta.data)){
 
 all.markers <- FindAllMarkers(object = pbmc , only.pos = TRUE, min.pct = min.pct, logfc.threshold = logfc.threshold, test.use = test.use)
 #all.markers <- all.markers[,c(7,6,1,2,3,4,5)]
-head()
+head(all.markers)
 #增加基因列
 #all.markers <- cbind("Gene"=all.markers[,"gene"],all.markers)
 names(all.markers)[names(all.markers)=="gene"] <- "Gene"
