@@ -46,7 +46,8 @@ all.markers <- FindAllMarkers( rds,logfc.threshold = 0.1, test.use = "wilcox",mi
 all.markers <- cbind("Gene"=rownames(all.markers),all.markers)
 
 #判断上下调和是否显著
-all.markers <- all.markers %>% mutate(up_down = ifelse(avg_log2FC > 0, "Up", "Down"),significant = ifelse(p_val_adj < 0.05, "yes", "no"))
+all.markers <- all.markers %>% mutate(up_down = ifelse(avg_log2FC > 0, "Up", "Down"),significant = ifelse(p_val_adj < 0.05, ifelse(abs(avg_log2FC) > 0.25, "yes", "no"), "no"))
+
 
 
 out_pre <- paste(outdir, prefix, sep="/")

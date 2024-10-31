@@ -93,7 +93,7 @@ all.markers <- FindAllMarkers(object = pbmc , only.pos = TRUE, min.pct = min.pct
 #增加基因列
 all.markers <- cbind("Gene"=all.markers[,"gene"],all.markers)
 #判断上下调以及是否显著
-all.markers <- all.markers %>% mutate(up_down = ifelse(avg_log2FC > 0, "Up", "Down"),significant = ifelse(p_val_adj < 0.05, "yes", "no"))
+all.markers <- all.markers %>% mutate(up_down = ifelse(avg_log2FC > 0, "Up", "Down"),significant = ifelse(p_val_adj < 0.05, ifelse(abs(avg_log2FC) > 0.25, "yes", "no"), "no"))
 #输出总的all_marker表
 write.table(all.markers,file = paste0(args$outdir,"/",args$name,".markers.xls") ,sep = "\t",quote = FALSE,row.names = FALSE)
 
