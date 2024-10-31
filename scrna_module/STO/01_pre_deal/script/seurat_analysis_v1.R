@@ -134,11 +134,6 @@ for (value in values) {
     break
 }
 
-celltype_num <- as.data.frame(table(object@meta.data$seurat_clusters))
-colnames(celltype_num)<-c("clusters","count")
-outfile <- paste(prefix , "_celltype_count.xls",sep="")
-write.table( celltype_num ,  outfile, sep="\t",quote=FALSE,row.names=FALSE)
-
 #object <- FindClusters(object, verbose = FALSE, resolution = 0.5)
 object <- RunUMAP(object1, dims = 1:20, metric="correlation")
 
@@ -161,6 +156,53 @@ pdf(graph,w=12,h=8)
 DimPlot(object = object, reduction="pca")
 print(graph)
 dev.off()
+
+
+# heatmap 
+#cell in PCA
+#data <- object@reductions$pca@cell.embeddings
+#file <- paste(prefix,'cell.embeddings.csv',sep='_')
+#print(file)
+#write.csv(data,file,quote=F)
+
+
+#gene in PCA
+#data <- object@reductions$pca@feature.loadings
+#file <- paste(prefix,'gene.loadings.csv',sep='_')
+#print(file)
+#write.csv(data,file,quote=F)
+
+
+#PCA variance
+#data <- object@reductions$pca@stdev
+#file <- paste(prefix,'pca.sdev.csv',sep='_')
+#print(file)
+#write.csv(data,file,quote=F)
+
+
+#graph <- paste(prefix,'PCA_Heatmap.pdf',sep='_')
+#pdf(graph,w=12,h=8)
+#DimHeatmap(object = object, dims = 1:2, cells = cell_for_heatmap, balanced = TRUE) ### or pc.use = 1:10
+#print(graph)
+#dev.off()
+
+
+#graph <- paste(prefix,'PCA_MultiHeatmap.pdf',sep='_')
+#pdf(graph,w=12,h=16)
+#DimHeatmap(object = object, dims = 3:10, cells = cell_for_heatmap, balanced = TRUE) ### or pc.use = 1:10
+#print(graph)
+#dev.off()
+
+###Cluster
+#clusterResult <- paste(prefix,'cell_cluster.csv',sep='_')
+#print(clusterResult)
+#write.csv(object@active.ident,file=clusterResult,quote=F)
+
+
+#umapResult <-object@reductions$umap@cell.embeddings
+#file <- paste(prefix,'umap_gene.csv',sep='_')
+#print(file)
+#write.csv(umapResult,file, quote=F)
 
 
 ### plot violn for cluster
@@ -193,6 +235,52 @@ for (i in unique(Idents(object))){
 
 object@misc$markers <- object.markers
 
+'''
+#top de gene violion plot
+top <- object.markers %>% group_by(cluster) %>% top_n(1, avg_log2FC)
+ncol = 0
+if (length(unique(object.markers$cluster)) >15){
+	ncol = 3
+}else {
+	ncol = 2
+}
+height <- max(16, length(unique(object.markers$cluster))/2) 
+graph <- paste(prefix,'Marker_Vln.pdf',sep='_')
+pdf(graph,w=12,h=height)
+VlnPlot(object = object, features = top$gene, ncol = 4, pt.size = 0, idents=top$cluster,raster=FALSE)
+print(graph)
+dev.off()
+
+#if (dim(object@meta.data)[1]<30000){
+## high light cluster
+cluster_num = c(levels(object@active.ident))
+
+for(i in c(levels(object@active.ident))){
+	graph <- paste(prefix,"cluster",i,'High_light_Spot.pdf',sep='_')
+	#pdf(graph,w=12,h=height)
+#P<-SpatialDimPlot(object, cells.highlight = CellsByIdentities(object = object, idents = cluster_num), facet.highlight = TRUE, ncol = 4,stroke = NA)
+	P<-SpatialDimPlot(object, cells.highlight = CellsByIdentities(object = object, idents = i), facet.highlight = TRUE, ncol = 1,stroke = NA)
+	ggsave(graph, P, w=12, h=height)
+
+### high light marker gene
+	graph <- paste(prefix,"cluster",i,'High_MarkerGenes.pdf',sep='_')
+	P<-SpatialFeaturePlot(object = object, features = top$gene[top$cluster == i],stroke = NA,ncol = 1)
+	ggsave(graph, P, w=12, h=height)
+}
+
+graph <- paste(prefix,'part_High_light_Spot.pdf',sep='_')
+P<-SpatialDimPlot(object, cells.highlight = CellsByIdentities(object = object, idents = cluster_num[1:2]), facet.highlight = TRUE, ncol = 2,stroke = NA)
+ggsave(graph, P, w=12, h=height)
+graph <- paste(prefix,'part_High_MarkerGenes.pdf',sep='_')
+P<-SpatialFeaturePlot(object = object, features = top$gene[1:2],stroke = NA,ncol = 2)
+ggsave(graph, P, w=12, h=height)
+#保存RDS文件
+'''
 file <- paste(prefix,'all_analysis.rds',sep='_')
 saveRDS(object, file)
+
+#graph <- paste(prefix,'CGA_LHB.feature_plot.pdf',sep='_')
+#P2<-SpatialFeaturePlot(object = object, features = c("CGA","LHB") ,stroke = NA,ncol = 2)
+#ggsave(graph, P2, w=12, h=height)
+
 
