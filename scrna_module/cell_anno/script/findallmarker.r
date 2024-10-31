@@ -89,9 +89,12 @@ if ( !Ident.col %in% colnames(pbmc@meta.data)){
 
 all.markers <- FindAllMarkers(object = pbmc , only.pos = TRUE, min.pct = min.pct, logfc.threshold = logfc.threshold, test.use = test.use)
 #all.markers <- all.markers[,c(7,6,1,2,3,4,5)]
-
+head()
 #增加基因列
-all.markers <- cbind("Gene"=all.markers[,"gene"],all.markers)
+#all.markers <- cbind("Gene"=all.markers[,"gene"],all.markers)
+names(all.markers)[names(all.markers)=="gene"] <- "Gene"
+all.markers <- all.markers[,c(7,1:6)]
+
 #判断上下调以及是否显著
 all.markers <- all.markers %>% mutate(up_down = ifelse(avg_log2FC > 0, "Up", "Down"),significant = ifelse(p_val_adj < 0.05, ifelse(abs(avg_log2FC) > 0.25, "yes", "no"), "no"))
 #输出总的all_marker表
