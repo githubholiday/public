@@ -72,7 +72,7 @@ out_pre <- paste(args$outdir, args$prefix, sep="/")
 pbmc_t <- readRDS( args$rds )
 #Idents(pbmc_t) <- old_idents
 
-annotation_info <- Pull_Cluster_Annotation(annotation = args$infile)
+annotation_info <- Pull_Cluster_Annotation(annotation = args$input)
 pbmc <-  Rename_Clusters(seurat_object = pbmc_t, new_idents = annotation_info$new_cluster_idents)
 
 #如果更换名称的话，可以改CellType
