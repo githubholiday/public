@@ -100,17 +100,17 @@ if ( is.null(args$reduction)) {
   q()
 }
 
-draw_by_sample <- FALSE
-if ( is.null(args$drawbysample)) {
-  if (args$drawbysample == "T"){
-    draw_by_sample <- TRUE
-  }else if (args$drawbysample == "F"){
-    draw_by_sample <- FALSE
-  }else{
-    cat("Error: drawbysample not exists!\n")
-    q()
-  }
-}
+#draw_by_sample <- FALSE
+#if ( is.null(args$drawbysample)) {
+  #if (args$drawbysample == "T"){
+    #draw_by_sample <- TRUE
+  #}else if (args$drawbysample == "F"){
+    #draw_by_sample <- FALSE
+  #}else{
+    #cat("Error: drawbysample not exists!\n")
+    #q()
+  #}
+#}
 
 
 
