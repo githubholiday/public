@@ -54,14 +54,14 @@ plot_stack <- func( marrow, value1, value2, name="CellType" ){
     #默认是Var1,Var2,Freq，进行重命名
     colnames(Cellratio) <- c(value1,value2,"Freq")
 
-    prefix <- paste(args$outdir, "/", args$prefix, sep="")
+    prefix <- paste(outdir, "/", args$prefix, sep="")
 
     pdf(paste( prefix, "_", name, "_stackplot.pdf",sep=""))
 
     ggplot(Cellratio) + 
     geom_bar(aes(x = value1, y= Freq, fill = value2),stat = "identity",position="fill",width = 0.7,size = 0.5,colour = '#222222')+ 
     theme_classic() +
-    labs(x='Cluster',y = 'Ratio')+
+    labs(x='group',y = 'Ratio')+
     theme(panel.border = element_rect(fill=NA,color="black", size=0.5, linetype="solid"))
     dev.off()
 
@@ -69,9 +69,11 @@ plot_stack <- func( marrow, value1, value2, name="CellType" ){
 
 
 marrow <- readRDS( args$input )
+outdir <- args$outdir
+prefix <- paste( outdir, "/", args$prefix, sep="")
 #绘制样本的图
-plot_stack(marrow, "orig.ident", 'seurat_clusters')
-plot_stack(marrow, "Group", 'seurat_clusters')
+plot_stack(marrow, outdir, prefix , "orig.ident", 'seurat_clusters')
+plot_stack(marrow, "group", 'seurat_clusters')
 plot_stack(marrow, "orig.ident", 'CellType')
-plot_stack(marrow, "Group", 'CellType')
+plot_stack(marrow, "group", 'CellType')
 

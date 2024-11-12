@@ -105,8 +105,10 @@ write.table(pbmc$harmony_clusters,file = paste0(args$outdir,"/",args$name,".clus
 #按照每个cluster输出marker
 all_cluster <- sort(unique( unlist(pbmc[[Ident.col]]) ))
 for (i in all_cluster){
-	outfile <- paste0(args$outdir,"/",args$name,".cluster",i,".markers.xls")
+	outfile <- paste0(args$outdir,"/",args$name,".cluster_",i,".markers.xls")
 	cluster_data <- all.markers %>% filter( all.markers[,"cluster"] %in% i)
 	write.table(cluster_data,file=outfile,sep = "\t",quote = FALSE,row.names = FALSE)
 }
 print("完成")
+
+function_dir=paste0(args$outdir,"/function")

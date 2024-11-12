@@ -82,7 +82,6 @@ rds_file <- paste(out_pre, ".rename.rds", sep="")
 saveRDS( pbmc, rds_file)
 
 #绘图
-out_pre<-"/work/share/acuhtwkcu9/taoxiao/04_Project/04_scRNA/P2024090410ABHEEI_C4_mus/Personal_analysis/06_sub_CellType/T/T_cell/T_rename"
 pdf_file <- paste(out_pre, ".dimplot.pdf", sep="")
 pdf(pdf_file)
 p1 <- DimPlot_scCustom(pbmc, reduction = "umap.harmony", label = TRUE)# , colors_use =a)
@@ -92,8 +91,27 @@ print(p2)
 dev.off()
 
 # 输出表格以及如果样本多的话，绘制样本和组别的stackplot图
-celltype_num <- as.data.frame(table(pbmc[[new_idents]]))
-colnames(celltype_num)<-c("clusters","count")
+celltype_num <- as.data.frame(table(pbmc@meta.data$CellType]))
+colnames(celltype_num)<-c("CellType","count")
 count_file <- paste(out_pre, ".celltype_count.xls",sep="")
 write.table( celltype_num ,count_file , sep="\t",quote=FALSE,row.names=FALSE)
+
+#计算细胞比例
+Cellratio <- prop.table(table(pbmc@meta.data$group,pbmc@meta.data$CellType))
+Cellratio <- as.data.frame(Cellratio)
+colnames(Cellratio) <- c("CellType","Cluster","Freq")
+
+allcolour=c("#DC143C","#0000FF","#20B2AA","#FFA500","#9370DB","#98FB98","#F08080","#1E90FF","#7CFC00","#FFFF00",
+            "#808000","#FF00FF","#FA8072","#7B68EE","#9400D3","#800080","#A0522D","#D2B48C","#D2691E","#87CEEB","#40E0D0","#5F9EA0",
+            "#FF1493","#0000CD","#008B8B","#FFE4B5","#8A2BE2","#228B22","#E9967A","#4682B4","#32CD32","#F0E68C","#FFFFE0","#EE82EE",
+            "#FF6347","#6A5ACD","#9932CC","#8B008B","#8B4513","#DEB887")
+library(ggplot2)
+pdf(paste(out_pre,".celltype_stackplot.pdf",sep=""))
+p1<-ggplot(Cellratio) + 
+  geom_bar(aes(x =Cluster, y= Freq, fill = CellType),stat = "identity",position="fill",width = 0.7,size = 0.5,colour = '#222222')+ 
+  theme_classic() +
+  labs(x='Cluster',y = 'Ratio')+
+  theme(panel.border = element_rect(fill=NA,color="black", size=0.5, linetype="solid"))
+print(p1)
+dev.off()
 
