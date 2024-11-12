@@ -9,7 +9,7 @@ singularity exec --bind /work/share/acuhtwkcu9/:/work/share/acuhtwkcu9/ /work/sh
 singularity exec --bind /work/share/acuhtwkcu9/:/work/share/acuhtwkcu9/ /work/share/acuhtwkcu9/liutao/sif/sif/scRNA/seurat5/seurat5_sccustomize.sif Rscript /work/share/acuhtwkcu9/liutao/seqwisdom/9_module/scRNA/base_qc/script/findallmarker.r -i B_0.6.umap.rds -o . -n B -I seurat_clusters
 ### 利用marker画图 
 
-singularity exec --bind /work/share/acuhtwkcu9/:/work/share/acuhtwkcu9/ /work/share/acuhtwkcu9/liutao/sif/sif/scRNA/seurat5/seurat5_sccustomize.sif Rscript /work/share/acuhtwkcu9/liutao/seqwisdom/9_module/scRNA/base_qc/script//draw_plot.r -i B_0.6.umap.rds -o . -n B  -g gene.gmt 
+singularity exec --bind /work/share/acuhtwkcu9/:/work/share/acuhtwkcu9/ /work/share/acuhtwkcu9/liutao/sif/sif/scRNA/seurat5/seurat5_sccustomize.sif Rscript /work/share/acuhtwkcu9/liutao/seqwisdom/9_module/scRNA/base_qc/script//draw_plot.r -i B_0.6.umap.rds -o . -n B  -g gene.gmt -s F
 
 ### 画类似于python的cluster dotplot图 
 singularity exec --bind /work/share/acuhtwkcu9/:/work/share/acuhtwkcu9/ /work/share/acuhtwkcu9/liutao/sif/sif/scRNA/seurat5/sceasy.sif Rscript /work/share/acuhtwkcu9/liutao/seqwisdom/9_module/scRNA/base_qc/script/toAdata.r -i B_0.6.umap.rds -o . -n B_0.6.umap.adata

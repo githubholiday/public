@@ -84,14 +84,25 @@ saveRDS( pbmc, rds_file)
 #绘图
 pdf_file <- paste(out_pre, ".dimplot.pdf", sep="")
 pdf(pdf_file)
-p1 <- DimPlot_scCustom(pbmc, reduction = "umap.harmony", label = TRUE)# , colors_use =a)
-p2 <- DimPlot_scCustom(pbmc, reduction = "umap.harmony", label = TRUE , group.by = "seurat_clusters" ) #, colors_use = a)
+polychrome_pal <- DiscretePalette_scCustomize(num_colors = 36, palette = "varibow")
+reduction_method="umap.harmony"
+p1 <- DimPlot_scCustom(pbmc, reduction = reduction_method, label = TRUE, colors_use =polychrome_pal)
+p2 <- DimPlot_scCustom(pbmc, reduction = reduction_method, label = TRUE , group.by = "seurat_clusters" , colors_use = polychrome_pal)
+print(p1)
+print(p2)
+dev.off()
+
+pdf_file <- paste(out_pre, ".dimplot.pdf", sep="")
+pdf(pdf_file)
+polychrome_pal <- DiscretePalette_scCustomize(num_colors = 36, palette = "varibow")
+p1 <- DimPlot_scCustom(pbmc, reduction = "umap", label = TRUE , colors_use =polychrome_pal)
+p2 <- DimPlot_scCustom(pbmc, reduction = "umap", label = TRUE , group.by = "seurat_clusters"  , colors_use = polychrome_pal)
 print(p1)
 print(p2)
 dev.off()
 
 # 输出表格以及如果样本多的话，绘制样本和组别的stackplot图
-celltype_num <- as.data.frame(table(pbmc@meta.data$CellType]))
+celltype_num <- as.data.frame(table(pbmc@meta.data$CellType))
 colnames(celltype_num)<-c("CellType","count")
 count_file <- paste(out_pre, ".celltype_count.xls",sep="")
 write.table( celltype_num ,count_file , sep="\t",quote=FALSE,row.names=FALSE)
@@ -111,6 +122,7 @@ p1<-ggplot(Cellratio) +
   geom_bar(aes(x =Cluster, y= Freq, fill = CellType),stat = "identity",position="fill",width = 0.7,size = 0.5,colour = '#222222')+ 
   theme_classic() +
   labs(x='Cluster',y = 'Ratio')+
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))+
   theme(panel.border = element_rect(fill=NA,color="black", size=0.5, linetype="solid"))
 print(p1)
 dev.off()
