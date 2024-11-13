@@ -2,7 +2,7 @@
 file=$(abspath $(firstword $(MAKEFILE_LIST)))
 BIN=$(dir $(abspath $(firstword $(MAKEFILE_LIST))))/../
 ifeq ($(strip $(config)),)
-	Bconfig=$(BIN)/config/config.txt
+	Bconfig=$(BIN)/cell_anno/config/config.txt
 else
 	Bconfig=$(config)
 endif
