@@ -78,7 +78,7 @@ pbmc <-  Rename_Clusters(seurat_object = pbmc_t, new_idents = annotation_info$ne
 #如果更换名称的话，可以改CellType
 pbmc[[new_idents]] <- Idents(pbmc)
 
-rds_file <- paste(out_pre, ".rename.rds", sep="")
+rds_file <- paste(out_pre, ".rds", sep="")
 saveRDS( pbmc, rds_file)
 
 #绘图
@@ -88,15 +88,6 @@ polychrome_pal <- DiscretePalette_scCustomize(num_colors = 36, palette = "varibo
 reduction_method="umap.harmony"
 p1 <- DimPlot_scCustom(pbmc, reduction = reduction_method, label = TRUE, colors_use =polychrome_pal)
 p2 <- DimPlot_scCustom(pbmc, reduction = reduction_method, label = TRUE , group.by = "seurat_clusters" , colors_use = polychrome_pal)
-print(p1)
-print(p2)
-dev.off()
-
-pdf_file <- paste(out_pre, ".dimplot.pdf", sep="")
-pdf(pdf_file)
-polychrome_pal <- DiscretePalette_scCustomize(num_colors = 36, palette = "varibow")
-p1 <- DimPlot_scCustom(pbmc, reduction = "umap", label = TRUE , colors_use =polychrome_pal)
-p2 <- DimPlot_scCustom(pbmc, reduction = "umap", label = TRUE , group.by = "seurat_clusters"  , colors_use = polychrome_pal)
 print(p1)
 print(p2)
 dev.off()

@@ -67,4 +67,12 @@ KEGG:
 	rm -r $(kegg_dir)/*list
 	echo "########## KEGG Clusterprofiler end at" `date`
 
+Serial_Function:
+	echo "########## Function Analysis start at" `date`
+	mkdir -p $(shell_dir)
+	mkdir -p $(outdir)
+	$(PYTHON3) $(BIN)/function_do.py -i $(infile) -o $(outdir) -s $(shell_dir) -c $(species_conf) 
+	sh $(shell_dir)/anno.sh
+	sh $(shell_dir)/function.sh
+	echo "########## Function Analysis end at" `date`
 
