@@ -1,0 +1,4 @@
+SIF2=/work/share/acuhtwkcu9/liutao/sif/sif/scRNA/seurat5/sceasy.sif
+SIF=/work/share/acuhtwkcu9/liutao/sif/sif/scRNA/seurat5/seurat5_sccustomize.sif
+SinRun=singularity exec --bind /work/share/acuhtwkcu9/:/work/share/acuhtwkcu9/
+scanpy_sif=/work/share/acuhtwkcu9/liutao/sif/sif/scRNA/scanpy/scanpy.sif

@@ -71,7 +71,7 @@ Serial_Function:
 	echo "########## Function Analysis start at" `date`
 	mkdir -p $(shell_dir)
 	mkdir -p $(outdir)
-	$(PYTHON3) $(BIN)/function_do.py -i $(infile) -o $(outdir) -s $(shell_dir) -c $(species_conf) 
+	$(PYTHON3) $(BIN)/function_do.py -i $(infile) -o $(outdir) -s $(shell_dir) -c $(species_conf) --all $(all)
 	sh $(shell_dir)/anno.sh >> $(shell_dir)/anno.sh.log
 	sh $(shell_dir)/function.sh >> $(shell_dir)/function.sh.log
 	echo "########## Function Analysis end at" `date`

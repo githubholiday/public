@@ -83,11 +83,11 @@ def main():
 	parser.add_argument('-i','--input',help='input file',dest='input',nargs='+',required=True)
 	parser.add_argument('-o','--outdir',help='outdir of result',dest='outdir',required=True)
 	parser.add_argument('-s','--shell',help='shell dir',dest='shell',required=True)
-	parser.add_argument('--all','--all',help='是否运行',dest='all',action="store_true")
+	parser.add_argument('--a','--all',help='是否运行',dest='all',required=True)
 	parser.add_argument('-c','--config',help='category name',dest='config',required=True)
 	args=parser.parse_args()
 	#是否运行Up和down
-	if args.all : 
+	if args.all == "yes": 
 		type_list = ['all', "Up", "Down"]
 	else:
 		type_list = ['all']
