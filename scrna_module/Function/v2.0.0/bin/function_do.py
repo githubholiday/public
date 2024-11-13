@@ -92,7 +92,8 @@ def main():
 	else:
 		type_list = ['all']
 	#获取物种配置文件中中的信息
-	my_conf = Config( args.config )	
+	my_conf = Config( args.config )
+	my_conf.read_config()
 	#定义shell文件
 
 	fun_shell = "{0}/function.sh".format(args.shell)
