@@ -106,7 +106,7 @@ def main():
 		infile_dir_path, file_name = info_from_infile( infile ) #输入文件路径，输入文件名称，
 		
 		anno_cmd = "make -f {BIN}/anno.mk log_file=LOGFILE sample={sample} infile={infile} outdir={outdir}/{sample}/ relation_file={config.relation} anno_file={config.anno} Anno && echo {sample} Anno finished ".format(BIN=bindir, sample=file_name, infile=infile, outdir=args.outdir,  config=my_conf )
-		anno_shell.handle.write( anno_cmd+'\n')
+		anno_shell_handle.write( anno_cmd+'\n')
 
 		for up_down in type_list:
 			if up_down == "all":
@@ -119,9 +119,9 @@ make -f {BIN}/anno.mk log_file=LOGFILE outdir={outdir}/{sample}/{type} up_or_dow
 make -f {BIN}/anno.mk log_file=LOGFILE gene_list={outdir}/{sample}/{type}/{type}.gene.xls go_dir={outdir}/{sample}/{type}/GO sample={sample} go={config.go} relation_file={config.relation} GO && echo {sample} GO finished
 make -f {BIN}/anno.mk log_file=LOGFILE gene_list={outdir}/{sample}/{type}/{type}.gene.xls kegg_dir={outdir}/{sample}/{type}/GO sample={sample} ko={config.ko} relation_file={config.relation} category={config.category} KEGG && echo {sample} KEGG finished'''.format(BIN=bindir, sample=file_name, infile=infile, outdir=args.outdir, type=up_down, config=my_conf )
 			fun_shell_handle.write(function_cmd )
-		fun_shell_handle.close()
-		anno_shell_handle.close()
-		print("输出文件分别为:\n {0}\n{1}".format( anno_shell, fun_shell))
+	fun_shell_handle.close()
+	anno_shell_handle.close()
+	print("输出文件分别为:\n {0}\n{1}".format( anno_shell, fun_shell))
 if __name__ == '__main__':
 	main()
 

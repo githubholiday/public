@@ -83,7 +83,10 @@ output_umap_result(pbmc , prefix , method = "umap.harmony")
 
 saveRDS(pbmc, paste0(prefix, ".umap.rds"))  
 
- 
+celltype_num <- as.data.frame(table(pbmc@meta.data$CellType))
+colnames(celltype_num)<-c("CellType","count")
+count_file <- paste(prefix, ".celltype_count.xls",sep="")
+write.table( celltype_num ,count_file , sep="\t",quote=FALSE,row.names=FALSE)
 
 print("Done")
 
