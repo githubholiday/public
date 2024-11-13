@@ -17,8 +17,8 @@ import re
 import os
 bindir = os.path.abspath(os.path.dirname(__file__))
 
-__author__ = 'Liu Huiling'
-__mail__ = 'huilingliu@genome.cn'
+__author__ = 'Holiday'
+__mail__ = 'Holiday@genome.cn'
 __doc__ = 'the description of program'
 '''
 The up and down gene count in second_level_go 
@@ -102,7 +102,6 @@ def main():
 	anno_shell_handle = open(anno_shell, 'w')
 	
 	for infile in args.input:
-		file_num += 1
 		infile_dir_path, file_name = info_from_infile( infile ) #输入文件路径，输入文件名称，
 		
 		anno_cmd = "make -f {BIN}/anno.mk log_file=LOGFILE sample={sample} infile={infile} outdir={outdir}/{sample}/ relation_file={config.relation} anno_file={config.anno} Anno && echo {sample} Anno finished ".format(BIN=bindir, sample=file_name, infile=infile, outdir=args.outdir,  config=my_conf )
