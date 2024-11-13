@@ -97,7 +97,7 @@ cmp_de:
 	mkdir -p $(outdir)/$(prefix)
 	mkdir -p $(outdir)/shell/$(prefix)
 	$(SinRun) $(SIF) Rscript $(ScriptDir)/deseq_bulk_and_scRNA.r -i $(inrds) -o $(outdir)/$(prefix) -n $(prefix) -c $(cmp) -m scRNA -I $(Idents)
-	make -f $(BIN)/../../Function/v2.0.0/anno.mk infile=$(outdir)/$(prefix)/*.xls outdir=$(outdir)/$(prefix)/function shell_dir=$(outdir)/shell/$(prefix) species_conf=$(species_conf) Serial_Function
+	make -f $(BIN)/../Function/v2.0.0/anno.mk infile=$(outdir)/$(prefix)/*.xls outdir=$(outdir)/$(prefix)/function shell_dir=$(outdir)/shell/$(prefix) species_conf=$(species_conf) Serial_Function
 	echo "########## cmp de end at" `date`
 
 de_dir=$(outdir)/cluster_de
@@ -107,5 +107,5 @@ cluster_de:
 	mkdir -p $(outdir)/cluster_de
 	mkdir -p $(outdir)/shell/
 	$(SinRun) $(SIF) Rscript $(ScriptDir)/findallmarker.r -i $(inrds) -o $(de_dir) -n $(prefix) -I $(Idents)
-	make -f $(BIN)/../../Function/v2.0.0/anno.mk infile=$(de_dir)/*.xls outdir=$(de_dir)function shell_dir=$(outdir)/shell/ species_conf=$(species_conf) Serial_Function
+	make -f $(BIN)/../Function/v2.0.0/anno.mk infile=$(de_dir)/*.xls outdir=$(de_dir)function shell_dir=$(outdir)/shell/ species_conf=$(species_conf) Serial_Function
 	echo "########## cmp de end at" `date`
