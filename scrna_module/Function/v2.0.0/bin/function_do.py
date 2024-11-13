@@ -1,5 +1,12 @@
 '''
 根据指定的文件 运行anno go 和 kegg分析
+
+config文件中必须有：
+REF_ANNOTATION=注释文件
+KEGG_annotate=ko.list
+GO_annotate=go.list
+relation=gene_id和gene_name对应关系表
+category=animal plant fungi
 '''
 
 #! /usr/bin/env python3
@@ -46,6 +53,7 @@ class Config():
 				if key == "REF_ANNOTATION":
 					self.anno = value
 				if key == "KEGG_annotate":
+					
 					self.ko = value
 				if key == "GO_annotate":
 					self.go = value
