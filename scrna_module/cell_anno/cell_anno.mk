@@ -91,13 +91,14 @@ maker_plot_py:
 replace:
 	singularity exec --bind /work/share/acuhtwkcu9/:/work/share/acuhtwkcu9/ /work/share/acuhtwkcu9/liutao/sif/sif/scRNA/seurat5/seurat5_sccustomize.sif Rscript /work/share/acuhtwkcu9/liutao/seqwisdom/9_module/scRNA/base_qc/script/replace_name_from_small_to_big.r -s B_0.6.umap.rds -o . -n B -c  seurat_clusters  -b  ../new.rds 
 all=yes
+cmp_de_dir=$(outdir)/cmp_de/
 .PHONY:cmp_de
 cmp_de:
 	echo "########## cmp de start at" `date`
-	mkdir -p $(outdir)/$(prefix)
+	mkdir -p $(cmp_de_dir)/$(prefix)
 	mkdir -p $(outdir)/shell/$(prefix)
-	$(SinRun) $(SIF) Rscript $(ScriptDir)/deseq_bulk_and_scRNA.r -i $(inrds) -o $(outdir)/$(prefix) -n $(prefix) -c $(cmp) -m scRNA -I $(Idents)
-	make -f $(BIN)/../Function/v2.0.0/bin/anno.mk infile=$(outdir)/$(prefix)/*.xls outdir=$(outdir)/$(prefix)/function shell_dir=$(outdir)/shell/$(prefix) species_conf=$(species_conf) all=$(all) Serial_Function
+	$(SinRun) $(SIF) Rscript $(ScriptDir)/deseq_bulk_and_scRNA.r -i $(inrds) -o $(cmp_de_dir)/$(prefix) -n $(prefix) -c $(cmp) -m scRNA -I $(Idents)
+	make -f $(BIN)/../Function/v2.0.0/bin/anno.mk infile=$(cmp_de_dir)/$(prefix)/*.xls outdir=$(cmp_de_dir)/$(prefix)/function shell_dir=$(outdir)/shell/$(prefix) species_conf=$(species_conf) all=$(all) Serial_Function
 	echo "########## cmp de end at" `date`
 all=yes
 de_dir=$(outdir)/cluster_de
