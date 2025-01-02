@@ -18,6 +18,10 @@ def main():
     parser.add_argument('-i', '--infile', help='infile', dest='infile', required = True )
     parser.add_argument('-o', '--outfile', help='outfile', dest='outfile', required = True )
     args=parser.parse_args()
+    value_dict = {"":"5"
+
+
+    }
     with open()
     data = pd.read_csv(args.infile, sep="\t")
     data_sort = data.sort_values( by= args.column, ascending=args.ascending)

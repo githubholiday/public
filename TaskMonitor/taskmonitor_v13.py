@@ -65,9 +65,9 @@ def parse_log( log_file ):
 	with open(log_file, 'r') as infile:
 		for line in infile:
 			if line.startswith("[break]") :
-				break_info = line.rstrip().split("")[1]
+				break_info = line.rstrip().split(" ")[1]
 			elif line.startswith("[start]"):
-				break_info = line.rstrip().split("")[1]
+				break_info = line.rstrip().split(" ")[1]
 			else:
 				break_info = ""
 	return break_info
