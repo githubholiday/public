@@ -72,10 +72,10 @@ rename:
 	echo "########## rename rds end at" `date`
 
 plot_dir=$(outdir)/marker_draw
-maker_plot:
+marker_plot:
 	echo "########## marker plot start at" `date`
 	mkdir -p $(plot_dir)
-	$(SinRun) $(SIF) Rscript $(ScriptDir)/draw_plot.r -i $(inrds) -o $(plot_dir) -n $(prefix)  -g $(gmt)
+	$(SinRun) $(SIF) Rscript $(ScriptDir)/draw_plot.r -i $(inrds) -o $(plot_dir) -n $(prefix)  -g $(gmt) -a $(assays)
 	echo "########## marker plot end at" `date`
 
 

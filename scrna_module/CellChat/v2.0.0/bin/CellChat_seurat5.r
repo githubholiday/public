@@ -61,8 +61,11 @@ print("读取数据完成")
 ## 创建CellChat对象
 cellchat <- createCellChat(object =  pbmc, group.by = Ident, assay = data_assays )
 
-## 导入数据库
-CellChatDB <- CellChatDB.human
+## 导入数据库--人数据库
+#CellChatDB <- CellChatDB.human
+#cellchat@DB <- CellChatDB
+## 导入数据库--小鼠
+CellChatDB <- CellChatDB.mouse
 cellchat@DB <- CellChatDB
 
 ## 计算细胞间通讯

@@ -1,1 +1,38 @@
 /work/share/acuhtwkcu9/taoxiao/07_sif/scRNA/cellchat.sif
+
+
+该文件夹中是细胞通讯（cellchat）的结果
+
+1. *cellchat_all_interaction_count.pdf:细胞互作数量和强度图,代表interaciton的数目
+每个点代表一种细胞类型，点的大小代表细胞数，点越大表达细胞数越多；
+线的粗细代表互作的强弱
+
+2. *cellchat_all_interaction_weight.pdf:细胞互作数量和强度图,代表strength强度(prob值相关)
+每个点代表一种细胞类型，点的大小代表细胞数，点越大表达细胞数越多；
+线的粗细代表互作的强弱
+
+3. *.cellchat_count.pdf:细胞互作数量和强度图，代表interaciton的数目
+该图与*cellchat_all_interaction_count.pdf结果一致，是将每个细胞类型与其他细胞类型的互作强度单独绘制一个图
+
+4. *.cellchat_weight.pdf:细胞互作数量和强度图，代表strength强度(prob值相关)
+该图与*cellchat_all_interaction_weight.pdf结果一致，是将每个细胞类型与其他细胞类型的互作强度单独绘制一个图
+
+5. *.cellchat_count_heatmap.pdf:细胞互作热图,代表interaciton的数目
+颜色越红，表示互作数量越多。
+
+6. *.cellchat_weight_heatmap.pdf:细胞互作热图,,代表strength强度(prob值相关)
+颜色越红，表示互作数量越多。
+
+7.*.cellchat_weight.txt：个细胞类型的LR互作表格
+
+（1）source：表达配体L基因的细胞群;
+（2）target：表达受体R基因的细胞群;
+（3）ligand：配体L基因名称;
+（4）receptor：受体R基因名称;
+（5）prob：互作推断可能行，值越大，表示互作越大;
+（6）pval：互作推断概率，值越小，表示越有意义;
+（7）interaction_name：L-R互作名称;
+（8）interaction_name_2：L-R互作名称2;
+（9）pathway_name：互作所属KEGG的pathway名称;
+（10）annotation：细胞互作种类，Secreted Signaling,ECM-Receptor,Cell-Cell Contact中的一种;
+（11）evidence：L-R参考依据。

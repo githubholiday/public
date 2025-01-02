@@ -98,10 +98,16 @@ colnames(celltype_num)<-c("CellType","count")
 count_file <- paste(out_pre, ".celltype_count.xls",sep="")
 write.table( celltype_num ,count_file , sep="\t",quote=FALSE,row.names=FALSE)
 
+#
+group_celltype_num <- as.data.frame(table(pbmc@meta.data$CellType,pbmc@meta.data$CellType))
+count_file <- paste(out_pre, ".group.celltype_count.xls",sep="")
+group_celltype_num = cbind("Group"=rownames(group_celltype_num),group_celltype_num)
+write.table( group_celltype_num ,count_file , sep="\t",quote=FALSE,row.names=FALSE)
+
 #计算细胞比例
 Cellratio <- prop.table(table(pbmc@meta.data$group,pbmc@meta.data$CellType))
 Cellratio <- as.data.frame(Cellratio)
-colnames(Cellratio) <- c("CellType","Cluster","Freq")
+colnames(Cellratio) <- c("Group","CellType","Freq")
 
 allcolour=c("#DC143C","#0000FF","#20B2AA","#FFA500","#9370DB","#98FB98","#F08080","#1E90FF","#7CFC00","#FFFF00",
             "#808000","#FF00FF","#FA8072","#7B68EE","#9400D3","#800080","#A0522D","#D2B48C","#D2691E","#87CEEB","#40E0D0","#5F9EA0",
@@ -110,9 +116,9 @@ allcolour=c("#DC143C","#0000FF","#20B2AA","#FFA500","#9370DB","#98FB98","#F08080
 library(ggplot2)
 pdf(paste(out_pre,".celltype_stackplot.pdf",sep=""))
 p1<-ggplot(Cellratio) + 
-  geom_bar(aes(x =Cluster, y= Freq, fill = CellType),stat = "identity",position="fill",width = 0.7,size = 0.5,colour = '#222222')+ 
+  geom_bar(aes(x =Group, y= Freq, fill = CellType),stat = "identity",position="fill",width = 0.7,size = 0.5,colour = '#222222')+ 
   theme_classic() +
-  labs(x='Cluster',y = 'Ratio')+
+  labs(x='Group',y = 'Ratio')+
   theme(axis.text.x = element_text(angle = 45, hjust = 1))+
   theme(panel.border = element_rect(fill=NA,color="black", size=0.5, linetype="solid"))
 print(p1)

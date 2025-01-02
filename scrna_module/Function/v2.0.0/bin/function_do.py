@@ -112,12 +112,12 @@ def main():
 			if up_down == "all":
 				function_cmd ='''
 make -f {BIN}/anno.mk log_file=LOGFILE gene_list={outdir}/{sample}/{sample}.xls go_dir={outdir}/{sample}/{type}/GO sample={sample} go={config.go} relation_file={config.relation} GO && echo {sample} GO finished
-make -f {BIN}/anno.mk log_file=LOGFILE gene_list={outdir}/{sample}/{sample}.xls kegg_dir={outdir}/{sample}/{type}/GO sample={sample} ko={config.ko} relation_file={config.relation} category={config.category} KEGG && echo {sample} KEGG finished'''.format(BIN=bindir, sample=file_name, infile=infile, outdir=args.outdir, type=up_down, config=my_conf ) 
+make -f {BIN}/anno.mk log_file=LOGFILE gene_list={outdir}/{sample}/{sample}.xls kegg_dir={outdir}/{sample}/{type}/KEGG sample={sample} ko={config.ko} relation_file={config.relation} category={config.category} KEGG && echo {sample} KEGG finished'''.format(BIN=bindir, sample=file_name, infile=infile, outdir=args.outdir, type=up_down, config=my_conf ) 
 			else:
 				function_cmd ='''
 make -f {BIN}/anno.mk log_file=LOGFILE outdir={outdir}/{sample}/{type} up_or_down={type} infile={outdir}/{sample}/{sample}.xls GetList && echo {sample} gene_list finished
 make -f {BIN}/anno.mk log_file=LOGFILE gene_list={outdir}/{sample}/{type}/{type}.gene.xls go_dir={outdir}/{sample}/{type}/GO sample={sample} go={config.go} relation_file={config.relation} GO && echo {sample} GO finished
-make -f {BIN}/anno.mk log_file=LOGFILE gene_list={outdir}/{sample}/{type}/{type}.gene.xls kegg_dir={outdir}/{sample}/{type}/GO sample={sample} ko={config.ko} relation_file={config.relation} category={config.category} KEGG && echo {sample} KEGG finished'''.format(BIN=bindir, sample=file_name, infile=infile, outdir=args.outdir, type=up_down, config=my_conf )
+make -f {BIN}/anno.mk log_file=LOGFILE gene_list={outdir}/{sample}/{type}/{type}.gene.xls kegg_dir={outdir}/{sample}/{type}/KEGG sample={sample} ko={config.ko} relation_file={config.relation} category={config.category} KEGG && echo {sample} KEGG finished'''.format(BIN=bindir, sample=file_name, infile=infile, outdir=args.outdir, type=up_down, config=my_conf )
 			fun_shell_handle.write(function_cmd )
 	fun_shell_handle.close()
 	anno_shell_handle.close()
