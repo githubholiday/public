@@ -33,7 +33,7 @@ all_list=$(outdir)/all.gene.xls
 GetList:
 	echo "########## Anno start at" `date`
 	mkdir -p $(outdir)
-	grep "${up_or_down}"  $(infile) | cut -f 1 > $(gene_list)
+	grep "${up_or_down}"  $(infile) | grep "yes" |cut -f 1 > $(gene_list)
 	/usr/bin/sed -i '1i Gene' $(gene_list)
 	echo "########## Anno end at" `date`
 
